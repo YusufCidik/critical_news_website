@@ -1,63 +1,107 @@
-# IntelMatrix
+# Critical News Website / IntelMatrix
 
-IntelMatrix is a responsive, white-background newsroom for global affairs, technology, AI, science, and economics. It aggregates multiple RSS publishers, keeps the original source link visible, extracts publisher photography when available, supports country/category views, and progressively loads the feed as the reader scrolls.
+IntelMatrix is a professional, responsive newsroom for world affairs, AI, technology, markets, science, health, climate, defense, culture, sports, energy, and travel. It combines multiple publisher RSS feeds, concise source-linked summaries, importance scoring, country/category views, live market data, offline caching, and a Gemini-powered news assistant.
 
-## Features
+Repository: https://github.com/YusufCidik/critical_news_website
 
-- Live RSS aggregation from BBC World, BBC Turkce, Daily Sabah, Al Jazeera, The Guardian, NPR, TechCrunch, The Verge, and Deutsche Welle.
-- Source attribution, original article links, publication time, and source-provided images.
-- World view plus country views for Turkiye, the US, UK, China, Israel/Palestine, Ukraine, Russia, Iran, France, Germany, India, and Japan.
-- Category views for geopolitics, AI, technology, economics, and science.
-- Breaking-news strip for publisher headlines containing an explicit live/breaking/developing signal.
-- Cursor-based infinite feed with an accessible load-more fallback.
-- IndexedDB offline cache and service-worker fallback.
-- Optional ElevenLabs audio summaries with browser speech fallback.
-- Optional Gemini enrichment pipeline for scheduled ingestion.
+## Product features
 
-## Local development
+- Professional white newsroom layout with optional dark mode.
+- Site language selector: Turkish, English, German, French, and Spanish UI.
+- Relative publication times such as `40 dakika önce`, `2 saat önce`, and `3 gün önce`.
+- Seven-day rolling news window, sorted with recent and breaking signals first.
+- Infinite feed with cursor pagination and a manual load-more fallback.
+- World and country views for Türkiye, US, UK, China, Israel/Palestine, Ukraine, Russia, Iran, France, Germany, India, and Japan.
+- Categories for geopolitics, AI, technology, economics, science, sports, culture, health, climate, defense, energy, and travel.
+- Importance labels: `Kritik`, `Yüksek`, `İzlenmeli`, and `Düşük`, backed by a 1-10 impact score.
+- Breaking-news strip based on explicit publisher signals such as breaking, live updates, or developing.
+- Publisher name, publication time, image, and original source link on every article.
+- Markets panel with live USD-based EUR, TRY, GBP, JPY, CHF, and CAD reference rates from Frankfurter / ECB.
+- News AI assistant that answers questions using the currently loaded article context.
+- Gemini structured enrichment pipeline and optional ElevenLabs audio summaries.
+- IndexedDB cache and service-worker fallback for offline reading.
+- Vercel cron configuration for scheduled ingestion.
 
-```bash
+## Local setup
+
+```powershell
 npm install
-copy .env.example .env.local
+Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open http://localhost:3000.
 
-The public newsroom feed works without API keys. ElevenLabs and Gemini are optional integrations.
+The RSS newsroom and market panel work without API keys. Gemini and ElevenLabs are optional.
 
 ## Environment variables
 
-Set these in `.env.local` for local use or in the hosting provider dashboard:
+Add these to `.env.local` locally and to the hosting provider's environment settings:
 
 ```env
+GEMINI_API_KEY=
 ELEVENLABS_API_KEY=
 ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL
-GEMINI_API_KEY=
 CRON_SECRET=replace-with-a-long-random-secret
 ```
 
-Never commit `.env.local` or any real API key.
+Never commit `.env.local`, API keys, or other credentials.
 
-## Deploy to the public internet with Vercel
+## Gemini assistant
 
-1. Push this repository to GitHub, GitLab, or Bitbucket.
-2. Open [vercel.com/new](https://vercel.com/new) and import the repository.
-3. Keep the detected framework as Next.js and the default build command as `npm run build`.
-4. Add the environment variables above under Project Settings > Environment Variables.
-5. Deploy. Vercel provides an HTTPS URL that works from desktop and mobile devices.
-6. Add a custom domain from Project Settings > Domains if desired.
+The assistant endpoint is `POST /api/assistant`. The browser sends the currently loaded headlines, summaries, sources, dates, categories, and importance scores. The Gemini key is used only inside the server route and is never exposed to the browser.
 
-The included `vercel.json` schedules `/api/ingest` every 15 minutes. Set `CRON_SECRET` in Vercel; Vercel sends it as a bearer token to the scheduled route. The live `/api/news` endpoint remains available even if the scheduled enrichment route is not configured.
+Without `GEMINI_API_KEY`, the assistant uses a deterministic local-context fallback so the UI remains usable during development.
 
-## Useful commands
+## GitHub
 
-```bash
-npm run build
-npm run start
-npm run lint
+The configured target repository is:
+
+```text
+https://github.com/YusufCidik/critical_news_website
 ```
 
-## Data and attribution
+From the project directory:
 
-IntelMatrix displays shortened RSS summaries and links readers to the original publisher. RSS availability, image availability, article wording, and publication times depend on each publisher. A source timeout does not take down the whole feed; available publishers continue to appear and cached data remains available offline.
+```powershell
+cd "C:\Users\ycidi\Desktop\best_news"
+git add .
+git commit -m "Add professional newsroom, markets, and Gemini assistant"
+git branch -M main
+git remote add origin https://github.com/YusufCidik/critical_news_website.git
+git push -u origin main
+```
+
+If `origin` already exists:
+
+```powershell
+git remote set-url origin https://github.com/YusufCidik/critical_news_website.git
+git push -u origin main
+```
+
+If GitHub asks for authentication, use GitHub CLI (`gh auth login`) or a personal access token instead of a password.
+
+## Vercel deployment
+
+1. Open https://vercel.com/new.
+2. Import `YusufCidik/critical_news_website`.
+3. Keep the framework as Next.js and the build command as `npm run build`.
+4. Add `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, and `CRON_SECRET` in the project environment settings.
+5. Deploy and use the generated HTTPS URL from any device.
+6. Add a custom domain under Vercel Project Settings > Domains if needed.
+
+The included `vercel.json` schedules `/api/ingest` every 15 minutes. The live `/api/news` route independently reads the publisher feeds and serves the seven-day feed with source fallback handling.
+
+## Validation commands
+
+```powershell
+npm run lint
+npm run build
+npm run start
+```
+
+Lint may report non-blocking image optimization warnings because publisher RSS feeds use changing image CDN domains. The production build must complete with `Compiled successfully` and `Finished TypeScript`.
+
+## Attribution and reliability
+
+IntelMatrix displays shortened RSS summaries and sends readers to the original publisher. RSS availability, wording, images, and timestamps depend on each publisher. A single source timeout does not take down the newsroom; other sources continue and IndexedDB keeps the latest successful feed available offline.

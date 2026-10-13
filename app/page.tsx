@@ -5,6 +5,7 @@ import { ExecutiveBriefing } from "@/components/ExecutiveBriefing";
 import { NewsArticleCard } from "@/components/NewsArticleCard";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { MarketTicker } from "@/components/MarketTicker";
+import { NewsAssistant } from "@/components/NewsAssistant";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNewsData } from "@/hooks/useNewsData";
@@ -43,11 +44,17 @@ const CATEGORIES = [
   ["Seyahat", "Seyahat"],
 ] as const;
 
-function formatTime(value?: string): string {
+function formatTime(value: string | undefined, language: "tr" | "en" | "de" | "fr" | "es"): string {
   if (!value) return "";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return new Intl.DateTimeFormat("tr-TR", { hour: "2-digit", minute: "2-digit" }).format(date);
+  const minutes = Math.floor((Date.now() - date.getTime()) / 60000);
+  const locale = language === "tr" ? "tr-TR" : language === "de" ? "de-DE" : language === "fr" ? "fr-FR" : language === "es" ? "es-ES" : "en-US";
+  if (minutes < 1) return language === "tr" ? "şimdi" : "just now";
+  if (minutes < 60) return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(-minutes, "minute");
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(-hours, "hour");
+  return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(-Math.floor(hours / 24), "day");
 }
 
 export default function Home() {
@@ -223,7 +230,7 @@ export default function Home() {
                         {story.image_url ? <img src={story.image_url} alt="" loading="lazy" className="h-full w-full object-cover" /> : <div className="h-full bg-slate-100" />}
                       </div>
                       <div>
-                        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-red-700">{story.source} · {formatTime(story.published_at)}</p>
+                        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-red-700">{story.source} · {formatTime(story.published_at, language)}</p>
                         <h3 className="mt-1 font-serif text-[16px] font-bold leading-tight text-slate-900 hover:text-sky-800">{story.translated_title}</h3>
                       </div>
                     </a>
@@ -280,6 +287,7 @@ export default function Home() {
           <span className="font-serif text-sm font-bold tracking-[0.12em] text-slate-700">INTELMATRIX</span>
           <span>{text.footerDesc}</span>
         </footer>
+        <NewsAssistant articles={items} />
       </div>
     </main>
   );

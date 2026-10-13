@@ -14,4 +14,8 @@ declare module "lucide-react" {
   export const WifiOff: (props: LucideProps) => import("react").ReactNode;
   export const Moon: (props: LucideProps) => import("react").ReactNode;
   export const Sun: (props: LucideProps) => import("react").ReactNode;
+  export const Bot: (props: LucideProps) => import("react").ReactNode;
+  export const Loader2: (props: LucideProps) => import("react").ReactNode;
+  export const Send: (props: LucideProps) => import("react").ReactNode;
+  export const X: (props: LucideProps) => import("react").ReactNode;
 }
