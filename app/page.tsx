@@ -10,6 +10,7 @@ import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useNewsData } from "@/hooks/useNewsData";
 import { UI_TRANSLATIONS } from "@/lib/i18n/translations";
+import { getNewsLabel } from "@/lib/i18n/news-labels";
 import { useLanguageStore } from "@/lib/store/language-store";
 
 const COUNTRIES = [
@@ -71,6 +72,7 @@ export default function Home() {
   });
 
   const countryName = COUNTRIES.find(([value]) => value === country)?.[1] ?? text.allCountries;
+  const activeCategoryLabel = category === "all" ? text.allCategories : getNewsLabel(language, category);
   const locale = language === "tr" ? "tr-TR" : language === "de" ? "de-DE" : language === "fr" ? "fr-FR" : language === "es" ? "es-ES" : "en-US";
   const visibleStories = useMemo(() => {
     const query = search.trim().toLocaleLowerCase("tr-TR");
@@ -127,7 +129,7 @@ export default function Home() {
 
           <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 py-3 md:flex-row md:items-center md:justify-between">
             <nav aria-label="Haber kategorileri" className="flex gap-1 overflow-x-auto whitespace-nowrap">
-              {CATEGORIES.map(([value, label]) => (
+              {CATEGORIES.map(([value]) => (
                 <button
                   key={value}
                   type="button"
@@ -135,7 +137,7 @@ export default function Home() {
                   aria-pressed={category === value}
                   className={`border-b-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] transition ${category === value ? "border-red-700 text-red-800" : "border-transparent text-slate-600 hover:border-slate-400 hover:text-slate-950"}`}
                 >
-                  {label}
+                  {value === "all" ? text.allCategories : getNewsLabel(language, value)}
                 </button>
               ))}
             </nav>
@@ -209,7 +211,7 @@ export default function Home() {
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-slate-300 pb-2">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">{text.topStories}</p>
-              <h1 className="mt-1 font-serif text-xl font-bold uppercase tracking-[0.08em]">{countryName}{category !== "all" ? ` · ${category}` : ` ${text.agenda}`}</h1>
+              <h1 className="mt-1 font-serif text-xl font-bold uppercase tracking-[0.08em]">{countryName}{category !== "all" ? ` · ${activeCategoryLabel}` : ` ${text.agenda}`}</h1>
             </div>
             <p className="text-[11px] text-slate-500">{total} haber · {sources.length} yayın kaynağı</p>
           </div>
@@ -252,7 +254,7 @@ export default function Home() {
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">Canlı akış</p>
               <h2 className="mt-1 font-serif text-2xl font-bold">{text.otherNews}</h2>
             </div>
-            <p className="text-xs text-slate-500">{countryName} · {category === "all" ? "Tüm kategoriler" : category}</p>
+            <p className="text-xs text-slate-500">{countryName} · {activeCategoryLabel}</p>
           </div>
 
           {error && <p role="status" className="mb-4 border-l-2 border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-900">{error}</p>}

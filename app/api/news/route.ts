@@ -126,6 +126,13 @@ function extractImage(item: Record<string, unknown>): string | null {
   if (!image) return null;
   try {
     const parsed = new URL(image);
+    if (parsed.hostname.endsWith("guim.co.uk")) {
+      parsed.searchParams.set("width", "1200");
+      parsed.searchParams.set("quality", "90");
+    }
+    if (parsed.hostname.endsWith("bbci.co.uk")) {
+      parsed.pathname = parsed.pathname.replace(/\/\d+(?=\/cpsprodpb|\/cpsprodpb)/, "/1200");
+    }
     return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.toString() : null;
   } catch {
     return null;

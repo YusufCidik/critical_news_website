@@ -1,5 +1,6 @@
 import type { NewsItem } from "@/lib/store/news-store";
 import type { SupportedLanguage } from "@/lib/store/language-store";
+import { getNewsLabel } from "@/lib/i18n/news-labels";
 
 interface NewsArticleCardProps {
   story: NewsItem;
@@ -22,16 +23,16 @@ function formatPublishedAt(value: string | undefined, language: SupportedLanguag
   return new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(date);
 }
 
-function getImportance(score: number): { label: string; className: string } {
-  if (score >= 9) return { label: "Kritik", className: "border-red-200 bg-red-50 text-red-800" };
-  if (score >= 7) return { label: "Yüksek", className: "border-orange-200 bg-orange-50 text-orange-800" };
-  if (score >= 5) return { label: "İzlenmeli", className: "border-amber-200 bg-amber-50 text-amber-800" };
-  return { label: "Düşük", className: "border-slate-200 bg-slate-50 text-slate-600" };
+function getImportance(score: number, language: SupportedLanguage): { label: string; className: string } {
+  if (score >= 9) return { label: getNewsLabel(language, "critical"), className: "border-red-200 bg-red-50 text-red-800" };
+  if (score >= 7) return { label: getNewsLabel(language, "high"), className: "border-orange-200 bg-orange-50 text-orange-800" };
+  if (score >= 5) return { label: getNewsLabel(language, "watch"), className: "border-amber-200 bg-amber-50 text-amber-800" };
+  return { label: getNewsLabel(language, "low"), className: "border-slate-200 bg-slate-50 text-slate-600" };
 }
 
 export function NewsArticleCard({ story, layout = "compact", language = "tr" }: NewsArticleCardProps) {
   const feature = layout === "feature";
-  const importance = getImportance(story.impact_score);
+  const importance = getImportance(story.impact_score, language);
 
   return (
     <article className={`group min-w-0 overflow-hidden border-b border-slate-200 bg-white ${feature ? "" : "pb-5"}`}>
@@ -60,13 +61,13 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
           )}
           {story.is_breaking && (
             <span className="absolute left-3 top-3 bg-red-700 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-              Son dakika
+              {getNewsLabel(language, "breaking")}
             </span>
           )}
         </div>
         <div className={feature ? "pt-4" : "pt-3"}>
           <div className="mb-2 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-red-700">
-            <span>{story.category}</span>
+            <span>{getNewsLabel(language, story.category === "Dünya" ? "world" : story.category)}</span>
             <span className={`border px-2 py-1 text-[9px] tracking-[0.12em] ${importance.className}`}>{importance.label} · {story.impact_score}/10</span>
           </div>
           <h2 className={`font-serif font-bold leading-[1.12] text-slate-950 group-hover:text-sky-800 ${feature ? "text-3xl md:text-[38px]" : "text-[21px]"}`}>
@@ -78,12 +79,12 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
         {story.executive_summary}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
-        <span className="font-semibold text-slate-700">{story.source || "Haber kaynağı"}</span>
+        <span className="font-semibold text-slate-700">{story.source || getNewsLabel(language, "source")}</span>
         <span aria-hidden="true">·</span>
         <time dateTime={story.published_at}>{formatPublishedAt(story.published_at, language)}</time>
         <span aria-hidden="true">·</span>
         <a className="font-semibold text-sky-800 hover:underline" href={story.source_url || "#"} target="_blank" rel="noreferrer">
-          Kaynağa git ↗
+          {getNewsLabel(language, "goToSource")}
         </a>
       </div>
     </article>

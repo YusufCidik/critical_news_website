@@ -16,10 +16,11 @@ interface AssistantRequest {
 }
 
 function fallbackAnswer(question: string, articles: AssistantRequest["articles"] = []) {
-  const relevant = articles?.filter((article) => {
+  const matching = articles?.filter((article) => {
     const text = `${article.title || ""} ${article.summary || ""}`.toLocaleLowerCase("tr-TR");
     return question.toLocaleLowerCase("tr-TR").split(/\s+/).some((word) => word.length > 3 && text.includes(word));
-  }).slice(0, 3) || [];
+  }) || [];
+  const relevant = (matching.length ? matching : [...(articles || [])].sort((a, b) => (b.impact_score || 0) - (a.impact_score || 0))).slice(0, 3);
 
   if (!relevant.length) {
     return "Bu soruyu mevcut haber akışındaki doğrulanmış özetlerle yanıtlayacak yeterli eşleşme bulamadım. Dünya, kategori veya ülke filtresini değiştirerek daha ilgili bir akış açabilirsiniz.";
@@ -29,10 +30,12 @@ function fallbackAnswer(question: string, articles: AssistantRequest["articles"]
 }
 
 export async function POST(request: Request) {
+  let question = "";
+  let articles: AssistantRequest["articles"] = [];
   try {
     const body = (await request.json()) as AssistantRequest;
-    const question = body.question?.trim();
-    const articles = Array.isArray(body.articles) ? body.articles.slice(0, 40) : [];
+    question = body.question?.trim() || "";
+    articles = Array.isArray(body.articles) ? body.articles.slice(0, 40) : [];
 
     if (!question) {
       return NextResponse.json({ error: "Bir soru yazın." }, { status: 400 });
@@ -50,14 +53,14 @@ export async function POST(request: Request) {
     )).join("\n\n");
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: `Sen IntelMatrix'in tarafsız haber istihbarat asistanısın. Sadece aşağıdaki haber bağlamını kullan. Bilgi bağlamda yoksa açıkça bilinmediğini söyle. Haberleri yorumlarken olgu, çıkarım ve belirsizliği ayır. Türkçe, kısa ama analitik yanıt ver; mümkünse kaynak yayıncı adlarını belirt. Kullanıcı sorusu: ${question}\n\nHaber bağlamı:\n${context}`,
       config: { temperature: 0.2 },
     });
 
-    return NextResponse.json({ answer: response.text?.trim() || fallbackAnswer(question, articles), model: "gemini-2.0-flash" });
+    return NextResponse.json({ answer: response.text?.trim() || fallbackAnswer(question, articles), model: "gemini-2.5-flash" });
   } catch (error) {
     console.error("Assistant request failed:", error);
-    return NextResponse.json({ error: "Asistan şu anda yanıt veremiyor." }, { status: 500 });
+    return NextResponse.json({ answer: fallbackAnswer(question || "", articles), model: "local-context-fallback", degraded: true });
   }
 }
