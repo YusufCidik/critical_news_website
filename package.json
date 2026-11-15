@@ -8,7 +8,8 @@
     "prebuild": "node scripts/build-service-worker.mjs",
     "build": "next build",
     "start": "next start -H 0.0.0.0",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node scripts/test-news.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.20.0",

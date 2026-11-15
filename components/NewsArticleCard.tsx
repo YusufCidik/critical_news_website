@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { NewsImage } from "@/components/NewsImage";
 import type { NewsItem } from "@/lib/store/news-store";
 import type { SupportedLanguage } from "@/lib/store/language-store";
 import { getNewsLabel } from "@/lib/i18n/news-labels";
@@ -36,29 +38,13 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
 
   return (
     <article className={`group min-w-0 overflow-hidden border-b border-slate-200 bg-white ${feature ? "" : "pb-5"}`}>
-      <a
-        href={story.source_url || "#"}
-        target="_blank"
-        rel="noreferrer"
+      <Link prefetch={false}
+        href={`/news/${story.id}`}
         aria-label={`${story.translated_title} - ${story.source || "haber kaynağı"}`}
         className="block"
       >
         <div className={`relative overflow-hidden bg-slate-100 ${feature ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
-          {story.image_url ? (
-            <img
-              src={story.image_url}
-              alt=""
-              loading={feature ? "eager" : "lazy"}
-              className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
-              onError={(event) => {
-                event.currentTarget.style.display = "none";
-              }}
-            />
-          ) : (
-            <div className="flex h-full items-end bg-[linear-gradient(135deg,#dce8ef,#f1f4f6_55%,#d7e0e6)] p-4">
-              <span className="font-serif text-2xl font-bold text-slate-400">INTELMATRIX</span>
-            </div>
-          )}
+          <NewsImage src={story.image_url} eager={feature} />
           {story.is_breaking && (
             <span className="absolute left-3 top-3 bg-red-700 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
               {getNewsLabel(language, "breaking")}
@@ -74,7 +60,7 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
             {story.translated_title}
           </h2>
         </div>
-      </a>
+      </Link>
       <p className={`mt-2 text-slate-600 ${feature ? "text-base leading-7" : "line-clamp-3 text-sm leading-6"}`}>
         {story.executive_summary}
       </p>
@@ -83,9 +69,10 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
         <span aria-hidden="true">·</span>
         <time dateTime={story.published_at}>{formatPublishedAt(story.published_at, language)}</time>
         <span aria-hidden="true">·</span>
-        <a className="font-semibold text-sky-800 hover:underline" href={story.source_url || "#"} target="_blank" rel="noreferrer">
-          {getNewsLabel(language, "goToSource")}
-        </a>
+        <span>{Math.max(1, Math.ceil(story.executive_summary.split(/\s+/).length / 200))} {language === "tr" ? "dk okuma" : "min read"}</span>
+        <Link prefetch={false} className="font-semibold text-sky-800 hover:underline" href={`/news/${story.id}`}>
+          {language === "tr" ? "Özeti oku" : "Read briefing"}
+        </Link>
       </div>
     </article>
   );

@@ -1,6 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { NewsImage } from "@/components/NewsImage";
+import { useLocalizedNews } from "@/hooks/useLocalizedNews";
+import { useEffect, useMemo, useState } from "react";
 import { ExecutiveBriefing } from "@/components/ExecutiveBriefing";
 import { NewsArticleCard } from "@/components/NewsArticleCard";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -65,22 +68,26 @@ export default function Home() {
   const [country, setCountry] = useState("world");
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
-  const sentinelRef = useRef<HTMLDivElement>(null);
-  const { items, loading, loadingMore, hasMore, total, sources, error, loadMore } = useNewsData({
+  const [sort, setSort] = useState<"importance" | "latest">("importance");
+  const { items: rawItems, loading, loadingMore, hasMore, total, sources, error, loadMore } = useNewsData({
     country,
     category,
+    sort,
   });
 
+  const localized = useLocalizedNews(rawItems, language);
+  const items = localized.items;
   const countryName = COUNTRIES.find(([value]) => value === country)?.[1] ?? text.allCountries;
   const activeCategoryLabel = category === "all" ? text.allCategories : getNewsLabel(language, category);
   const locale = language === "tr" ? "tr-TR" : language === "de" ? "de-DE" : language === "fr" ? "fr-FR" : language === "es" ? "es-ES" : "en-US";
   const visibleStories = useMemo(() => {
     const query = search.trim().toLocaleLowerCase("tr-TR");
-    if (!query) return items;
-    return items.filter((story) =>
+    const ordered = [...items].sort((a, b) => sort === "importance" ? b.impact_score - a.impact_score || Date.parse(b.published_at || "") - Date.parse(a.published_at || "") : Date.parse(b.published_at || "") - Date.parse(a.published_at || ""));
+    if (!query) return ordered;
+    return ordered.filter((story) =>
       `${story.translated_title} ${story.executive_summary} ${story.source}`.toLocaleLowerCase("tr-TR").includes(query)
     );
-  }, [items, search]);
+  }, [items, search, sort]);
 
   const breakingStories = useMemo(() => items.filter((story) => story.is_breaking).slice(0, 5), [items]);
   const featuredStory = visibleStories[0] ?? null;
@@ -97,18 +104,6 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const sentinel = sentinelRef.current;
-    if (!sentinel || !hasMore || loading || loadingMore) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) void loadMore();
-      },
-      { rootMargin: "800px 0px" }
-    );
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, [hasMore, loadMore, loading, loadingMore]);
 
   return (
     <main className="min-h-screen bg-[#f6f6f4] text-slate-950">
@@ -142,7 +137,7 @@ export default function Home() {
               ))}
             </nav>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <LanguageSelector />
               <ThemeToggle />
               <label htmlFor="country-select" className="sr-only">{text.allCountries}</label>
@@ -178,9 +173,9 @@ export default function Home() {
               </div>
               <div className="flex min-w-0 flex-1 gap-5 overflow-x-auto whitespace-nowrap text-sm">
                 {breakingStories.map((story) => (
-                  <a key={story.id} href={story.source_url} target="_blank" rel="noreferrer" className="border-l border-white/35 pl-4 hover:underline first:border-0 first:pl-0">
+                  <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="border-l border-white/35 pl-4 hover:underline first:border-0 first:pl-0">
                     {story.translated_title}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -195,19 +190,28 @@ export default function Home() {
             </div>
             <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
               {visibleStories.slice(0, 4).map((story) => (
-                <a key={story.id} href={story.source_url || "#"} target="_blank" rel="noreferrer" className="group min-w-0">
+                <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="group min-w-0">
                   <div className="aspect-[16/10] overflow-hidden bg-slate-100">
-                    {story.image_url ? <img src={story.image_url} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]" /> : <div className="h-full bg-gradient-to-br from-slate-100 to-slate-200" />}
+                    <NewsImage src={story.image_url} />
                   </div>
                   <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.13em] text-red-700">{story.source}</p>
                   <h3 className="mt-1 font-serif text-[17px] font-bold leading-tight text-slate-900 group-hover:text-sky-800">{story.translated_title}</h3>
-                </a>
+                </Link>
               ))}
             </div>
           </section>
         )}
 
         <section className="px-4 pt-5 md:px-8">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-slate-200 bg-slate-50 p-3">
+            <p className="text-xs text-slate-600">{language === "tr" ? "Önce en önemli gelişmeler. Okuma süreni sen belirle." : "The essential stories first. Read at your own pace."}</p>
+            <select aria-label={language === "tr" ? "Haber sıralaması" : "Sort stories"} value={sort} onChange={(event) => setSort(event.target.value as "importance" | "latest")} className="min-h-10 border border-slate-300 bg-white px-3 text-sm">
+              <option value="importance">{language === "tr" ? "Önem derecesi" : "Importance"}</option>
+              <option value="latest">{language === "tr" ? "En yeni" : "Latest"}</option>
+            </select>
+          </div>
+          {localized.status === "loading" && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{language === "tr" ? "Başlıklar ve özetler çevriliyor…" : "Translating headlines and summaries…"}</p>}
+          {localized.status === "error" && <p role="status" className="mb-3 text-xs text-amber-700">{language === "tr" ? "Bazı çeviriler alınamadı; özgün metin gösteriliyor." : "Some translations are unavailable; showing original text."} <button type="button" onClick={localized.retry} className="min-h-10 underline">{language === "tr" ? "Tekrar dene" : "Retry"}</button></p>}
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-slate-300 pb-2">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">{text.topStories}</p>
@@ -227,15 +231,15 @@ export default function Home() {
                 <h2 className="mb-3 border-b border-slate-200 pb-2 text-[10px] font-bold uppercase tracking-[0.17em] text-slate-600">Öne çıkanlar</h2>
                 <div className="divide-y divide-slate-200">
                   {sideStories.map((story) => (
-                    <a key={story.id} href={story.source_url || "#"} target="_blank" rel="noreferrer" className="grid grid-cols-[96px_minmax(0,1fr)] gap-3 py-3 first:pt-0">
+                    <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="grid grid-cols-[96px_minmax(0,1fr)] gap-3 py-3 first:pt-0">
                       <div className="aspect-[4/3] overflow-hidden bg-slate-100">
-                        {story.image_url ? <img src={story.image_url} alt="" loading="lazy" className="h-full w-full object-cover" /> : <div className="h-full bg-slate-100" />}
+                        <NewsImage src={story.image_url} />
                       </div>
                       <div>
                         <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-red-700">{story.source} · {formatTime(story.published_at, language)}</p>
                         <h3 className="mt-1 font-serif text-[16px] font-bold leading-tight text-slate-900 hover:text-sky-800">{story.translated_title}</h3>
                       </div>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </aside>
@@ -267,7 +271,7 @@ export default function Home() {
             <p className="py-12 text-center text-sm text-slate-600">Aramanızla eşleşen haber bulunamadı.</p>
           )}
 
-          <div ref={sentinelRef} className="h-2" aria-hidden="true" />
+
           {loadingMore && <p className="py-6 text-center text-sm text-slate-500" role="status">Yeni haberler yükleniyor…</p>}
           {hasMore && !loadingMore && (
             <div className="py-6 text-center">

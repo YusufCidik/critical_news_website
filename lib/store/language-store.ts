@@ -5,6 +5,7 @@ export type SupportedLanguage = "tr" | "en" | "de" | "fr" | "es";
 interface LanguageState {
   language: SupportedLanguage;
   setLanguage: (lang: SupportedLanguage) => void;
+  hydrateLanguage: () => void;
 }
 
 const STORAGE_KEY = "intelmatrix_lang";
@@ -23,7 +24,8 @@ function getInitialLanguage(): SupportedLanguage {
 }
 
 export const useLanguageStore = create<LanguageState>((set) => ({
-  language: getInitialLanguage(),
+  language: "tr",
+  hydrateLanguage: () => set({ language: getInitialLanguage() }),
   setLanguage: (lang: SupportedLanguage) => {
     try {
       if (typeof window !== "undefined") {

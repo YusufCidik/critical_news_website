@@ -7,10 +7,10 @@ Repository: https://github.com/YusufCidik/critical_news_website
 ## Product features
 
 - Professional white newsroom layout with optional dark mode.
-- Site language selector: Turkish, English, German, French, and Spanish UI.
+- Language selector: Turkish, English, German, French, and Spanish UI, headlines and publisher excerpts.
 - Relative publication times such as `40 dakika önce`, `2 saat önce`, and `3 gün önce`.
-- Seven-day rolling news window, sorted with recent and breaking signals first.
-- Infinite feed with cursor pagination and a manual load-more fallback.
+- Seven-day rolling news window with importance and latest sorting.
+- Cursor pagination with an explicit load-more action.
 - World and country views for Türkiye, US, UK, China, Israel/Palestine, Ukraine, Russia, Iran, France, Germany, India, and Japan.
 - Categories for geopolitics, AI, technology, economics, science, sports, culture, health, climate, defense, energy, and travel.
 - Importance labels: `Kritik`, `Yüksek`, `İzlenmeli`, and `Düşük`, backed by a 1-10 impact score.
@@ -105,3 +105,24 @@ Lint may report non-blocking image optimization warnings because publisher RSS f
 ## Attribution and reliability
 
 IntelMatrix displays shortened RSS summaries and sends readers to the original publisher. RSS availability, wording, images, and timestamps depend on each publisher. A single source timeout does not take down the newsroom; other sources continue and IndexedDB keeps the latest successful feed available offline.
+
+## Article pages, translation and AI setup
+
+Headlines, images, breaking-news links and assistant references now open `/news/[id]`. The detail page has the publisher excerpt, publication time, estimated reading time, a save action and an explicit external source button. Its AI briefing includes a summary, supported facts, available background, a cautious explanation of significance and uncertainties. AI uses the RSS headline and excerpt only; it does not claim to have read the full article.
+
+Select a language to translate headlines and excerpts throughout the feed and detail page. Translation prefers Gemini when configured and falls back to MyMemory. Public translation has service quotas: failures retain the original text, display a retry action and are not cached as successful translations.
+
+Configure the following server-side environment variables in `.env.local` and your hosting environment, then restart/redeploy:
+
+```env
+GEMINI_API_KEY=your-key-from-google-ai-studio
+GEMINI_MODEL=gemini-3.1-flash-lite
+```
+
+The model is configurable; consult [Google's model reference](https://ai.google.dev/gemini-api/docs/models) for models available to your account. Keys are never sent to the browser. Without a key, the assistant explicitly shows publisher excerpts instead of an AI answer, and the article page marks AI analysis as unavailable. Provider errors have the same visible fallback and can be retried.
+
+Importance is a keyword-based priority heuristic, independent of publication age; it is not an AI fact check. Sorting by importance or latest happens before pagination. Additional pages load only when requested.
+
+Article availability follows the rolling RSS feed and its in-process cache. Cached articles can also be read from IndexedDB on the same device. This repository does not yet have a durable server-side article database, so older links may become unavailable after leaving RSS and a server restart. Service-worker responses use the browser Cache API, separately from article records in IndexedDB.
+
+Run `npm test`, `npm run lint` and `npm run build` to verify changes. The regression suite mocks external services and tests RSS media extraction, stable IDs and detail lookup, category filtering, pagination, full-length translations, retry behavior, AI schema validation, conversation context and article references. A real Gemini response requires a configured key and is not covered by the mocked tests.

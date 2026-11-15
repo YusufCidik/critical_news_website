@@ -15,6 +15,7 @@ interface NewsResponse {
 interface UseNewsDataOptions {
   country: string;
   category: string;
+  sort?: "importance" | "latest";
 }
 
 const OFFLINE_COUNTRY_TERMS: Record<string, string[]> = {
@@ -42,7 +43,7 @@ function filterCachedItems(items: NewsItem[], country: string, category: string)
   });
 }
 
-export function useNewsData({ country, category }: UseNewsDataOptions = { country: "world", category: "all" }) {
+export function useNewsData({ country, category, sort = "importance" }: UseNewsDataOptions = { country: "world", category: "all" }) {
   const { items, activeItem, loading, error, setItems, setActiveItem, setLoading, setError } = useNewsStore();
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
@@ -51,7 +52,7 @@ export function useNewsData({ country, category }: UseNewsDataOptions = { countr
   const nextCursorRef = useRef<number | null>(0);
   const loadingMoreRef = useRef(false);
   const scopeRef = useRef("");
-  const scopeKey = `${country}:${category}`;
+  const scopeKey = `${country}:${category}:${sort}`;
 
   useEffect(() => {
     let mounted = true;
@@ -72,7 +73,7 @@ export function useNewsData({ country, category }: UseNewsDataOptions = { countr
 
     const loadFirstPage = async () => {
       try {
-        const query = new URLSearchParams({ country, category, cursor: "0", limit: "12" });
+        const query = new URLSearchParams({ country, category, sort, cursor: "0", limit: "12" });
         const response = await fetch(`/api/news?${query.toString()}`, {
           cache: "no-store",
           signal: controller.signal,
@@ -90,7 +91,7 @@ export function useNewsData({ country, category }: UseNewsDataOptions = { countr
             created_at: item.created_at || timestamp,
             updated_at: item.updated_at || timestamp,
           }))
-        );
+        ).catch((error) => console.warn("Offline cache write failed:", error));
         if (!mounted) return;
 
         setItems(freshItems);
@@ -130,7 +131,7 @@ export function useNewsData({ country, category }: UseNewsDataOptions = { countr
       controller.abort();
       window.clearInterval(refreshTimer);
     };
-  }, [country, category, scopeKey, setActiveItem, setError, setItems, setLoading]);
+  }, [country, category, sort, scopeKey, setActiveItem, setError, setItems, setLoading]);
 
   const loadMore = useCallback(async () => {
     const cursor = nextCursorRef.current;
@@ -139,7 +140,7 @@ export function useNewsData({ country, category }: UseNewsDataOptions = { countr
     loadingMoreRef.current = true;
     setLoadingMore(true);
     try {
-      const query = new URLSearchParams({ country, category, cursor: String(cursor), limit: "12" });
+      const query = new URLSearchParams({ country, category, sort, cursor: String(cursor), limit: "12" });
       const response = await fetch(`/api/news?${query.toString()}`, { cache: "no-store" });
       if (!response.ok) throw new Error(`News page request failed: ${response.status}`);
       const payload = (await response.json()) as NewsResponse;
@@ -152,7 +153,8 @@ export function useNewsData({ country, category }: UseNewsDataOptions = { countr
           created_at: item.created_at || timestamp,
           updated_at: item.updated_at || timestamp,
         }))
-      );
+      ).catch((error) => console.warn("Offline cache write failed:", error));
+      if (scopeRef.current !== scopeKey) return;
       setItems([...useNewsStore.getState().items, ...payload.items]);
       nextCursorRef.current = payload.nextCursor;
       setHasMore(payload.nextCursor !== null);
@@ -165,7 +167,7 @@ export function useNewsData({ country, category }: UseNewsDataOptions = { countr
       loadingMoreRef.current = false;
       setLoadingMore(false);
     }
-  }, [category, country, loading, scopeKey, setError, setItems]);
+  }, [category, country, sort, loading, scopeKey, setError, setItems]);
 
   return { items, activeItem, loading, loadingMore, hasMore, total, sources, error, loadMore };
 }

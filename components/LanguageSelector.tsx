@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useLanguageStore, type SupportedLanguage } from "@/lib/store/language-store";
 
 const LANGUAGES: Array<{ code: SupportedLanguage; label: string; flag: string }> = [
@@ -11,7 +12,10 @@ const LANGUAGES: Array<{ code: SupportedLanguage; label: string; flag: string }>
 ];
 
 export function LanguageSelector() {
-  const { language, setLanguage } = useLanguageStore();
+  const { language, setLanguage, hydrateLanguage } = useLanguageStore();
+
+  useEffect(() => { hydrateLanguage(); }, [hydrateLanguage]);
+  useEffect(() => { document.documentElement.lang = language; }, [language]);
 
   return (
     <div className="relative inline-flex items-center">

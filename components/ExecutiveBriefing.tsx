@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
+import { useLanguageStore } from "@/lib/store/language-store";
 import type { NewsItem } from "@/lib/store/news-store";
 
 interface ExecutiveBriefingProps {
@@ -9,6 +10,7 @@ interface ExecutiveBriefingProps {
 }
 
 export function ExecutiveBriefing({ briefing }: ExecutiveBriefingProps) {
+  const { language } = useLanguageStore();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -73,7 +75,7 @@ export function ExecutiveBriefing({ briefing }: ExecutiveBriefingProps) {
     }
 
     const utterance = new SpeechSynthesisUtterance(briefing.executive_summary);
-    utterance.lang = "tr-TR";
+    utterance.lang = { tr: "tr-TR", en: "en-US", de: "de-DE", fr: "fr-FR", es: "es-ES" }[language];
     utterance.rate = 0.96;
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
