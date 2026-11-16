@@ -136,11 +136,17 @@ Model roles are independent, server-side settings:
 ```env
 GEMINI_TRANSLATION_MODEL=gemini-3.5-flash-lite
 GEMINI_SELECTION_MODEL=gemini-3.5-flash-lite
-GEMINI_ASSISTANT_MODEL=gemini-4-hydrogen
+GEMINI_ASSISTANT_MODEL=gemini-3.8-flash
 ```
 
 These are the defaults, verified against the available Gemini models. `GEMINI_MODEL` remains a legacy ingestion setting. The assistant and article briefings use the editorial model; translation and relevance selection use the fast model. Consult the [Gemini model reference](https://ai.google.dev/gemini-api/docs/models) for account availability.
 
 The assistant interprets concise/detailed requests and explicit word, sentence and bullet limits. The default answer is capped at 140 words; concise requests at 60; detailed requests at 360 unless the user supplies a different bounded word count. A final server-side check enforces the budget even if the model exceeds it. Formatting-only follow-ups reuse validated prior article references and preserve the topic. Source links remain available in a collapsed list. Long news grids skip offscreen rendering and unchanged cards avoid repeated React renders.
-\nPublic RSS fetches use the Next.js Data Cache with five-minute revalidation, so a fresh feed-function instance can reuse upstream responses. The feed route stays dynamic through request query access; it avoids force-dynamic because that would disable the explicit upstream cache.\n\nTranslation attempts have bounded per-model timeouts and fall back to Gemini 3.1 Flash-Lite on provider errors before using the public translation service. Successful partial translations are still returned immediately and never discarded.\n
+
+Public RSS fetches use the Next.js Data Cache with five-minute revalidation, so a fresh feed-function instance can reuse upstream responses. The feed route stays dynamic through request query access; it avoids force-dynamic because that would disable the explicit upstream cache.
+
+Translation attempts have bounded per-model timeouts and fall back to Gemini 3.1 Flash-Lite on provider errors before using the public translation service. Successful partial translations are still returned immediately and never discarded.
+
 The assembled in-process feed snapshot is refreshed after 30 seconds, and the CDN feed window is 60 seconds plus a 60-second stale-while-revalidate window; this avoids stacking multiple five-minute caches on top of upstream RSS revalidation.
+
+Only the documented free-tier models Gemini 3.8 Flash, Gemini 3.5 Flash-Lite and Gemini 3.1 Flash-Lite are allowed by the application model resolver. Paid-only model overrides such as Hydrogen are ignored; provider failure does not switch to a paid-only model. Free-tier availability is not a billing guarantee: the API project must be on the free tier, and quota limits still apply. See https://ai.google.dev/gemini-api/docs/pricing#gemini-3.8-flash .

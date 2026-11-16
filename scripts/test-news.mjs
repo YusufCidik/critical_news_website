@@ -9,7 +9,7 @@ import { build } from "esbuild";
 const bundled = await build({
   stdin: { contents: `
     export { resolveReplyPolicy, enforceReplyBudget } from "./lib/ai/reply-policy";
-    export { ASSISTANT_MODEL } from "./lib/ai/client";
+    export { ASSISTANT_MODEL, FREE_TIER_MODELS, resolveFreeTierModel } from "./lib/ai/client";
     export { TranslationQueue } from "./lib/i18n/client-translation";
     export { isTranslationUsable } from "./lib/i18n/server-translate";
     export { NewsDetail } from "./components/NewsDetail";
@@ -36,7 +36,7 @@ const compiled = new Module(filename);
 compiled.filename = filename;
 compiled.paths = Module._nodeModulePaths(path.dirname(filename));
 compiled._compile(bundled.outputFiles[0].text, filename);
-const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews, TranslationQueue, isTranslationUsable, NewsDetail, resolveReplyPolicy, enforceReplyBudget, ASSISTANT_MODEL } = compiled.exports;
+const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews, TranslationQueue, isTranslationUsable, NewsDetail, resolveReplyPolicy, enforceReplyBudget, ASSISTANT_MODEL, FREE_TIER_MODELS, resolveFreeTierModel } = compiled.exports;
 const oldFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 delete process.env.GEMINI_API_KEY;
@@ -432,6 +432,15 @@ try {
     assert.equal(models.length, 2);
     assert.equal(models[1], "gemini-3.1-flash-lite");
     assert.equal(publicCalls, 0);
+  });
+
+  await test("paid-only model overrides cannot select Hydrogen", () => {
+    assert.equal(resolveFreeTierModel("gemini-4-hydrogen", "gemini-3.8-flash"), "gemini-3.8-flash");
+    assert.equal(resolveFreeTierModel("models/gemini-4-carbon", "gemini-3.5-flash-lite"), "gemini-3.5-flash-lite");
+    assert.equal(resolveFreeTierModel("gemini-3.8-flash", "gemini-3.1-flash-lite"), "gemini-3.8-flash");
+    assert.equal(resolveFreeTierModel("models/gemini-3.1-flash-lite", "gemini-3.5-flash-lite"), "gemini-3.1-flash-lite");
+    assert.ok(FREE_TIER_MODELS.includes(ASSISTANT_MODEL));
+    assert.ok(!FREE_TIER_MODELS.some((model) => model.includes("hydrogen")));
   });
 } finally {
   globalThis.fetch = oldFetch;
