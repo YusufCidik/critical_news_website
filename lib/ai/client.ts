@@ -8,7 +8,7 @@ export const AI_MODEL = process.env.GEMINI_MODEL || TRANSLATION_MODEL;
 export function assistantThinking(model = ASSISTANT_MODEL) {
   return /^gemini-[34]/.test(model) ? { thinkingConfig: { thinkingLevel: ThinkingLevel.LOW } } : {};
 }
-export function getAIClient() {
+export function getAIClient(timeoutMs = 25_000) {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
-  return apiKey ? new GoogleGenAI({ apiKey, httpOptions: { timeout: 25_000 } }) : null;
+  return apiKey ? new GoogleGenAI({ apiKey, httpOptions: { timeout: timeoutMs } }) : null;
 }

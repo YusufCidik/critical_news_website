@@ -402,7 +402,7 @@ try {
     const data = await response.json();
     assert.equal(response.status, 200);
     assert.ok(data.items.every((item) => item.localized_title.language === "tr"));
-    assert.ok(response.headers.get("Vercel-CDN-Cache-Control").includes("s-maxage=120"));
+    assert.ok(response.headers.get("Vercel-CDN-Cache-Control").includes("s-maxage=60"));
     let calls = 0;
     const queue = new TranslationQueue(async () => { calls++; return {}; }, 0);
     const entry = { text: data.items[0].original_title, source: "en", priority: 0, translated: data.items[0].localized_title.text };
@@ -414,6 +414,24 @@ try {
     assert.equal(queue.get(entry.text, "en", "de"), undefined);
     stop();
     assert.ok(data.items[0].original_title !== entry.translated);
+  });
+
+  await test("translation provider overload uses a second fast model before public translation", async () => {
+    process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
+    const models = [];
+    globalThis.__intelmatrixAI = async (request) => {
+      models.push(request.model);
+      if (models.length === 1) throw Object.assign(new Error("Temporary overload"), { status: 503 });
+      return { text: JSON.stringify({ translations: ["Le ministre annonce une nouvelle mesure énergétique."] }) };
+    };
+    let publicCalls = 0;
+    globalThis.fetch = async () => { publicCalls++; throw new Error("Should not need public translation"); };
+    const body = { texts: ["The energy minister announces a new measure."], sourceLangs: ["en"], targetLang: "fr" };
+    const result = await (await translate.POST(post("/api/translate", body))).json();
+    assert.equal(result.complete, true);
+    assert.equal(models.length, 2);
+    assert.equal(models[1], "gemini-3.1-flash-lite");
+    assert.equal(publicCalls, 0);
   });
 } finally {
   globalThis.fetch = oldFetch;

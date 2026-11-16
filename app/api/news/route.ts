@@ -5,7 +5,6 @@ import { uniqueNews } from "@/lib/news/unique";
 import { NextResponse } from "next/server";
 import { getStories, matchesCountry } from "@/lib/news/feed";
 export const maxDuration = 60;
-export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
@@ -41,7 +40,7 @@ export async function GET(request: Request) {
         sources: [...new Set(filtered.map((story) => story.source))],
         updatedAt: new Date().toISOString(),
       },
-      { headers: localized.complete ? { "Cache-Control": "public, max-age=15", "Vercel-CDN-Cache-Control": "public, s-maxage=120, stale-while-revalidate=240" } : { "Cache-Control": "no-store" } }
+      { headers: localized.complete ? { "Cache-Control": "public, max-age=15", "Vercel-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=60" } : { "Cache-Control": "no-store" } }
     );
   } catch (error) {
     console.error("News aggregation failed:", error);

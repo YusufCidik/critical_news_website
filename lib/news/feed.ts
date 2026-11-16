@@ -94,7 +94,7 @@ const parser = new Parser({
 
 let cache: { expiresAt: number; stories: NewsStory[]; sources: string[] } | null = null;
 let inFlight: Promise<{ expiresAt: number; stories: NewsStory[]; sources: string[] }> | null = null;
-const CACHE_TTL_MS = 5 * 60 * 1000;
+const CACHE_TTL_MS = 30 * 1000;
 const MAX_STORIES = 2000;
 
 function stripMarkup(value: unknown): string {
@@ -200,7 +200,7 @@ async function fetchFeed(feed: FeedDefinition): Promise<NewsStory[]> {
     const response = await fetch(feed.url, {
       headers: { "User-Agent": "IntelMatrixNewsReader/1.0 (RSS reader)" },
       signal: controller.signal,
-      cache: "no-store",
+      next: { revalidate: 300 },
     });
     if (!response.ok) throw new Error(`RSS source responded ${response.status}`);
     const xml = await response.text();
