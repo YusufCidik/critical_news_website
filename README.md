@@ -150,3 +150,13 @@ Translation attempts have bounded per-model timeouts and fall back to Gemini 3.1
 The assembled in-process feed snapshot is refreshed after 30 seconds, and the CDN feed window is 60 seconds plus a 60-second stale-while-revalidate window; this avoids stacking multiple five-minute caches on top of upstream RSS revalidation.
 
 Only the documented free-tier models Gemini 3.8 Flash, Gemini 3.5 Flash-Lite and Gemini 3.1 Flash-Lite are allowed by the application model resolver. Paid-only model overrides such as Hydrogen are ignored; provider failure does not switch to a paid-only model. Free-tier availability is not a billing guarantee: the API project must be on the free tier, and quota limits still apply. See https://ai.google.dev/gemini-api/docs/pricing#gemini-3.8-flash .
+
+### News coverage and category filtering
+
+The source registry in `lib/news/sources.ts` contains 95 public RSS/Atom feeds from 65 distinct publishers, including Turkish newsrooms and dedicated AI, science, health, climate, energy, defence, culture and sports sections. A live check on 16 November 2026 returned 2,462 unique recent articles, including 340 AI articles; these are observed counts, not guaranteed inventory. Feeds supply their latest items, so the seven-day window is not a complete historical archive.
+
+Articles have a primary `category` and multiple `categories`. Filtering uses all categories on the server and in offline storage. Publisher sections, RSS topics, title/excerpt signals and relevant entities contribute; NVIDIA/Jensen Huang reports can appear in AI and technology, while GeForce-only gaming reports do not automatically become AI stories. The combined feed deduplicates articles. Category assignment remains a local heuristic, not a claim of perfect semantic classification.
+
+Twenty bounded fetch workers reuse the existing five-minute upstream cache. Failed feeds do not prevent healthy feeds from loading; existing recent records remain available in the warm process. The snapshot cap is 12,000 and each feed contributes at most 200 items. API `coverage` reports configured and active feed/publisher counts; `publishers` distinguishes newsrooms from their section feeds.
+
+Run `node scripts/check-news-sources.mjs` to validate publishers' current RSS/Atom responses and dated items, and `node scripts/check-news-feed.mjs` to check the normalized, deduplicated feed and category counts. No API key is required.

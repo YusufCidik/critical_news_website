@@ -20,6 +20,7 @@ export interface NewsItemRecord {
   translated_title: string;
   localized_title?: { language: "tr" | "en" | "de" | "fr" | "es"; text: string };
   executive_summary: string;
+  categories?: import("@/lib/news/categories").NewsCategory[];
   impact_score: number;
   category: NewsCategory;
   multi_perspective: MultiPerspective;

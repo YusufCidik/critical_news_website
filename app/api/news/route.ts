@@ -1,3 +1,5 @@
+import { matchesNewsCategory } from "@/lib/news/categories";
+import { FEEDS } from "@/lib/news/sources";
 import { LANGUAGES } from "@/lib/i18n/server-translate";
 import type { SupportedLanguage } from "@/lib/store/language-store";
 import { localizeNewsTitles } from "@/lib/news/localization";
@@ -21,7 +23,7 @@ export async function GET(request: Request) {
     const filtered = result.stories.filter((story) => {
       const publishedTime = Date.parse(story.published_at);
       const matchesScope = country === "world" || matchesCountry(story, country);
-      const matchesCategory = category === "all" || story.category === category;
+      const matchesCategory = matchesNewsCategory(story, category);
       return publishedTime >= sevenDaysAgo && matchesScope && matchesCategory;
     });
     filtered.sort((a, b) => params.get("sort") === "latest"
@@ -38,6 +40,8 @@ export async function GET(request: Request) {
         total: unique.length,
         nextCursor: nextCursor < unique.length ? nextCursor : null,
         sources: [...new Set(filtered.map((story) => story.source))],
+        publishers: [...new Set(filtered.map(story => FEEDS.find(feed => feed.name === story.source)?.publisher || story.source))],
+        coverage: { configuredFeeds: FEEDS.length, configuredPublishers: new Set(FEEDS.map(feed => feed.publisher)).size, activeFeeds: result.sourceHealth.filter(feed => feed.status === "active").length, activePublishers: new Set(result.sourceHealth.filter(feed => feed.status === "active").map(feed => feed.publisher)).size, totalArticles: result.stories.length },
         updatedAt: new Date().toISOString(),
       },
       { headers: localized.complete ? { "Cache-Control": "public, max-age=15", "Vercel-CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=60" } : { "Cache-Control": "no-store" } }

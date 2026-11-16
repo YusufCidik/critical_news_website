@@ -17,6 +17,7 @@ export interface NewsItem {
   translated_title: string;
   localized_title?: { language: "tr" | "en" | "de" | "fr" | "es"; text: string };
   executive_summary: string;
+  categories?: import("@/lib/news/categories").NewsCategory[];
   impact_score: number;
   category: "AI" | "Teknoloji" | "Jeopolitik" | "Ekonomi" | "Bilim" | "Spor" | "Kültür" | "Sağlık" | "İklim" | "Savunma" | "Enerji" | "Seyahat" | "Dünya" | "Tech" | "Geopolitics";
   multi_perspective: MultiPerspective;

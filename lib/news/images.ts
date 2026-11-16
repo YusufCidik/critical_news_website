@@ -1,5 +1,15 @@
-const PUBLISHERS = ["bbc.com", "bbc.co.uk", "theguardian.com", "aljazeera.com", "dw.com", "dailysabah.com", "npr.org", "techcrunch.com", "theverge.com"];
-const IMAGE_HOSTS = [...PUBLISHERS, "bbci.co.uk", "guim.co.uk", "aljazeera.net", "static.dw.com", "dwcdn.net", "nprcdn.net", "npr.brightspotcdn.com", "vox-cdn.com", "platform.theverge.com", "wp.com"];
+import { FEEDS } from "./sources";
+const PUBLISHERS = [...new Set([
+  ...FEEDS.map(feed => new URL(feed.url).hostname.replace(/^www\./, "")),
+  "bbc.com", "bbc.co.uk", "ntv.com.tr", "abc.net.au", "abcnews.go.com", "ieee.org", "mit.edu",
+  "sky.com", "skysports.com", "cna.asia", "cbc.ca", "espn.com", "arstechnica.com", "dw.com", "npr.org",
+])];
+const IMAGE_HOSTS = [...PUBLISHERS,
+  "bbci.co.uk", "guim.co.uk", "aljazeera.net", "static.dw.com", "dwcdn.net", "nprcdn.net",
+  "npr.brightspotcdn.com", "vox-cdn.com", "platform.theverge.com", "wp.com", "futurecdn.net",
+  "trt.net.tr", "aa.com.tr", "arcpublishing.com", "cloudfront.net", "cbsistatic.com", "imgix.net",
+  "brightspotcdn.com",
+];
 export function allowedURL(value: string, images = false) {
   try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password && (!u.port || u.port === "443") && (images ? IMAGE_HOSTS : PUBLISHERS).some((host) => u.hostname === host || u.hostname.endsWith("." + host)); } catch { return false; }
 }

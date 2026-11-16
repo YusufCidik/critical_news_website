@@ -1,5 +1,6 @@
 "use client";
 
+import { matchesNewsCategory } from "@/lib/news/categories";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getAllNewsItems, saveNewsItems } from "@/lib/offline/idb-schema";
 import { useLanguageStore } from "@/lib/store/language-store";
@@ -10,6 +11,7 @@ interface NewsResponse {
   total: number;
   nextCursor: number | null;
   sources: string[];
+  publishers?: string[];
   updatedAt: string;
 }
 
@@ -36,7 +38,7 @@ const OFFLINE_COUNTRY_TERMS: Record<string, string[]> = {
 
 function filterCachedItems(items: NewsItem[], country: string, category: string): NewsItem[] {
   return items.filter((item) => {
-    const categoryMatches = category === "all" || item.category === category;
+    const categoryMatches = matchesNewsCategory(item, category);
     const terms = OFFLINE_COUNTRY_TERMS[country];
     if (!categoryMatches || country === "world" || !terms) return categoryMatches;
     const text = `${item.original_title} ${item.executive_summary}`.toLowerCase();
@@ -109,7 +111,7 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
         nextCursorRef.current = payload.nextCursor;
         setHasMore(payload.nextCursor !== null);
         setTotal(payload.total || 0);
-        setSources(payload.sources || []);
+        setSources(payload.publishers || payload.sources || []);
       } catch (loadError) {
         if (controller.signal.aborted) return;
         console.warn("Live news unavailable; loading IndexedDB cache:", loadError);
@@ -170,7 +172,7 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
       nextCursorRef.current = payload.nextCursor;
       setHasMore(payload.nextCursor !== null);
       setTotal(payload.total || 0);
-      setSources(payload.sources || []);
+      setSources(payload.publishers || payload.sources || []);
     } catch (loadError) {
       if (scopeRef.current !== scopeKey) return;
       console.warn("Unable to load the next news page:", loadError);

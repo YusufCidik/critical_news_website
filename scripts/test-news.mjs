@@ -13,6 +13,9 @@ const bundled = await build({
     export { TranslationQueue } from "./lib/i18n/client-translation";
     export { isTranslationUsable } from "./lib/i18n/server-translate";
     export { NewsDetail } from "./components/NewsDetail";
+    export { classifyNews, matchesNewsCategory } from "./lib/news/categories";
+    export { selectAssistantNews } from "./lib/news/assistant-context";
+    export { FEEDS } from "./lib/news/sources";
     export { NewsFeed } from "./components/NewsFeed";
     export { NewsArticleCard } from "./components/NewsArticleCard";
     export { uniqueNews } from "./lib/news/unique";
@@ -37,6 +40,7 @@ compiled.filename = filename;
 compiled.paths = Module._nodeModulePaths(path.dirname(filename));
 compiled._compile(bundled.outputFiles[0].text, filename);
 const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews, TranslationQueue, isTranslationUsable, NewsDetail, resolveReplyPolicy, enforceReplyBudget, ASSISTANT_MODEL, FREE_TIER_MODELS, resolveFreeTierModel, generateEditorialContent } = compiled.exports;
+const { classifyNews, matchesNewsCategory, FEEDS, selectAssistantNews } = compiled.exports;
 const oldFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 delete process.env.GEMINI_API_KEY;
@@ -73,6 +77,60 @@ try {
     const health = await (await news.GET(new Request("http://localhost/api/news?category=Sa%C4%9Fl%C4%B1k"))).json();
     assert.equal(health.items.length, 1);
     assert.deepEqual(health.sources, ["BBC Health"]);
+  });
+
+  await test("entity and publisher topics support overlapping categories without gaming or venue false positives", () => {
+    for (const title of ["Jensen Huang outlines Nvidia's next chapter", "DeepSeek releases a new reasoning model", "NVIDIA hisseleri yükseldi", "Yeni yapay zekânın yetenekleri açıklandı"]) {
+      const classified = classifyNews(title, "", "Teknoloji");
+      assert.ok(classified.categories.includes("AI"), title);
+      assert.ok(classified.categories.includes("Teknoloji"), title);
+    }
+    assert.ok(classifyNews("A new benchmark is released", "", "AI").categories.includes("AI"));
+    assert.ok(classifyNews("A new benchmark is released", "", "Bilim", ["Machine Learning"]).categories.includes("AI"));
+    assert.ok(!classifyNews("Nvidia GeForce RTX gaming benchmarks", "", "Teknoloji").categories.includes("AI"));
+    assert.ok(!classifyNews("Claude Monet exhibition opens", "", "Kültür").categories.includes("AI"));
+    const politics = classifyNews("Yeni Parti Ankara Spor Salonu'nda kurultay düzenledi", "", "Dünya");
+    assert.equal(politics.category, "Jeopolitik");
+    assert.ok(!politics.categories.includes("Spor"));
+    assert.ok(matchesNewsCategory({ category: "Teknoloji", original_title: "Jensen Huang meets Nvidia investors", executive_summary: "" }, "AI"), "old offline records share the classifier");
+    assert.ok(new Set(FEEDS.map(feed => feed.publisher)).size >= 60);
+    assert.equal(new Set(FEEDS.map(feed => feed.url)).size, FEEDS.length);
+    assert.ok(FEEDS.filter(feed => feed.category === "AI").length >= 6);
+  });
+
+  await test("API includes the same article in every relevant category and only once in the combined feed", async () => {
+    const snapshot = await feed.getStories();
+    const original = [...snapshot.stories];
+    const story = { ...original[0], id: "0".repeat(40), original_title: "Jensen Huang meets Nvidia investors", source_url: "https://example.org/nvidia", ...classifyNews("Jensen Huang meets Nvidia investors", "", "Teknoloji") };
+    snapshot.stories.push(story);
+    try {
+      for (const category of ["AI", "Teknoloji", "all"]) {
+        const response = await news.GET(new Request("http://localhost/api/news?limit=24&category=" + category));
+        const data = await response.json();
+        assert.equal(data.items.filter(item => item.id === story.id).length, 1, category);
+        assert.equal(data.coverage.configuredFeeds, FEEDS.length);
+      }
+    } finally { snapshot.stories.splice(0, snapshot.stories.length, ...original); }
+  });
+
+  await test("large assistant feeds retain relevant AI entities within a bounded semantic request", async () => {
+    const previousKey = process.env.GEMINI_API_KEY;
+    const previousAI = globalThis.__intelmatrixAI;
+    process.env.GEMINI_API_KEY = "test-key";
+    const articles = Array.from({ length: 1000 }, (_, index) => ({ id: String(index), title: "World bulletin " + index, summary: "An unrelated update", category: "D\u00fcnya", source: "Test", published_at: new Date().toISOString(), impact_score: 9 }));
+    articles.push({ ...articles[0], id: "relevant", title: "Jensen Huang discusses Nvidia roadmap", category: "AI", categories: ["AI", "Teknoloji"], impact_score: 1 });
+    globalThis.__intelmatrixAI = async request => {
+      const { news_index } = JSON.parse(request.contents);
+      assert.ok(news_index.length <= 400);
+      const index = news_index.findIndex(article => article.title.includes("Jensen Huang"));
+      assert.ok(index >= 0, "low-score relevant articles survive the full-feed ranking");
+      return { text: JSON.stringify({ indices: [index] }) };
+    };
+    try { assert.ok((await selectAssistantNews("Yapay zeka gundemi", articles, [])).some(article => article.id === "relevant")); }
+    finally {
+      if (previousKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = previousKey;
+      globalThis.__intelmatrixAI = previousAI;
+    }
   });
 
   await test("publisher image recovery validates hosts, metadata and returns an image", async () => {
