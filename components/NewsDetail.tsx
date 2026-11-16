@@ -1,4 +1,6 @@
 "use client";
+import { ImportanceBadge } from "@/components/ImportanceBadge";
+import { ui } from "@/lib/i18n/interface-labels";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { NewsItem } from "@/lib/store/news-store";
@@ -60,46 +62,96 @@ export function NewsDetail({ id, initialStory }: { id: string; initialStory: New
   const briefing = analysis?.language === language ? analysis.briefing : null;
   const minutes = Math.max(1, Math.ceil([item?.executive_summary, briefing?.summary, briefing?.background, briefing?.why_it_matters, briefing?.uncertainty, ...(briefing?.key_points || [])].join(" ").split(/\s+/).length / 200));
   if (!item) return <main className="mx-auto max-w-3xl p-6"><Link href="/" className="text-sky-800 underline">{t.back}</Link><p role="status" className="mt-8">{checking ? t.loading : t.missing}</p></main>;
+  const sourceURL = item.source_url && /^https?:\/\//i.test(item.source_url) ? item.source_url : null;
+  const published = item.published_at && !Number.isNaN(Date.parse(item.published_at)) ? new Date(item.published_at) : null;
+  const saved = isBookmarked(item.id);
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-5 text-slate-950">
-      <article className="mx-auto max-w-3xl bg-white shadow-sm">
-        <nav className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4">
-          <Link href="/" className="text-sm font-semibold text-sky-800">← {t.back}</Link>
-          <div className="flex items-center gap-2"><LanguageSelector /><ThemeToggle /></div>
-        </nav>
-        <div className="aspect-video overflow-hidden"><NewsImage id={item.id} src={item.image_url} eager /></div>
-        <div className="space-y-6 p-5 sm:p-8">
-          <header>
-            <p className="text-xs font-bold uppercase tracking-wider text-red-700">{getNewsLabel(language, item.category === "Dünya" ? "world" : item.category)}</p>
-            <h1 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl">{item.translated_title}</h1>
-            <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
-              <span>{item.source}</span>
-              {item.published_at && !Number.isNaN(Date.parse(item.published_at)) && <time dateTime={item.published_at}>{new Intl.DateTimeFormat(language, { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.published_at))}</time>}
-              <span>{minutes} {t.minutes}</span><span title={t.heuristic}>{t.importance}: {item.impact_score}/10</span>
-            </div>
-            {item.translated_title !== item.original_title && <details className="mt-3 text-xs text-slate-500"><summary className="cursor-pointer">{t.original}</summary><p className="mt-2">{item.original_title}</p></details>}
-          </header>
-          {localized.status === "error" && <p role="status" className="text-xs text-amber-700">{t.translation} <button onClick={localized.retry} className="min-h-10 underline">{t.retry}</button></p>}
-          <section><h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">{t.summary}</h2><p className="text-base leading-8 text-slate-700">{item.executive_summary}</p></section>
-          <section className="space-y-5 rounded-lg border border-sky-200 bg-slate-50 p-4 sm:p-6" aria-busy={state === "loading"}>
-            <h2 className="font-serif text-2xl font-bold">{t.analysis}</h2>
-            <p className="text-xs leading-6 text-slate-500">{t.note}</p>
-            {state === "loading" && <p role="status" className="animate-pulse text-sm text-sky-800">{t.loading}</p>}
-            {state === "unavailable" && <div role="status"><p className="text-sm leading-7 text-slate-600">{t.unavailable}</p><button type="button" onClick={() => setAttempt((value) => value + 1)} className="mt-3 min-h-11 border border-slate-300 px-4 text-sm">{t.retry}</button></div>}
-            {briefing && state === "ready" && <>
-              <p className="text-base leading-8 text-slate-800">{briefing.summary}</p>
-              <section><h3 className="mb-2 font-bold">{t.facts}</h3><ul className="list-disc space-y-2 pl-5 text-sm leading-7 text-slate-700">{briefing.key_points.map((fact, index) => <li key={index}>{fact}</li>)}</ul></section>
-              <section><h3 className="mb-2 font-bold">{t.context}</h3><p className="text-sm leading-7 text-slate-700">{briefing.background}</p></section>
-              <section><h3 className="mb-2 font-bold">{t.why}</h3><p className="text-sm leading-7 text-slate-700">{briefing.why_it_matters}</p></section>
-              <section><h3 className="mb-2 font-bold">{t.unknown}</h3><p className="text-sm leading-7 text-slate-700">{briefing.uncertainty}</p></section>
-            </>}
-          </section>
-          <p className="text-xs leading-6 text-slate-500">{t.heuristic}</p>
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5">
-            <button type="button" onClick={() => toggleBookmark(story!)} aria-pressed={isBookmarked(item.id)} className="min-h-11 border border-slate-300 px-5 text-sm">{isBookmarked(item.id) ? t.saved : t.save}</button>
-            {item.source_url && /^https?:\/\//i.test(item.source_url) && <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center bg-sky-800 px-5 text-sm font-bold text-white">{t.source} ↗</a>}
-          </div>
+    <main className="detail-page min-h-screen bg-slate-50 pb-12 text-slate-950">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8">
+          <Link href="/" className="brand-wordmark font-serif text-2xl font-black tracking-[0.08em] sm:text-3xl">INTELMATRIX</Link>
+          <div className="flex items-center gap-3"><LanguageSelector /><ThemeToggle /></div>
         </div>
+      </header>
+      <article className="mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="flex items-center justify-between gap-4 py-6 text-xs">
+          <Link href="/" className="inline-flex min-h-10 items-center gap-2 font-semibold text-slate-600 transition hover:text-sky-800">← {t.back}</Link>
+          <span className="font-medium text-slate-500">{minutes} {t.minutes}</span>
+        </div>
+
+        <header className="max-w-4xl pb-8 sm:pb-10">
+          <div className="mb-5 flex flex-wrap items-center gap-3">
+            <span className="text-xs font-bold uppercase tracking-[0.16em] text-sky-800">{getNewsLabel(language, item.category === "Dünya" ? "world" : item.category)}</span>
+            <span className="h-4 border-l border-slate-300" aria-hidden="true" />
+            <ImportanceBadge score={item.impact_score} language={language} />
+          </div>
+          <h1 className="text-balance font-serif text-[32px] font-bold leading-[1.13] tracking-[-0.025em] sm:text-[44px] lg:text-[54px]">{item.translated_title}</h1>
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs leading-6 text-slate-500">
+            <span className="font-bold text-slate-800">{item.source}</span>
+            {published && <time dateTime={item.published_at}>{new Intl.DateTimeFormat(language, { dateStyle: "long", timeStyle: "short" }).format(published)}</time>}
+          </div>
+          {item.translated_title !== item.original_title && <details className="mt-3 max-w-3xl text-xs leading-6 text-slate-500"><summary className="w-fit cursor-pointer border-b border-dotted border-slate-300">{t.original}</summary><p className="mt-2">{item.original_title}</p></details>}
+          {localized.status === "loading" && <p role="status" className="mt-3 text-xs text-sky-800">{ui(language, "translating")}</p>}
+          {localized.status === "error" && <p role="status" className="mt-3 text-xs text-amber-700">{t.translation} <button type="button" onClick={localized.retry} className="min-h-10 underline">{t.retry}</button></p>}
+          <div className="mt-6 flex flex-wrap gap-3">
+            {sourceURL && <a href={sourceURL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-3 rounded-full bg-sky-800 px-6 text-sm font-semibold text-white transition hover:bg-sky-700">{t.source}<span aria-hidden="true">↗</span></a>}
+            <button type="button" onClick={() => toggleBookmark(story!)} aria-pressed={saved} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-300 bg-white px-5 text-sm font-semibold transition hover:border-sky-700"><span aria-hidden="true">{saved ? "✓" : "+"}</span>{saved ? t.saved : t.save}</button>
+          </div>
+        </header>
+
+        <figure className="mb-9 sm:mb-12">
+          <div className="aspect-[16/10] max-h-[540px] overflow-hidden rounded-2xl bg-slate-100 sm:aspect-[16/8]"><NewsImage id={item.id} src={item.image_url} eager /></div>
+          <figcaption className="mt-3 flex items-center gap-2 text-[11px] text-slate-500"><span className="inline-block h-1 w-1 rounded-full bg-slate-400" aria-hidden="true" />{item.source}</figcaption>
+        </figure>
+
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-14">
+          <div className="min-w-0 space-y-10 sm:space-y-12">
+            <section id="source-summary" className="scroll-mt-8">
+              <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.17em] text-slate-500">{t.summary}</h2>
+              <p className="border-l-2 border-sky-700 pl-5 font-serif text-xl leading-9 text-slate-800 sm:text-2xl sm:leading-10">{item.executive_summary}</p>
+            </section>
+
+            <section id="ai-briefing" className="scroll-mt-8" aria-busy={state === "loading"}>
+              <div className="mb-6 flex flex-wrap items-center gap-3 border-b border-slate-200 pb-4">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-800 text-[10px] font-extrabold text-white" aria-hidden="true">AI</span>
+                <h2 className="font-serif text-2xl font-bold sm:text-3xl">{t.analysis}</h2>
+              </div>
+              {state === "loading" && <div role="status" className="rounded-2xl border border-slate-200 bg-white p-6">
+                <p className="mb-5 text-sm text-slate-500">{t.loading}</p>
+                <div aria-hidden="true" className="animate-pulse space-y-3"><div className="h-3 rounded bg-slate-100" /><div className="h-3 rounded bg-slate-100" /><div className="h-3 w-2/3 rounded bg-slate-100" /></div>
+              </div>}
+              {state === "unavailable" && <div role="status" className="rounded-2xl border border-slate-200 bg-white p-6"><p className="text-sm leading-7 text-slate-600">{t.unavailable}</p><button type="button" onClick={() => setAttempt((value) => value + 1)} className="mt-4 min-h-11 rounded-full border border-slate-300 px-5 text-sm font-semibold">{t.retry}</button></div>}
+              {briefing && state === "ready" && <div className="space-y-9">
+                <p className="text-lg leading-9 text-slate-800">{briefing.summary}</p>
+                <section id="key-facts" className="scroll-mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
+                  <h3 className="mb-5 text-sm font-bold">{t.facts}</h3>
+                  <ol className="grid gap-5 sm:grid-cols-2">{briefing.key_points.map((fact, index) => <li key={index} className="flex gap-3"><span className="pt-0.5 font-mono text-xs font-bold text-sky-800">{String(index + 1).padStart(2, "0")}</span><p className="text-sm leading-7 text-slate-700">{fact}</p></li>)}</ol>
+                </section>
+                <section id="background" className="scroll-mt-8"><h3 className="mb-3 font-serif text-2xl font-bold">{t.context}</h3><p className="text-base leading-8 text-slate-700">{briefing.background}</p></section>
+                <section className="border-l-2 border-sky-700 bg-white py-5 pl-5 pr-4"><h3 className="mb-3 text-sm font-bold">{t.why}</h3><p className="text-base leading-8 text-slate-700">{briefing.why_it_matters}</p></section>
+                <section className="rounded-2xl border border-slate-200 bg-slate-100 p-5 sm:p-6"><h3 className="mb-2 text-xs font-bold uppercase tracking-wider">{t.unknown}</h3><p className="text-sm leading-7 text-slate-700">{briefing.uncertainty}</p></section>
+              </div>}
+              <p className="mt-7 border-t border-slate-200 pt-5 text-xs leading-6 text-slate-500">{t.note}</p>
+            </section>
+          </div>
+
+          <aside className="hidden lg:block space-y-6 border-t border-slate-200 pt-6 lg:sticky lg:top-8 lg:border-t-0 lg:pt-0">
+            <nav aria-label={t.analysis} className="rounded-2xl border border-slate-200 bg-white p-5">
+              <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">INTELMATRIX</p>
+              <div className="flex flex-col text-sm">
+                <a href="#source-summary" className="border-b border-slate-200 py-3 font-medium">{t.summary}</a>
+                <a href="#ai-briefing" className="py-3 font-medium">{t.analysis}</a>
+                {briefing && state === "ready" && <><a href="#key-facts" className="border-t border-slate-200 py-3 font-medium">{t.facts}</a><a href="#background" className="border-t border-slate-200 py-3 font-medium">{t.context}</a></>}
+              </div>
+            </nav>
+            <p className="px-1 text-xs leading-6 text-slate-500">{t.heuristic}</p>
+          </aside>
+        </div>
+
+        <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 py-7 sm:mt-16">
+          <Link href="/" className="font-serif text-lg font-bold tracking-widest">INTELMATRIX</Link>
+          <Link href="/" className="text-xs font-semibold text-slate-500">← {t.back}</Link>
+        </footer>
       </article>
       <NewsAssistant articles={localized.items} />
     </main>

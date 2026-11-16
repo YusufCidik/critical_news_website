@@ -8,6 +8,9 @@ import { build } from "esbuild";
 
 const bundled = await build({
   stdin: { contents: `
+    export { TranslationQueue } from "./lib/i18n/client-translation";
+    export { isTranslationUsable } from "./lib/i18n/server-translate";
+    export { NewsDetail } from "./components/NewsDetail";
     export { NewsFeed } from "./components/NewsFeed";
     export { NewsArticleCard } from "./components/NewsArticleCard";
     export { uniqueNews } from "./lib/news/unique";
@@ -31,7 +34,7 @@ const compiled = new Module(filename);
 compiled.filename = filename;
 compiled.paths = Module._nodeModulePaths(path.dirname(filename));
 compiled._compile(bundled.outputFiles[0].text, filename);
-const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews } = compiled.exports;
+const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews, TranslationQueue, isTranslationUsable, NewsDetail } = compiled.exports;
 const oldFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 delete process.env.GEMINI_API_KEY;
@@ -40,6 +43,8 @@ const emptyFeed = '<?xml version="1.0"?><rss version="2.0"><channel><title>Test<
 const date = new Date().toUTCString();
 const xml = (items) => `<?xml version="1.0"?><rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title>Test</title>${items}</channel></rss>`;
 const item = (id, title, extra = "") => `<item><title>${title}</title><link>https://example.org/${id}</link><description>A source excerpt for ${title}.</description><pubDate>${date}</pubDate>${extra}</item>`;
+
+async function until(condition) { const end = Date.now() + 4000; while (!condition()) { if (Date.now() > end) throw new Error("Queue timed out"); await new Promise((resolve) => setTimeout(resolve, 5)); } }
 
 try {
   await test("RSS normalization, media variants, categories and stable detail lookup", async () => {
@@ -234,6 +239,113 @@ try {
       result.stories = saved;
       if (priorKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = priorKey;
     }
+  });
+
+  await test("translation queue preserves in-flight headlines when more stories are appended", async () => {
+    const calls = [];
+    let release;
+    const queue = new TranslationQueue(async (entries) => {
+      calls.push(entries.map((v) => v.text));
+      if (entries.some((v) => v.text === "first headline")) await new Promise((resolve) => { release = resolve; });
+      return { complete: true, translations: entries.map((v) => "translated " + v.text) };
+    }, 0);
+    const first = { text: "first headline", source: "en", priority: 0 };
+    const summary = { text: "first summary", source: "en", priority: 1 };
+    const next = { text: "second headline", source: "en", priority: 0 };
+    let stop = queue.watch("feed", [first, summary], "tr");
+    await until(() => Boolean(release));
+    stop();
+    stop = queue.watch("feed", [first, summary, next], "tr");
+    release();
+    await until(() => queue.status([first, summary, next], "tr") === "ready");
+    assert.equal(calls.flat().filter((text) => text === first.text).length, 1);
+    assert.equal(queue.get(first.text, "en", "tr"), "translated first headline");
+    assert.equal(calls[0][0], first.text);
+    stop();
+  });
+  await test("translation queue retries only failed headlines and isolates languages", async () => {
+    const calls = [];
+    const queue = new TranslationQueue(async (entries, language) => {
+      calls.push({ texts: entries.map((v) => v.text), language });
+      if (calls.length === 1) return { translations: ["başlık", ""], resolved: [true, false] };
+      return { complete: true, translations: entries.map((v) => language + ":" + v.text) };
+    }, 0);
+    const entries = ["queue headline one", "queue headline two"].map((text) => ({ text, source: "en", priority: 0 }));
+    let stop = queue.watch("feed", entries, "tr");
+    await until(() => queue.status(entries, "tr") === "ready");
+    assert.deepEqual(calls.map((v) => v.texts.length), [2, 1]);
+    assert.equal(queue.get(entries[0].text, "en", "tr"), "başlık");
+    stop();
+    stop = queue.watch("feed", entries, "de");
+    await until(() => queue.status(entries, "de") === "ready");
+    assert.equal(queue.get(entries[0].text, "en", "de"), "de:" + entries[0].text);
+    assert.equal(queue.get(entries[0].text, "en", "tr"), "başlık");
+    stop();
+  });
+  await test("successful translations survive a new page session", async () => {
+    const previous = globalThis.localStorage;
+    const storage = new Map();
+    globalThis.localStorage = { getItem: (key) => storage.get(key) || null, setItem: (key, value) => storage.set(key, value) };
+    try {
+      let calls = 0;
+      const provider = async (entries) => { calls++; return { complete: true, translations: entries.map(() => "Kalıcı çeviri") }; };
+      const entries = [{ text: "persistent headline", source: "en", priority: 0 }];
+      const first = new TranslationQueue(provider, 0);
+      const stop = first.watch("page-one", entries, "tr");
+      await until(() => first.status(entries, "tr") === "ready");
+      stop();
+      const second = new TranslationQueue(provider, 0);
+      const stopSecond = second.watch("page-two", entries, "tr");
+      assert.equal(second.get(entries[0].text, "en", "tr"), "Kalıcı çeviri");
+      assert.equal(second.status(entries, "tr"), "ready");
+      assert.equal(calls, 1);
+      stopSecond();
+    } finally {
+      if (previous === undefined) delete globalThis.localStorage; else globalThis.localStorage = previous;
+    }
+  });
+  await test("untranslated English headlines are not accepted or cached as translated", async () => {
+    const title = "The government announces new energy measures.";
+    assert.equal(isTranslationUsable(title, title, "en", "tr"), false);
+    assert.equal(isTranslationUsable(title, title.slice(0, -1), "en", "tr"), false);
+    assert.equal(isTranslationUsable("OpenAI GPT", "OpenAI GPT", "en", "tr"), true);
+    process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
+    let calls = 0;
+    globalThis.__intelmatrixAI = async () => { calls++; return { text: JSON.stringify({ translations: [calls === 1 ? title : "Hükümet yeni enerji önlemleri açıkladı."] }) }; };
+    const body = { texts: [title], sourceLangs: ["en"], targetLang: "tr" };
+    const first = await (await translate.POST(post("/api/translate", body))).json();
+    assert.equal(first.complete, false);
+    const second = await (await translate.POST(post("/api/translate", body))).json();
+    assert.equal(second.complete, true);
+    assert.equal(calls, 2);
+  });
+
+  await test("switching language during an active translation never overwrites the new language", async () => {
+    let release;
+    const queue = new TranslationQueue(async (entries, target) => {
+      if (target === "tr") await new Promise((resolve) => { release = resolve; });
+      return { complete: true, translations: entries.map(() => target + " translation") };
+    }, 0);
+    const entries = [{ text: "headline during language switch", source: "en", priority: 0 }];
+    let stop = queue.watch("feed", entries, "tr");
+    await until(() => Boolean(release));
+    stop();
+    stop = queue.watch("feed", entries, "de");
+    await until(() => queue.status(entries, "de") === "ready");
+    release();
+    await until(() => queue.get(entries[0].text, "en", "tr") !== undefined);
+    assert.equal(queue.get(entries[0].text, "en", "de"), "de translation");
+    stop();
+  });
+  await test("article detail presents one headline, a visible score and separate reading sections", async () => {
+    const story = (await feed.getStories()).stories[0];
+    const markup = renderToStaticMarkup(React.createElement(NewsDetail, { id: story.id, initialStory: story }));
+    assert.equal((markup.match(/<h1/g) || []).length, 1);
+    assert.equal((markup.match(/data-importance-score=/g) || []).length, 1);
+    assert.ok(markup.includes('id="source-summary"'));
+    assert.ok(markup.includes('id="ai-briefing"'));
+    assert.ok(markup.includes("detail-page"));
+    assert.ok(markup.includes('rel="noopener noreferrer"'));
   });
 } finally {
   globalThis.fetch = oldFetch;

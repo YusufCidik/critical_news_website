@@ -3,6 +3,20 @@ import { AI_MODEL, getAIClient } from "@/lib/ai/client";
 export const LANGUAGES = ["tr", "en", "de", "fr", "es"] as const;
 const cache = new Map<string, string>();
 const pending = new Map<string, Promise<string>>();
+export function isTranslationUsable(original: string, translated: unknown, source: string, target: string): translated is string {
+  if (typeof translated !== "string" || !translated.trim() || /MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID LANGUAGE PAIR|USED ALL AVAILABLE/i.test(translated)) return false;
+  const normalized = (value: string) => value.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  if (source === target || normalized(original) !== normalized(translated)) return true;
+  const signals: Record<string, RegExp> = {
+    en: /\b(the|with|after|against|announces|government|says|new|wins|from|will)\b/i,
+    tr: /\b(ve|ile|yeni|sonra|icin|dedi|oldu|karsi)\b/i,
+    de: /\b(der|die|das|und|nach|gegen|neue|sagt)\b/i,
+    fr: /\b(le|les|des|avec|apres|contre|annonce)\b/i,
+    es: /\b(el|los|las|con|tras|contra|anuncia|nuevo)\b/i,
+  };
+  return original.trim().split(/\s+/).length < 4 || !signals[source]?.test(original.normalize("NFD").replace(/\p{M}/gu, "").replace(/ı/g, "i"));
+}
+
 function remember(key: string, value: string) {
   if (cache.size >= 3000) cache.delete(cache.keys().next().value!);
   cache.set(key, value);
@@ -48,9 +62,9 @@ async function runBatch(texts: string[], target: string, sources: string[]) {
       if (!Array.isArray(parsed.translations) || parsed.translations.length !== missing.length) throw new Error("Invalid translation response");
       missing.forEach((entry, i) => {
         const value = parsed.translations[i];
-        if (typeof value === "string" && value.trim()) { output[entry.index] = value; resolved[entry.index] = true; remember(entry.key, value); }
+        if (isTranslationUsable(entry.text, value, entry.source, target)) { output[entry.index] = value; resolved[entry.index] = true; remember(entry.key, value); }
       });
-      if (resolved.every(Boolean)) return { translations: output, complete: true, resolved };
+      return { translations: output, complete: resolved.every(Boolean), resolved };
     } catch { /* Use public translation when AI is unavailable. */ }
   }
   let cursor = 0;
@@ -63,6 +77,7 @@ async function runBatch(texts: string[], target: string, sources: string[]) {
         let task = pending.get(entry.key);
         if (!task) { task = publicTranslate(entry.text, target, entry.source); pending.set(entry.key, task); }
         const value = await task;
+        if (!isTranslationUsable(entry.text, value, entry.source, target)) throw new Error("Untranslated response");
         output[entry.index] = value; resolved[entry.index] = true; remember(entry.key, value);
       } catch { /* Keep original and allow retry. */ }
       finally { pending.delete(entry.key); }
