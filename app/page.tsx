@@ -1,12 +1,10 @@
 "use client";
 
 import { ui } from "@/lib/i18n/interface-labels";
-import Link from "next/link";
-import { NewsImage } from "@/components/NewsImage";
+import { NewsFeed } from "@/components/NewsFeed";
+import { uniqueNews } from "@/lib/news/unique";
 import { useLocalizedNews } from "@/hooks/useLocalizedNews";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ExecutiveBriefing } from "@/components/ExecutiveBriefing";
-import { NewsArticleCard } from "@/components/NewsArticleCard";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { MarketTicker } from "@/components/MarketTicker";
 import { NewsAssistant } from "@/components/NewsAssistant";
@@ -49,19 +47,6 @@ const CATEGORIES = [
   ["Seyahat", "Seyahat"],
 ] as const;
 
-function formatTime(value: string | undefined, language: "tr" | "en" | "de" | "fr" | "es"): string {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  const minutes = Math.floor((Date.now() - date.getTime()) / 60000);
-  const locale = language === "tr" ? "tr-TR" : language === "de" ? "de-DE" : language === "fr" ? "fr-FR" : language === "es" ? "es-ES" : "en-US";
-  if (minutes < 1) return language === "tr" ? "şimdi" : "just now";
-  if (minutes < 60) return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(-minutes, "minute");
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(-hours, "hour");
-  return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(-Math.floor(hours / 24), "day");
-}
-
 export default function Home() {
   const { language } = useLanguageStore();
   const text = UI_TRANSLATIONS[language];
@@ -78,7 +63,7 @@ export default function Home() {
   });
 
   const localized = useLocalizedNews(rawItems, language);
-  const items = localized.items;
+  const items = uniqueNews(localized.items);
   const regionNames = new Intl.DisplayNames([language], { type: "region" });
   const countryLabel = (value: string) => value === "world" ? getNewsLabel(language, "world") : regionNames.of(({ turkey: "TR", us: "US", uk: "GB", china: "CN", israel: "IL", ukraine: "UA", russia: "RU", iran: "IR", france: "FR", germany: "DE", india: "IN", japan: "JP" } as Record<string, string>)[value]) || value;
   const countryName = countryLabel(country);
@@ -92,10 +77,6 @@ export default function Home() {
       `${story.translated_title} ${story.executive_summary} ${story.source}`.toLocaleLowerCase("tr-TR").includes(query)
     );
   }, [items, search, sort]);
-
-  const breakingStories = useMemo(() => items.filter((story) => story.is_breaking).slice(0, 5), [items]);
-  const featuredStory = visibleStories[0] ?? null;
-  const sideStories = visibleStories.filter((story) => story.id !== featuredStory?.id).slice(0, 4);
 
   useEffect(() => {
     const updateConnection = () => setOnline(navigator.onLine);
@@ -120,7 +101,7 @@ export default function Home() {
   }, [hasMore, loading, loadingMore, loadMore, error]);
 
   return (
-    <main className="min-h-screen bg-[#f6f6f4] text-slate-950">
+    <main id="top" className="min-h-screen bg-[#f6f6f4] text-slate-950">
       <div className="mx-auto max-w-[1440px] bg-white shadow-[0_0_45px_rgba(15,23,42,0.045)]">
         <div className="border-b border-slate-200 px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-slate-500 md:px-8">
           <div className="flex items-center justify-between gap-4">
@@ -178,44 +159,6 @@ export default function Home() {
 
         <MarketTicker />
 
-        {breakingStories.length > 0 && (
-          <section aria-label="Son dakika haberleri" className="border-b border-red-800 bg-[#b5121b] text-white">
-            <div className="flex flex-col gap-2 px-4 py-3 md:flex-row md:items-center md:px-8">
-              <div className="flex shrink-0 items-center gap-2 text-xs font-black uppercase tracking-[0.15em]">
-                <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-white" />
-                {text.breaking}
-              </div>
-              <div className="flex min-w-0 flex-1 gap-5 overflow-x-auto whitespace-nowrap text-sm">
-                {breakingStories.map((story) => (
-                  <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="border-l border-white/35 pl-4 hover:underline first:border-0 first:pl-0">
-                    {story.translated_title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {visibleStories.length > 1 && (
-          <section className="px-4 pt-5 md:px-8" aria-label="Günün fotoğraflı manşetleri">
-            <div className="mb-3 flex items-center justify-between border-b border-slate-300 pb-2">
-              <h2 className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-600">{text.topStories}</h2>
-              <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400">{countryName}</span>
-            </div>
-            <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
-              {visibleStories.slice(0, 4).map((story) => (
-                <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="group min-w-0">
-                  <div className="aspect-[16/10] overflow-hidden bg-slate-100">
-                    <NewsImage id={story.id} src={story.image_url} />
-                  </div>
-                  <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.13em] text-red-700">{story.source}</p>
-                  <h3 className="mt-1 font-serif text-[17px] font-bold leading-tight text-slate-900 group-hover:text-sky-800">{story.translated_title}</h3>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
         <section className="px-4 pt-5 md:px-8">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-slate-200 bg-slate-50 p-3">
             <p className="text-xs text-slate-600">{ui(language, "intro")}</p>
@@ -234,52 +177,13 @@ export default function Home() {
             <p className="text-[11px] text-slate-500">{total} {ui(language, "news")} · {sources.length} {text.sourcesCount}</p>
           </div>
 
-          {loading && items.length === 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {[0, 1, 2, 3].map((value) => <div key={value} className="aspect-[16/10] animate-pulse bg-slate-100" />)}
-            </div>
-          ) : featuredStory ? (
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.8fr)]">
-              <NewsArticleCard story={featuredStory} layout="feature" language={language} />
-              <aside className="border-t border-slate-200 lg:border-l lg:border-t-0 lg:pl-5" aria-label="Öne çıkan diğer haberler">
-                <h2 className="mb-3 border-b border-slate-200 pb-2 text-[10px] font-bold uppercase tracking-[0.17em] text-slate-600">{ui(language, "featured")}</h2>
-                <div className="divide-y divide-slate-200">
-                  {sideStories.map((story) => (
-                    <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="grid grid-cols-[96px_minmax(0,1fr)] gap-3 py-3 first:pt-0">
-                      <div className="aspect-[4/3] overflow-hidden bg-slate-100">
-                        <NewsImage id={story.id} src={story.image_url} />
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-red-700">{story.source} · {formatTime(story.published_at, language)}</p>
-                        <h3 className="mt-1 font-serif text-[16px] font-bold leading-tight text-slate-900 hover:text-sky-800">{story.translated_title}</h3>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </aside>
-            </div>
-          ) : (
-            <div className="border-y border-slate-200 py-12 text-center">
-              <h2 className="font-serif text-2xl font-bold">{text.noResultsTitle}</h2>
-              <p className="mt-2 text-sm text-slate-600">{text.noResultsDesc}</p>
-            </div>
-          )}
-        </section>
-
-        <section className="mt-9 px-4 md:px-8" aria-label="Sonsuz haber akışı">
-          <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b-2 border-slate-900 pb-2">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">{text.live}</p>
-              <h2 className="mt-1 font-serif text-2xl font-bold">{text.otherNews}</h2>
-            </div>
-            <p className="text-xs text-slate-500">{countryName} · {activeCategoryLabel}</p>
-          </div>
-
           {error && <p role="status" className="mb-4 border-l-2 border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-900">{error}</p>}
 
-          <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleStories.map((story) => <NewsArticleCard key={story.id} story={story} language={language} />)}
-          </div>
+          {loading && items.length === 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[0, 1, 2, 3, 4, 5].map((value) => <div key={value} className="aspect-[16/10] animate-pulse bg-slate-100" />)}
+            </div>
+          ) : <NewsFeed stories={visibleStories} language={language} />}
 
           {!loading && visibleStories.length === 0 && !error && (
             <p className="py-12 text-center text-sm text-slate-600">{ui(language, "noSearch")}</p>
@@ -297,12 +201,6 @@ export default function Home() {
           )}
           {!hasMore && items.length > 0 && <p className="py-6 text-center text-xs uppercase tracking-[0.15em] text-slate-400">{text.endOfStream}</p>}
         </section>
-
-        {featuredStory && (
-          <section className="mt-10 border-t border-slate-300 px-4 py-8 md:px-8">
-            <ExecutiveBriefing briefing={featuredStory} />
-          </section>
-        )}
 
         <footer className="mt-4 flex flex-col gap-2 border-t border-slate-300 px-4 py-5 text-[10px] text-slate-500 md:flex-row md:items-center md:justify-between md:px-8">
           <span className="font-serif text-sm font-bold tracking-[0.12em] text-slate-700">INTELMATRIX</span>

@@ -1,3 +1,4 @@
+import { ImportanceBadge } from "@/components/ImportanceBadge";
 import { ui } from "@/lib/i18n/interface-labels";
 import Link from "next/link";
 import { NewsImage } from "@/components/NewsImage";
@@ -26,19 +27,11 @@ function formatPublishedAt(value: string | undefined, language: SupportedLanguag
   return new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(date);
 }
 
-function getImportance(score: number, language: SupportedLanguage): { label: string; className: string } {
-  if (score >= 9) return { label: getNewsLabel(language, "critical"), className: "border-red-200 bg-red-50 text-red-800" };
-  if (score >= 7) return { label: getNewsLabel(language, "high"), className: "border-orange-200 bg-orange-50 text-orange-800" };
-  if (score >= 5) return { label: getNewsLabel(language, "watch"), className: "border-amber-200 bg-amber-50 text-amber-800" };
-  return { label: getNewsLabel(language, "low"), className: "border-slate-200 bg-slate-50 text-slate-600" };
-}
-
 export function NewsArticleCard({ story, layout = "compact", language = "tr" }: NewsArticleCardProps) {
   const feature = layout === "feature";
-  const importance = getImportance(story.impact_score, language);
 
   return (
-    <article className={`group min-w-0 overflow-hidden border-b border-slate-200 bg-white ${feature ? "" : "pb-5"}`}>
+    <article data-news-id={story.id} className={`group min-w-0 overflow-hidden border-b border-slate-200 bg-white ${feature ? "" : "pb-5"}`}>
       <Link prefetch={false}
         href={`/news/${story.id}`}
         aria-label={`${story.translated_title} - ${story.source || "haber kaynağı"}`}
@@ -53,9 +46,9 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
           )}
         </div>
         <div className={feature ? "pt-4" : "pt-3"}>
-          <div className="mb-2 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-red-700">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-red-700">
             <span>{getNewsLabel(language, story.category === "Dünya" ? "world" : story.category)}</span>
-            <span className={`border px-2 py-1 text-[9px] tracking-[0.12em] ${importance.className}`}>{importance.label} · {story.impact_score}/10</span>
+            <ImportanceBadge score={story.impact_score} language={language} />
           </div>
           <h2 className={`font-serif font-bold leading-[1.12] text-slate-950 group-hover:text-sky-800 ${feature ? "text-3xl md:text-[38px]" : "text-[21px]"}`}>
             {story.translated_title}

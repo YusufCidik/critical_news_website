@@ -1,3 +1,5 @@
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import assert from "node:assert/strict";
 import Module from "node:module";
 import path from "node:path";
@@ -6,6 +8,9 @@ import { build } from "esbuild";
 
 const bundled = await build({
   stdin: { contents: `
+    export { NewsFeed } from "./components/NewsFeed";
+    export { NewsArticleCard } from "./components/NewsArticleCard";
+    export { uniqueNews } from "./lib/news/unique";
     export * as images from "./lib/news/images";
     export * as imageApi from "./app/api/news/[id]/image/route";
     export * as feed from "./lib/news/feed";
@@ -26,7 +31,7 @@ const compiled = new Module(filename);
 compiled.filename = filename;
 compiled.paths = Module._nodeModulePaths(path.dirname(filename));
 compiled._compile(bundled.outputFiles[0].text, filename);
-const { feed, news, translate, assistant, briefing, detailApi, images, imageApi } = compiled.exports;
+const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews } = compiled.exports;
 const oldFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 delete process.env.GEMINI_API_KEY;
@@ -79,6 +84,24 @@ try {
       assert.equal(response.headers.get("content-type"), "image/jpeg");
       assert.equal((await response.arrayBuffer()).byteLength, 3);
     } finally { story.source_url = originalURL; }
+  });
+
+  await test("feed renders each article once and displays a score in every card layout", async () => {
+    const stories = (await feed.getStories()).stories;
+    const markup = renderToStaticMarkup(React.createElement(NewsFeed, { stories: [...stories, stories[0]], language: "tr" }));
+    assert.equal((markup.match(/data-news-id=/g) || []).length, stories.length);
+    assert.equal((markup.match(/data-importance-score=/g) || []).length, stories.length);
+    for (const story of stories) assert.equal(markup.split('data-news-id="' + story.id + '"').length - 1, 1);
+    for (const layout of ["compact", "feature"]) {
+      const card = renderToStaticMarkup(React.createElement(NewsArticleCard, { story: stories[0], layout, language: "tr" }));
+      assert.equal((card.match(/data-importance-score=/g) || []).length, 1);
+      assert.ok(card.includes(stories[0].impact_score + "/10"));
+    }
+  });
+  await test("tracking links and equal headlines are deduplicated without merging distinct updates", () => {
+    const base = { id: "first", original_title: "A new energy agreement", source_url: "https://example.org/story?utm_source=rss" };
+    const result = uniqueNews([base, { ...base, id: "second", source_url: "https://example.org/story?fbclid=abc" }, { ...base, id: "third", source_url: "https://other.org/story", original_title: "A NEW energy agreement!" }, { ...base, id: "fourth", original_title: "Energy agreement signed after a new vote", source_url: "https://example.org/update" }]);
+    assert.deepEqual(result.map((v) => v.id), ["first", "fourth"]);
   });
   await test("translation preserves full text and distinguishes equal prefixes", async () => {
     const queries = [];

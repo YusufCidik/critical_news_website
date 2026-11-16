@@ -1,3 +1,4 @@
+import { uniqueNews } from "@/lib/news/unique";
 import { NextResponse } from "next/server";
 import { getStories, matchesCountry } from "@/lib/news/feed";
 export const dynamic = "force-dynamic";
@@ -22,14 +23,15 @@ export async function GET(request: Request) {
     filtered.sort((a, b) => params.get("sort") === "latest"
       ? Date.parse(b.published_at) - Date.parse(a.published_at)
       : b.impact_score - a.impact_score || Date.parse(b.published_at) - Date.parse(a.published_at));
-    const items = filtered.slice(cursor, cursor + limit);
+    const unique = uniqueNews(filtered);
+    const items = unique.slice(cursor, cursor + limit);
     const nextCursor = cursor + items.length;
 
     return NextResponse.json(
       {
         items,
-        total: filtered.length,
-        nextCursor: nextCursor < filtered.length ? nextCursor : null,
+        total: unique.length,
+        nextCursor: nextCursor < unique.length ? nextCursor : null,
         sources: [...new Set(filtered.map((story) => story.source))],
         updatedAt: new Date().toISOString(),
       },
