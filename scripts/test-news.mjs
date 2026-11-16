@@ -140,7 +140,7 @@ try {
     const data = await response.json();
     assert.equal(data.degraded, true);
     assert.match(data.answer, /A concrete event/);
-    assert.equal(data.references[0].id, "a".repeat(40));
+    assert.ok(data.references.some((reference) => reference.id === "a".repeat(40)));
     assert.equal((await assistant.POST(post("/api/assistant", { question: 42 }))).status, 400);
   });
   await test("AI briefing distinguishes configuration errors and validates generated output", async () => {
@@ -190,9 +190,50 @@ try {
     const response = await assistant.POST(post("/api/assistant", { question: "Explain it", language: "de", history: [{ role: "user", text: "Earlier question" }], articles: [{ id: "b".repeat(40), title: "Headline", summary: "Summary" }] }));
     const data = await response.json();
     assert.equal(data.degraded, false);
-    assert.equal(data.references[0].id, "b".repeat(40));
+    assert.equal(data.references[0].id, JSON.parse(request.contents).articles[0].id);
     assert.match(request.config.systemInstruction, /language code de/);
     assert.equal(JSON.parse(request.contents).conversation[0].text, "Earlier question");
+  });
+
+  await test("football questions search server articles beyond the browser's first 30 records", async () => {
+    const result = await feed.getStories();
+    const saved = [...result.stories];
+    const priorKey = process.env.GEMINI_API_KEY;
+    const base = saved[0];
+    try {
+      result.stories = Array.from({ length: 65 }, (_, i) => ({ ...base, id: String(i).padStart(40, "0"), original_title: "Economic update " + i, executive_summary: "A trade and inflation bulletin.", source_url: "https://example.org/economy/" + i }));
+      result.stories.push({ ...base, id: "f".repeat(40), category: "Spor", original_title: "Tuchel hails England performance against Spain", executive_summary: "England beat Spain 3-2 to finish top of their Nations League group.", source_url: "https://www.bbc.com/sport/football/england-spain" });
+      result.stories.push({ ...base, id: "d".repeat(40), category: "Spor", original_title: "Party congress at Ankara Sports Hall", executive_summary: "The party elected a new council.", source_url: "https://example.org/politics" });
+      const visible = result.stories.slice(0, 30).map((article) => ({ id: article.id, title: article.original_title, summary: article.executive_summary }));
+      process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
+      let indexCount = 0, answerArticles;
+      globalThis.__intelmatrixAI = async (request) => {
+        const input = JSON.parse(request.contents);
+        if (input.news_index) {
+          indexCount = input.news_index.length;
+          const target = input.news_index.find((article) => article.title.includes("Tuchel"));
+          return { text: JSON.stringify({ indices: [target.index, -1, 99999, target.index] }) };
+        }
+        answerArticles = input.articles;
+        return { text: "İngiltere İspanya'yı 3-2 yendi [1]." };
+      };
+      const response = await assistant.POST(post("/api/assistant", { question: "peki futbolla ilgili neler var", language: "tr", articles: visible, history: [{ role: "assistant", text: "Futbol haberi yok." }] }));
+      const data = await response.json();
+      assert.equal(data.degraded, false);
+      assert.equal(indexCount, 67);
+      assert.equal(data.searchedArticles, 67);
+      assert.equal(data.references[0].id, "f".repeat(40));
+      assert.ok(answerArticles.some((article) => article.summary.includes("3-2")));
+      assert.ok(!answerArticles.some((article) => article.id === "d".repeat(40)));
+      delete process.env.GEMINI_API_KEY;
+      const offline = await (await assistant.POST(post("/api/assistant", { question: "futbol", language: "tr", articles: [] }))).json();
+      assert.equal(offline.degraded, true);
+      assert.equal(offline.references[0].id, "f".repeat(40));
+      assert.equal(feed.inferCategory("Yeni Parti Ankara Spor Salonu'nda ilk kurultayını yaptı", "Dünya"), "Jeopolitik");
+    } finally {
+      result.stories = saved;
+      if (priorKey === undefined) delete process.env.GEMINI_API_KEY; else process.env.GEMINI_API_KEY = priorKey;
+    }
   });
 } finally {
   globalThis.fetch = oldFetch;

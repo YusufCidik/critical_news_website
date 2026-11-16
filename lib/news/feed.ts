@@ -135,8 +135,9 @@ export function extractImage(item: Record<string, unknown>): string | null {
   return null;
 }
 
-function inferCategory(text: string, feedCategory: NewsCategory): NewsCategory {
+export function inferCategory(text: string, feedCategory: NewsCategory): NewsCategory {
   const normalized = text.toLowerCase();
+  if (feedCategory === "Dünya" && /kurultay|parti meclisi|siyasi parti|party congress|political convention/i.test(normalized)) return "Jeopolitik";
   if (CATEGORY_TERMS.AI.some((term) => normalized.includes(term))) return "AI";
   if (feedCategory !== "Dünya") return feedCategory;
   for (const category of ["Savunma", "Sağlık", "İklim", "Enerji", "Spor", "Kültür", "Seyahat", "Jeopolitik", "Ekonomi", "Bilim", "Teknoloji"] as const) {

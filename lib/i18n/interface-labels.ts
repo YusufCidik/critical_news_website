@@ -2,7 +2,7 @@ import type { SupportedLanguage } from "@/lib/store/language-store";
 const labels = {
 "importance":["Önem puanı","Importance","Bedeutung","Importance","Importancia"],
 "assistantIntro":["Merhaba. Bu akıştaki haberleri özetleyebilirim. En önemli gelişmeleri sorabilirsin.","Hello. I can summarize this feed. Ask about the most important developments.","Hallo. Ich kann diese Nachrichten zusammenfassen. Frage nach den wichtigsten Entwicklungen.","Bonjour. Je peux résumer ce fil. Posez une question sur les événements essentiels.","Hola. Puedo resumir estas noticias. Pregunta por los acontecimientos más importantes."],
-"assistantContext":["Açık haber akışından analiz","Analysis of the current feed","Analyse des aktuellen Feeds","Analyse du fil actuel","Análisis del flujo actual"],
+"assistantContext":["Tüm güncel haberlerde arama","Search all current stories","Alle aktuellen Nachrichten durchsuchen","Recherche dans toute l’actualité","Buscar en todas las noticias actuales"],
 "assistantClose":["Asistanı kapat","Close assistant","Assistent schließen","Fermer l’assistant","Cerrar asistente"],
 "assistantQuestion":["Haberler hakkında soru sorun","Ask about the news","Frage zu den Nachrichten","Posez une question sur l’actualité","Pregunta sobre las noticias"],
 "assistantSend":["Soruyu gönder","Send question","Frage senden","Envoyer la question","Enviar pregunta"],

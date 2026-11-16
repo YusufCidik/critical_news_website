@@ -53,9 +53,10 @@ export function NewsAssistant({ articles }: NewsAssistantProps) {
             published_at: article.published_at,
             impact_score: article.impact_score,
             category: article.category,
+            source_url: article.source_url,
           })),
         }),
-        signal: AbortSignal.timeout(35000),
+        signal: AbortSignal.timeout(65000),
       });
       const payload = (await response.json()) as { answer?: string; error?: string; degraded?: boolean; references?: Message["references"] };
       setMessages((current) => [...current, { role: "assistant", text: payload.answer || payload.error || ui(language, "assistantError"), degraded: payload.degraded, references: payload.references }]);
@@ -103,7 +104,7 @@ export function NewsAssistant({ articles }: NewsAssistantProps) {
           <form onSubmit={askAssistant} className="border-t border-slate-200 p-3 dark:border-slate-800">
             <div className="flex gap-2">
               <input aria-label={ui(language, "assistantQuestion")} maxLength={2000} value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={ui(language, "assistantQuestion")} className="min-w-0 flex-1 border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-sky-700 dark:border-slate-700 dark:bg-slate-900 dark:text-white" />
-              <button type="submit" disabled={loading || !question.trim() || !articles.length} aria-label={ui(language, "assistantSend")} className="inline-flex items-center justify-center bg-sky-800 px-3 text-white disabled:opacity-50"><Send className="h-4 w-4" /></button>
+              <button type="submit" disabled={loading || !question.trim()} aria-label={ui(language, "assistantSend")} className="inline-flex items-center justify-center bg-sky-800 px-3 text-white disabled:opacity-50"><Send className="h-4 w-4" /></button>
             </div>
           </form>
         </aside>
