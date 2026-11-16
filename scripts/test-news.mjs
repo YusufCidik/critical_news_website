@@ -6,6 +6,8 @@ import { build } from "esbuild";
 
 const bundled = await build({
   stdin: { contents: `
+    export * as images from "./lib/news/images";
+    export * as imageApi from "./app/api/news/[id]/image/route";
     export * as feed from "./lib/news/feed";
     export * as news from "./app/api/news/route";
     export * as translate from "./app/api/translate/route";
@@ -24,7 +26,7 @@ const compiled = new Module(filename);
 compiled.filename = filename;
 compiled.paths = Module._nodeModulePaths(path.dirname(filename));
 compiled._compile(bundled.outputFiles[0].text, filename);
-const { feed, news, translate, assistant, briefing, detailApi } = compiled.exports;
+const { feed, news, translate, assistant, briefing, detailApi, images, imageApi } = compiled.exports;
 const oldFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 delete process.env.GEMINI_API_KEY;
@@ -59,6 +61,24 @@ try {
     const health = await (await news.GET(new Request("http://localhost/api/news?category=Sa%C4%9Fl%C4%B1k"))).json();
     assert.equal(health.items.length, 1);
     assert.deepEqual(health.sources, ["BBC Health"]);
+  });
+
+  await test("publisher image recovery validates hosts, metadata and returns an image", async () => {
+    assert.equal(images.allowedURL("https://127.0.0.1/image", true), false);
+    assert.equal(images.allowedURL("https://www.aljazeera.com.evil.org/image", true), false);
+    assert.deepEqual(images.extractPageImages('<meta content="https://www.aljazeera.com/cover.jpg?a=1&amp;b=2" property="og:image"><meta name="twitter:image" content="https://127.0.0.1/no.jpg">', "https://www.aljazeera.com/story"), ["https://www.aljazeera.com/cover.jpg?a=1&b=2"]);
+    const story = (await feed.getStories()).stories.find((story) => story.source_url.endsWith("/health"));
+    const originalURL = story.source_url;
+    story.source_url = "https://www.bbc.com/news/health";
+    globalThis.fetch = async (url) => String(url).includes("/news/health")
+      ? new Response('<meta property="og:image" content="https://ichef.bbci.co.uk/recovered.jpg">')
+      : new Response(new Uint8Array([255, 216, 255]), { headers: { "content-type": "image/jpeg" } });
+    try {
+      const response = await imageApi.GET(new Request("http://localhost/image"), { params: Promise.resolve({ id: story.id }) });
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get("content-type"), "image/jpeg");
+      assert.equal((await response.arrayBuffer()).byteLength, 3);
+    } finally { story.source_url = originalURL; }
   });
   await test("translation preserves full text and distinguishes equal prefixes", async () => {
     const queries = [];
@@ -117,6 +137,29 @@ try {
     globalThis.__intelmatrixAI = async () => ({ text: JSON.stringify(valid) });
     assert.equal((await briefing.generateArticleBriefing(story, "fr")).available, true, "failure is not cached");
     assert.equal((await detailApi.POST(post("/api/news/bad/briefing", { language: "tr" }), { params: Promise.resolve({ id: "bad" }) })).status, 404);
+  });
+
+  await test("all five translation targets retain successes and retry failed fields", async () => {
+    process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
+    for (const language of ["tr", "en", "de", "fr", "es"]) {
+      const source = language === "en" ? "tr" : "en";
+      let calls = 0;
+      globalThis.__intelmatrixAI = async (request) => {
+        calls++;
+        const count = JSON.parse(request.contents.slice(request.contents.indexOf("Input: ") + 7)).length;
+        return { text: JSON.stringify({ translations: count === 2 ? ["Translated " + language, ""] : ["Recovered " + language] }) };
+      };
+      globalThis.fetch = async () => Response.json({ responseStatus: 429 });
+      const body = { texts: ["First unique " + language, "Second unique " + language], sourceLangs: [source, source], targetLang: language };
+      const first = await (await translate.POST(post("/api/translate", body))).json();
+      assert.deepEqual(first.resolved, [true, false]);
+      assert.equal(first.translations[0], "Translated " + language);
+      const second = await (await translate.POST(post("/api/translate", body))).json();
+      assert.equal(second.complete, true);
+      assert.equal(second.translations[0], "Translated " + language);
+      assert.equal(second.translations[1], "Recovered " + language);
+      assert.equal(calls, 2);
+    }
   });
   await test("AI assistant carries language and conversation, and links cited stories", async () => {
     let request;

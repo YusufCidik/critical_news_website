@@ -1,5 +1,7 @@
 "use client";
 
+import { ui } from "@/lib/i18n/interface-labels";
+import { useLanguageStore } from "@/lib/store/language-store";
 import { useEffect, useState } from "react";
 
 interface MarketRate {
@@ -16,16 +18,9 @@ interface MarketPayload {
   source: string;
 }
 
-const SYMBOL_LABELS: Record<string, string> = {
-  EUR: "Euro",
-  TRY: "Türk lirası",
-  GBP: "Sterlin",
-  JPY: "Japon yeni",
-  CHF: "İsviçre frangı",
-  CAD: "Kanada doları",
-};
-
 export function MarketTicker() {
+  const { language } = useLanguageStore();
+  const currencyNames = new Intl.DisplayNames([language], { type: "currency" });
   const [payload, setPayload] = useState<MarketPayload | null>(null);
   const [error, setError] = useState(false);
 
@@ -58,10 +53,10 @@ export function MarketTicker() {
       <div className="mx-auto max-w-[1440px] px-4 py-3 md:px-8">
         <div className="mb-2 flex items-center justify-between">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-800 dark:text-sky-300">Markets</p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">USD bazlı güncel referans kurlar</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-800 dark:text-sky-300">{ui(language, "markets")}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{ui(language, "rates")}</p>
           </div>
-          <span className="text-[10px] text-slate-400">{payload?.source || (error ? "Veri alınamadı" : "Güncelleniyor")}</span>
+          <span className="text-[10px] text-slate-400">{payload?.source || (error ? ui(language, "marketError") : ui(language, "updating"))}</span>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {(payload?.rates || []).map((rate) => (
@@ -70,12 +65,12 @@ export function MarketTicker() {
                 <span>{rate.symbol}</span>
                 <span>{rate.direction === "up" ? "↑" : rate.direction === "down" ? "↓" : "—"}</span>
               </div>
-              <div className="mt-1 text-sm font-bold text-slate-900 dark:text-white">{rate.value.toLocaleString("tr-TR", { maximumFractionDigits: 4 })}</div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400">{SYMBOL_LABELS[rate.symbol]}</div>
+              <div className="mt-1 text-sm font-bold text-slate-900 dark:text-white">{rate.value.toLocaleString(language, { maximumFractionDigits: 4 })}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400">{currencyNames.of(rate.symbol)}</div>
             </div>
           ))}
-          {!payload && !error && <div className="col-span-full py-2 text-xs text-slate-500">Piyasa verileri yükleniyor...</div>}
-          {error && <div className="col-span-full py-2 text-xs text-amber-700 dark:text-amber-300">Piyasa verisi geçici olarak kullanılamıyor.</div>}
+          {!payload && !error && <div className="col-span-full py-2 text-xs text-slate-500">{ui(language, "updating")}</div>}
+          {error && <div className="col-span-full py-2 text-xs text-amber-700 dark:text-amber-300">{ui(language, "marketError")}</div>}
         </div>
       </div>
     </section>

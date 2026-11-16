@@ -2,44 +2,46 @@
 import { useEffect, useState } from "react";
 import type { NewsItem } from "@/lib/store/news-store";
 import type { SupportedLanguage } from "@/lib/store/language-store";
-const cache = new Map<string, { title: string; summary: string }>();
-const keyFor = (item: NewsItem, language: string) => `${language}:${item.original_title}:${item.executive_summary}`;
+const cache = new Map<string, string>();
+const keyFor = (text: string, language: string) => language + ":" + text;
 export function useLocalizedNews(items: NewsItem[], language: SupportedLanguage) {
-  const [, setRevision] = useState(0);
+  const [, redraw] = useState(0);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
-  const [retry, setRetry] = useState(0);
+  const [attempt, setAttempt] = useState(0);
+  const signature = JSON.stringify(items.map((item) => [item.original_title, item.executive_summary, item.source]));
   useEffect(() => {
     const controller = new AbortController();
-    const missing = items.filter((item) => !cache.has(keyFor(item, language)));
-    queueMicrotask(() => { if (!controller.signal.aborted) setStatus(missing.length ? "loading" : "ready"); });
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const entries = JSON.parse(signature) as string[][];
+    const texts = [...new Map(entries.flatMap(([title, summary, source]) => [title, summary].map((text) => [text, { text, source: source === "BBC Türkçe" ? "tr" : "en" }]))).values()];
     async function run() {
-      let failed = false;
-      for (let offset = 0; offset < missing.length; offset += 12) {
-        if (controller.signal.aborted) return;
-        const batch = missing.slice(offset, offset + 12);
-        try {
-          const response = await fetch("/api/translate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ targetLang: language, texts: batch.flatMap((item) => [item.original_title, item.executive_summary]), sourceLangs: batch.flatMap((item) => item.source === "BBC Türkçe" ? ["tr", "tr"] : ["en", "en"]) }), signal: controller.signal });
-          if (!response.ok) throw new Error("Translation request failed");
-          const data = await response.json();
+      setStatus("loading");
+      for (let round = 0; round < 3 && !controller.signal.aborted; round++) {
+        const missing = texts.filter(({ text }) => !cache.has(keyFor(text, language)));
+        if (!missing.length) break;
+        for (let offset = 0; offset < missing.length; offset += 6) {
           if (controller.signal.aborted) return;
-          if (!data.complete) failed = true;
-          batch.forEach((item, i) => {
-            const title = data.translations?.[i * 2], summary = data.translations?.[i * 2 + 1];
-            if ((data.complete || (data.resolved?.[i * 2] && data.resolved?.[i * 2 + 1])) && typeof title === "string" && typeof summary === "string") {
-              if (cache.size >= 3000) cache.delete(cache.keys().next().value!);
-              cache.set(keyFor(item, language), { title, summary });
-            }
-          });
-          setRevision((value) => value + 1);
-        } catch { if (controller.signal.aborted) return; failed = true; }
+          const batch = missing.slice(offset, offset + 6);
+          try {
+            const response = await fetch("/api/translate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ targetLang: language, texts: batch.map((v) => v.text), sourceLangs: batch.map((v) => v.source) }), signal: AbortSignal.any([controller.signal, AbortSignal.timeout(55000)]) });
+            if (!response.ok) continue;
+            const data = await response.json();
+            if (controller.signal.aborted) return;
+            batch.forEach(({ text }, index) => {
+              if ((data.complete || data.resolved?.[index]) && typeof data.translations?.[index] === "string") {
+                if (cache.size >= 5000) cache.delete(cache.keys().next().value!);
+                cache.set(keyFor(text, language), data.translations[index]);
+              }
+            });
+            redraw((v) => v + 1);
+          } catch { if (controller.signal.aborted) return; }
+        }
+        if (round < 2 && texts.some(({ text }) => !cache.has(keyFor(text, language)))) await new Promise<void>((resolve) => { timer = setTimeout(resolve, 1000 * (round + 1)); controller.signal.addEventListener("abort", () => resolve(), { once: true }); });
       }
-      if (!controller.signal.aborted) setStatus(failed ? "error" : "ready");
+      if (!controller.signal.aborted) setStatus(texts.some(({ text }) => !cache.has(keyFor(text, language))) ? "error" : "ready");
     }
-    void run();
-    return () => controller.abort();
-  }, [items, language, retry]);
-  return { items: items.map((item) => {
-    const value = cache.get(keyFor(item, language));
-    return value ? { ...item, translated_title: value.title, executive_summary: value.summary } : item;
-  }), status, retry: () => setRetry((value) => value + 1) };
+    queueMicrotask(() => { if (!controller.signal.aborted) void run(); });
+    return () => { controller.abort(); clearTimeout(timer); };
+  }, [signature, language, attempt]);
+  return { items: items.map((item) => ({ ...item, translated_title: cache.get(keyFor(item.original_title, language)) ?? item.original_title, executive_summary: cache.get(keyFor(item.executive_summary, language)) ?? item.executive_summary })), status, retry: () => setAttempt((v) => v + 1) };
 }

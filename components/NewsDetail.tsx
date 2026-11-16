@@ -67,7 +67,7 @@ export function NewsDetail({ id, initialStory }: { id: string; initialStory: New
           <Link href="/" className="text-sm font-semibold text-sky-800">← {t.back}</Link>
           <div className="flex items-center gap-2"><LanguageSelector /><ThemeToggle /></div>
         </nav>
-        <div className="aspect-video overflow-hidden"><NewsImage src={item.image_url} eager /></div>
+        <div className="aspect-video overflow-hidden"><NewsImage id={item.id} src={item.image_url} eager /></div>
         <div className="space-y-6 p-5 sm:p-8">
           <header>
             <p className="text-xs font-bold uppercase tracking-wider text-red-700">{getNewsLabel(language, item.category === "Dünya" ? "world" : item.category)}</p>

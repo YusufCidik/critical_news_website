@@ -1,5 +1,7 @@
 "use client";
 
+import { ui } from "@/lib/i18n/interface-labels";
+import { getNewsLabel } from "@/lib/i18n/news-labels";
 import { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { useLanguageStore } from "@/lib/store/language-store";
@@ -93,7 +95,7 @@ export function ExecutiveBriefing({ briefing }: ExecutiveBriefingProps) {
         <div className="p-6 md:p-8">
           <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-sky-800">Sesli haber özeti</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-sky-800">{ui(language, "audio")}</p>
               <h2 className="mt-3 max-w-2xl font-serif text-2xl font-bold text-slate-950 md:text-4xl">{briefing.translated_title}</h2>
             </div>
             <button
@@ -103,7 +105,7 @@ export function ExecutiveBriefing({ briefing }: ExecutiveBriefingProps) {
               className="inline-flex items-center gap-2 border border-sky-800 bg-white px-4 py-2.5 text-sm font-semibold text-sky-900 transition hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSpeaking ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-              {isLoading ? "Hazırlanıyor" : isSpeaking ? "Durdur" : "Dinle"}
+              {isLoading ? ui(language, "preparing") : isSpeaking ? ui(language, "stop") : ui(language, "listen")}
             </button>
           </div>
 
@@ -112,7 +114,7 @@ export function ExecutiveBriefing({ briefing }: ExecutiveBriefingProps) {
 
         <div className="border-t border-slate-200 bg-slate-50 p-6 md:border-l md:border-t-0">
           <div className="mb-4 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-slate-500">
-            <span>Etki puanı</span>
+            <span>{ui(language, "importance")}</span>
             <span>{briefing.impact_score}/10</span>
           </div>
           <div className="h-2.5 overflow-hidden rounded-full bg-slate-200">
@@ -124,13 +126,13 @@ export function ExecutiveBriefing({ briefing }: ExecutiveBriefingProps) {
 
           <div className="mt-6 space-y-4 text-sm text-slate-700">
             <div className="flex items-center justify-between border border-slate-200 bg-white px-3 py-2.5">
-              <span>Kategori</span>
+              <span>{ui(language, "category")}</span>
               <span className="border border-sky-200 bg-sky-50 px-2 py-1 text-sky-800">
-                {briefing.category}
+                {getNewsLabel(language, briefing.category)}
               </span>
             </div>
             <div className="flex items-center justify-between border border-slate-200 bg-white px-3 py-2.5">
-              <span>Yayıncı</span>
+              <span>{ui(language, "publisher")}</span>
               <span>{briefing.source || "Kayıtlı haber"}</span>
             </div>
           </div>

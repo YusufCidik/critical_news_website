@@ -58,6 +58,7 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
     let mounted = true;
     const controller = new AbortController();
     scopeRef.current = scopeKey;
+    loadingMoreRef.current = false;
     nextCursorRef.current = 0;
     queueMicrotask(() => {
       if (!mounted) return;
@@ -123,7 +124,7 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
 
     void loadFirstPage();
     const refreshTimer = window.setInterval(() => {
-      if (navigator.onLine) void loadFirstPage();
+      if (navigator.onLine && useNewsStore.getState().items.length <= 12) void loadFirstPage();
     }, 5 * 60 * 1000);
 
     return () => {
@@ -155,17 +156,21 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
         }))
       ).catch((error) => console.warn("Offline cache write failed:", error));
       if (scopeRef.current !== scopeKey) return;
-      setItems([...useNewsStore.getState().items, ...payload.items]);
+      setItems([...new Map([...useNewsStore.getState().items, ...payload.items].map((item) => [item.id, item])).values()]);
+      setError(null);
       nextCursorRef.current = payload.nextCursor;
       setHasMore(payload.nextCursor !== null);
       setTotal(payload.total || 0);
       setSources(payload.sources || []);
     } catch (loadError) {
+      if (scopeRef.current !== scopeKey) return;
       console.warn("Unable to load the next news page:", loadError);
       setError("Yeni haberler yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.");
     } finally {
-      loadingMoreRef.current = false;
-      setLoadingMore(false);
+      if (scopeRef.current === scopeKey) {
+        loadingMoreRef.current = false;
+        setLoadingMore(false);
+      }
     }
   }, [category, country, sort, loading, scopeKey, setError, setItems]);
 

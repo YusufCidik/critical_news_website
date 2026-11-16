@@ -1,3 +1,4 @@
+import { ui } from "@/lib/i18n/interface-labels";
 import Link from "next/link";
 import { NewsImage } from "@/components/NewsImage";
 import type { NewsItem } from "@/lib/store/news-store";
@@ -44,7 +45,7 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
         className="block"
       >
         <div className={`relative overflow-hidden bg-slate-100 ${feature ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
-          <NewsImage src={story.image_url} eager={feature} />
+          <NewsImage id={story.id} src={story.image_url} eager={feature} />
           {story.is_breaking && (
             <span className="absolute left-3 top-3 bg-red-700 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
               {getNewsLabel(language, "breaking")}
@@ -69,9 +70,9 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
         <span aria-hidden="true">·</span>
         <time dateTime={story.published_at}>{formatPublishedAt(story.published_at, language)}</time>
         <span aria-hidden="true">·</span>
-        <span>{Math.max(1, Math.ceil(story.executive_summary.split(/\s+/).length / 200))} {language === "tr" ? "dk okuma" : "min read"}</span>
+        <span>{Math.max(1, Math.ceil(story.executive_summary.split(/\s+/).length / 200))} {ui(language, "minutes")}</span>
         <Link prefetch={false} className="font-semibold text-sky-800 hover:underline" href={`/news/${story.id}`}>
-          {language === "tr" ? "Özeti oku" : "Read briefing"}
+          {ui(language, "read")}
         </Link>
       </div>
     </article>

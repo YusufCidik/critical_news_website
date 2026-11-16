@@ -1,9 +1,10 @@
 "use client";
 
+import { ui } from "@/lib/i18n/interface-labels";
 import Link from "next/link";
 import { NewsImage } from "@/components/NewsImage";
 import { useLocalizedNews } from "@/hooks/useLocalizedNews";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ExecutiveBriefing } from "@/components/ExecutiveBriefing";
 import { NewsArticleCard } from "@/components/NewsArticleCard";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -68,6 +69,7 @@ export default function Home() {
   const [country, setCountry] = useState("world");
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const [sort, setSort] = useState<"importance" | "latest">("importance");
   const { items: rawItems, loading, loadingMore, hasMore, total, sources, error, loadMore } = useNewsData({
     country,
@@ -77,7 +79,9 @@ export default function Home() {
 
   const localized = useLocalizedNews(rawItems, language);
   const items = localized.items;
-  const countryName = COUNTRIES.find(([value]) => value === country)?.[1] ?? text.allCountries;
+  const regionNames = new Intl.DisplayNames([language], { type: "region" });
+  const countryLabel = (value: string) => value === "world" ? getNewsLabel(language, "world") : regionNames.of(({ turkey: "TR", us: "US", uk: "GB", china: "CN", israel: "IL", ukraine: "UA", russia: "RU", iran: "IR", france: "FR", germany: "DE", india: "IN", japan: "JP" } as Record<string, string>)[value]) || value;
+  const countryName = countryLabel(country);
   const activeCategoryLabel = category === "all" ? text.allCategories : getNewsLabel(language, category);
   const locale = language === "tr" ? "tr-TR" : language === "de" ? "de-DE" : language === "fr" ? "fr-FR" : language === "es" ? "es-ES" : "en-US";
   const visibleStories = useMemo(() => {
@@ -105,6 +109,16 @@ export default function Home() {
   }, []);
 
 
+  useEffect(() => {
+    const target = sentinelRef.current;
+    if (!target || !hasMore || loading || loadingMore || error) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) void loadMore();
+    }, { rootMargin: "600px 0px" });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadingMore, loadMore, error]);
+
   return (
     <main className="min-h-screen bg-[#f6f6f4] text-slate-950">
       <div className="mx-auto max-w-[1440px] bg-white shadow-[0_0_45px_rgba(15,23,42,0.045)]">
@@ -118,7 +132,7 @@ export default function Home() {
 
         <header className="border-b border-slate-300 px-4 pt-4 md:px-8">
           <a href="#top" className="mx-auto block w-fit text-center" aria-label="IntelMatrix ana sayfa">
-            <span className="font-serif text-[38px] font-black leading-none tracking-[0.035em] text-[#242424] md:text-[52px]">INTELMATRIX</span>
+            <span className="font-serif text-[38px] font-black leading-none tracking-[0.035em] brand-wordmark text-[#242424] md:text-[52px]">INTELMATRIX</span>
             <span className="mt-2 block text-[9px] font-semibold uppercase tracking-[0.34em] text-slate-500">{text.brandTagline}</span>
           </a>
 
@@ -147,7 +161,7 @@ export default function Home() {
                 onChange={(event) => setCountry(event.target.value)}
                 className="h-10 min-w-40 border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none focus:border-sky-700"
               >
-                {COUNTRIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                {COUNTRIES.map(([value]) => <option key={value} value={value}>{countryLabel(value)}</option>)}
               </select>
               <label htmlFor="news-search" className="sr-only">Haberlerde ara</label>
               <input
@@ -192,7 +206,7 @@ export default function Home() {
               {visibleStories.slice(0, 4).map((story) => (
                 <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="group min-w-0">
                   <div className="aspect-[16/10] overflow-hidden bg-slate-100">
-                    <NewsImage src={story.image_url} />
+                    <NewsImage id={story.id} src={story.image_url} />
                   </div>
                   <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.13em] text-red-700">{story.source}</p>
                   <h3 className="mt-1 font-serif text-[17px] font-bold leading-tight text-slate-900 group-hover:text-sky-800">{story.translated_title}</h3>
@@ -204,20 +218,20 @@ export default function Home() {
 
         <section className="px-4 pt-5 md:px-8">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-slate-200 bg-slate-50 p-3">
-            <p className="text-xs text-slate-600">{language === "tr" ? "Önce en önemli gelişmeler. Okuma süreni sen belirle." : "The essential stories first. Read at your own pace."}</p>
-            <select aria-label={language === "tr" ? "Haber sıralaması" : "Sort stories"} value={sort} onChange={(event) => setSort(event.target.value as "importance" | "latest")} className="min-h-10 border border-slate-300 bg-white px-3 text-sm">
-              <option value="importance">{language === "tr" ? "Önem derecesi" : "Importance"}</option>
-              <option value="latest">{language === "tr" ? "En yeni" : "Latest"}</option>
+            <p className="text-xs text-slate-600">{ui(language, "intro")}</p>
+            <select aria-label={text.sortBy} value={sort} onChange={(event) => setSort(event.target.value as "importance" | "latest")} className="min-h-10 border border-slate-300 bg-white px-3 text-sm">
+              <option value="importance">{text.sortImpact}</option>
+              <option value="latest">{text.sortLatest}</option>
             </select>
           </div>
-          {localized.status === "loading" && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{language === "tr" ? "Başlıklar ve özetler çevriliyor…" : "Translating headlines and summaries…"}</p>}
-          {localized.status === "error" && <p role="status" className="mb-3 text-xs text-amber-700">{language === "tr" ? "Bazı çeviriler alınamadı; özgün metin gösteriliyor." : "Some translations are unavailable; showing original text."} <button type="button" onClick={localized.retry} className="min-h-10 underline">{language === "tr" ? "Tekrar dene" : "Retry"}</button></p>}
+          {localized.status === "loading" && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{ui(language, "translating")}</p>}
+          {localized.status === "error" && <p role="status" className="mb-3 text-xs text-amber-700">{ui(language, "translationError")} <button type="button" onClick={localized.retry} className="min-h-10 underline">{ui(language, "retry")}</button></p>}
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-slate-300 pb-2">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">{text.topStories}</p>
               <h1 className="mt-1 font-serif text-xl font-bold uppercase tracking-[0.08em]">{countryName}{category !== "all" ? ` · ${activeCategoryLabel}` : ` ${text.agenda}`}</h1>
             </div>
-            <p className="text-[11px] text-slate-500">{total} haber · {sources.length} yayın kaynağı</p>
+            <p className="text-[11px] text-slate-500">{total} {ui(language, "news")} · {sources.length} {text.sourcesCount}</p>
           </div>
 
           {loading && items.length === 0 ? (
@@ -228,12 +242,12 @@ export default function Home() {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.8fr)]">
               <NewsArticleCard story={featuredStory} layout="feature" language={language} />
               <aside className="border-t border-slate-200 lg:border-l lg:border-t-0 lg:pl-5" aria-label="Öne çıkan diğer haberler">
-                <h2 className="mb-3 border-b border-slate-200 pb-2 text-[10px] font-bold uppercase tracking-[0.17em] text-slate-600">Öne çıkanlar</h2>
+                <h2 className="mb-3 border-b border-slate-200 pb-2 text-[10px] font-bold uppercase tracking-[0.17em] text-slate-600">{ui(language, "featured")}</h2>
                 <div className="divide-y divide-slate-200">
                   {sideStories.map((story) => (
                     <Link prefetch={false} key={story.id} href={`/news/${story.id}`} className="grid grid-cols-[96px_minmax(0,1fr)] gap-3 py-3 first:pt-0">
                       <div className="aspect-[4/3] overflow-hidden bg-slate-100">
-                        <NewsImage src={story.image_url} />
+                        <NewsImage id={story.id} src={story.image_url} />
                       </div>
                       <div>
                         <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-red-700">{story.source} · {formatTime(story.published_at, language)}</p>
@@ -246,8 +260,8 @@ export default function Home() {
             </div>
           ) : (
             <div className="border-y border-slate-200 py-12 text-center">
-              <h2 className="font-serif text-2xl font-bold">Bu kapsamda henüz haber bulunamadı</h2>
-              <p className="mt-2 text-sm text-slate-600">Başka bir ülke ya da kategori seçebilir veya daha sonra yeniden deneyebilirsiniz.</p>
+              <h2 className="font-serif text-2xl font-bold">{text.noResultsTitle}</h2>
+              <p className="mt-2 text-sm text-slate-600">{text.noResultsDesc}</p>
             </div>
           )}
         </section>
@@ -255,7 +269,7 @@ export default function Home() {
         <section className="mt-9 px-4 md:px-8" aria-label="Sonsuz haber akışı">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3 border-b-2 border-slate-900 pb-2">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">Canlı akış</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">{text.live}</p>
               <h2 className="mt-1 font-serif text-2xl font-bold">{text.otherNews}</h2>
             </div>
             <p className="text-xs text-slate-500">{countryName} · {activeCategoryLabel}</p>
@@ -268,19 +282,20 @@ export default function Home() {
           </div>
 
           {!loading && visibleStories.length === 0 && !error && (
-            <p className="py-12 text-center text-sm text-slate-600">Aramanızla eşleşen haber bulunamadı.</p>
+            <p className="py-12 text-center text-sm text-slate-600">{ui(language, "noSearch")}</p>
           )}
 
 
-          {loadingMore && <p className="py-6 text-center text-sm text-slate-500" role="status">Yeni haberler yükleniyor…</p>}
-          {hasMore && !loadingMore && (
+          {loadingMore && <p className="py-6 text-center text-sm text-slate-500" role="status">{text.loadingNews}</p>}
+          <div ref={sentinelRef} className="h-4" aria-hidden="true" />
+          {hasMore && !loadingMore && error && (
             <div className="py-6 text-center">
               <button type="button" onClick={() => void loadMore()} className="border border-slate-400 bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-800 hover:border-slate-900 hover:bg-slate-50">
                 {text.loadMore}
               </button>
             </div>
           )}
-          {!hasMore && items.length > 0 && <p className="py-6 text-center text-xs uppercase tracking-[0.15em] text-slate-400">Şimdilik akışın sonu · kaynaklar yenilendikçe yeni haberler burada</p>}
+          {!hasMore && items.length > 0 && <p className="py-6 text-center text-xs uppercase tracking-[0.15em] text-slate-400">{text.endOfStream}</p>}
         </section>
 
         {featuredStory && (
