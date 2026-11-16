@@ -167,6 +167,7 @@ export default function Home() {
               <option value="latest">{text.sortLatest}</option>
             </select>
           </div>
+          {loading && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{ui(language, "updating")}</p>}
           {localized.status === "loading" && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{ui(language, "translating")}</p>}
           {localized.status === "error" && <p role="status" className="mb-3 text-xs text-amber-700">{ui(language, "translationError")} <button type="button" onClick={localized.retry} className="min-h-10 underline">{ui(language, "retry")}</button></p>}
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-slate-300 pb-2">

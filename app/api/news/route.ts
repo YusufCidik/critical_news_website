@@ -1,10 +1,15 @@
+import { LANGUAGES } from "@/lib/i18n/server-translate";
+import type { SupportedLanguage } from "@/lib/store/language-store";
+import { localizeNewsTitles } from "@/lib/news/localization";
 import { uniqueNews } from "@/lib/news/unique";
 import { NextResponse } from "next/server";
 import { getStories, matchesCountry } from "@/lib/news/feed";
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
+  const language = LANGUAGES.includes(params.get("language") as SupportedLanguage) ? params.get("language") as SupportedLanguage : null;
   const country = params.get("country") || "world";
   const category = params.get("category") || "all";
   const cursor = Math.max(0, Number.parseInt(params.get("cursor") || "0", 10) || 0);
@@ -24,7 +29,8 @@ export async function GET(request: Request) {
       ? Date.parse(b.published_at) - Date.parse(a.published_at)
       : b.impact_score - a.impact_score || Date.parse(b.published_at) - Date.parse(a.published_at));
     const unique = uniqueNews(filtered);
-    const items = unique.slice(cursor, cursor + limit);
+    const localized = await localizeNewsTitles(unique.slice(cursor, cursor + limit), language);
+    const items = localized.items;
     const nextCursor = cursor + items.length;
 
     return NextResponse.json(
@@ -35,7 +41,7 @@ export async function GET(request: Request) {
         sources: [...new Set(filtered.map((story) => story.source))],
         updatedAt: new Date().toISOString(),
       },
-      { headers: { "Cache-Control": "private, max-age=60, stale-while-revalidate=240" } }
+      { headers: localized.complete ? { "Cache-Control": "public, max-age=15", "Vercel-CDN-Cache-Control": "public, s-maxage=120, stale-while-revalidate=240" } : { "Cache-Control": "no-store" } }
     );
   } catch (error) {
     console.error("News aggregation failed:", error);

@@ -15,6 +15,7 @@ export interface NewsItem {
   id: string;
   original_title: string;
   translated_title: string;
+  localized_title?: { language: "tr" | "en" | "de" | "fr" | "es"; text: string };
   executive_summary: string;
   impact_score: number;
   category: "AI" | "Teknoloji" | "Jeopolitik" | "Ekonomi" | "Bilim" | "Spor" | "Kültür" | "Sağlık" | "İklim" | "Savunma" | "Enerji" | "Seyahat" | "Dünya" | "Tech" | "Geopolitics";

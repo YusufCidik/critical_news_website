@@ -21,6 +21,7 @@ interface Message {
 export function NewsAssistant({ articles }: NewsAssistantProps) {
   const { language } = useLanguageStore();
   const endRef = useRef<HTMLDivElement>(null);
+  const [preferredLength, setPreferredLength] = useState<"brief" | "standard" | "detailed">("standard");
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,8 +44,9 @@ export function NewsAssistant({ articles }: NewsAssistantProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question: nextQuestion,
+          preferredLength,
           language,
-          history: messages.slice(-6),
+          history: messages.slice(-8),
           articles: articles.map((article) => ({
             id: article.id,
             title: article.translated_title,
@@ -58,7 +60,8 @@ export function NewsAssistant({ articles }: NewsAssistantProps) {
         }),
         signal: AbortSignal.timeout(65000),
       });
-      const payload = (await response.json()) as { answer?: string; error?: string; degraded?: boolean; references?: Message["references"] };
+      const payload = (await response.json()) as { answer?: string; error?: string; replyStyle?: "brief" | "standard" | "detailed"; degraded?: boolean; references?: Message["references"] };
+      if (payload.replyStyle) setPreferredLength(payload.replyStyle);
       setMessages((current) => [...current, { role: "assistant", text: payload.answer || payload.error || ui(language, "assistantError"), degraded: payload.degraded, references: payload.references }]);
     } catch {
       setMessages((current) => [...current, { role: "assistant", text: ui(language, "assistantError") }]);
@@ -94,7 +97,7 @@ export function NewsAssistant({ articles }: NewsAssistantProps) {
             {messages.map((message, index) => (
               <div key={`${message.role}-${index}`} className={`max-w-[95%] whitespace-pre-wrap break-words px-3 py-2 text-sm leading-6 ${message.role === "user" ? "ml-auto bg-sky-100 text-sky-950 dark:bg-sky-950 dark:text-sky-100" : "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200"}`}>
                 {message.text}
-                {message.references && <div className="mt-3 flex flex-col gap-2">{message.references.filter((reference) => /^[a-f0-9]{40}$/.test(reference.id)).map((reference) => <Link prefetch={false} key={reference.number} href={`/news/${reference.id}`} className="text-xs font-semibold text-sky-700 underline">[{reference.number}] {reference.title}</Link>)}</div>}
+                {message.references && message.references.length > 0 && <details className="mt-3 text-xs"><summary className="min-h-8 cursor-pointer font-semibold text-sky-700">{ui(language, "references")} ({message.references.length})</summary><div className="mt-2 flex flex-col gap-2">{message.references.filter((reference) => /^[a-f0-9]{40}$/.test(reference.id)).map((reference) => <Link prefetch={false} key={reference.number} href={`/news/${reference.id}`} className="text-xs font-semibold text-sky-700 underline">[{reference.number}] {reference.title}</Link>)}</div></details>}
               </div>
             ))}
             {loading && <div className="flex items-center gap-2 text-xs text-slate-500"><Loader2 className="h-4 w-4 animate-spin" /> {ui(language, "assistantLoading")}</div>}

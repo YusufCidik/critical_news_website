@@ -8,6 +8,8 @@ import { build } from "esbuild";
 
 const bundled = await build({
   stdin: { contents: `
+    export { resolveReplyPolicy, enforceReplyBudget } from "./lib/ai/reply-policy";
+    export { ASSISTANT_MODEL } from "./lib/ai/client";
     export { TranslationQueue } from "./lib/i18n/client-translation";
     export { isTranslationUsable } from "./lib/i18n/server-translate";
     export { NewsDetail } from "./components/NewsDetail";
@@ -26,7 +28,7 @@ const bundled = await build({
   bundle: true, write: false, format: "cjs", platform: "node", packages: "external",
   plugins: [{ name: "fake-ai", setup(builder) {
     builder.onResolve({ filter: /^@google\/genai$/ }, () => ({ path: "fake-ai", namespace: "test" }));
-    builder.onLoad({ filter: /.*/, namespace: "test" }, () => ({ contents: 'export class GoogleGenAI { models = { generateContent: (request) => globalThis.__intelmatrixAI(request) }; }' }));
+    builder.onLoad({ filter: /.*/, namespace: "test" }, () => ({ contents: 'export const ThinkingLevel = { LOW: "LOW" }; export class GoogleGenAI { models = { generateContent: (request) => globalThis.__intelmatrixAI(request) }; }' }));
   } }],
 });
 const filename = path.join(process.cwd(), "scripts", ".news-test-bundle.cjs");
@@ -34,7 +36,7 @@ const compiled = new Module(filename);
 compiled.filename = filename;
 compiled.paths = Module._nodeModulePaths(path.dirname(filename));
 compiled._compile(bundled.outputFiles[0].text, filename);
-const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews, TranslationQueue, isTranslationUsable, NewsDetail } = compiled.exports;
+const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews, TranslationQueue, isTranslationUsable, NewsDetail, resolveReplyPolicy, enforceReplyBudget, ASSISTANT_MODEL } = compiled.exports;
 const oldFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 delete process.env.GEMINI_API_KEY;
@@ -346,6 +348,72 @@ try {
     assert.ok(markup.includes('id="ai-briefing"'));
     assert.ok(markup.includes("detail-page"));
     assert.ok(markup.includes('rel="noopener noreferrer"'));
+  });
+
+  await test("reply length preferences follow the latest instruction and retain the topic", () => {
+    const history = [{ role: "user", text: "Futbol haberlerini detaylı anlat" }, { role: "assistant", text: "Long answer." }];
+    const brief = resolveReplyPolicy("Bunu kısaca yaz", history);
+    assert.equal(brief.mode, "brief");
+    assert.equal(brief.maxWords, 60);
+    assert.equal(brief.followUp, true);
+    assert.equal(brief.topic, history[0].text);
+    assert.equal(resolveReplyPolicy("Detaylı anlat", [{ role: "user", text: "Kısaca yaz" }]).mode, "detailed");
+    assert.equal(resolveReplyPolicy("Tek cümleyle yaz", history).maxSentences, 1);
+    assert.equal(resolveReplyPolicy("2 cümle ile anlat", history).maxSentences, 2);
+    assert.equal(resolveReplyPolicy("5 kelimeyle anlat", []).maxWords, 5);
+    assert.equal(resolveReplyPolicy("Şimdi ekonomi?", [], "brief").mode, "brief");
+  });
+  await test("reply budgets enforce word, sentence and bullet limits even when the model ignores them", () => {
+    const long = Array.from({ length: 30 }, (_, i) => "• Important development number " + i + " affects the economy [1].").join("\n");
+    const brief = enforceReplyBudget(long, resolveReplyPolicy("Kısaca yaz", []), "tr");
+    assert.ok(brief.split(/\s+/).length <= 60);
+    assert.ok((brief.match(/•/g) || []).length <= 3);
+    assert.ok(brief.includes("[1]"));
+    const one = enforceReplyBudget("First event [1]. Second event [2].", resolveReplyPolicy("Tek cümle", []), "en");
+    assert.equal(one, "First event [1].");
+    const ordinal = enforceReplyBudget("Ronaldinho İtalya 3. Ligi kulübünde forma giydi [1]. İkinci haber [2].", resolveReplyPolicy("Tek cümleyle yaz", []), "tr");
+    assert.equal(ordinal, "Ronaldinho İtalya 3. Ligi kulübünde forma giydi [1].");
+    assert.ok(!enforceReplyBudget("**News** [1, 2].", resolveReplyPolicy("Short answer", []), "en").includes("**"));
+  });
+  await test("assistant uses the stronger model and enforces a brief answer", async () => {
+    process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
+    let config;
+    globalThis.__intelmatrixAI = async (request) => {
+      config = request;
+      return { text: Array.from({ length: 30 }, (_, i) => "A supported current event " + i + " affects the economy [1].").join(" ") };
+    };
+    const response = await assistant.POST(post("/api/assistant", { question: "Kısaca yaz", language: "tr", history: [{ role: "user", text: "Ekonomide neler var?" }], articles: [] }));
+    const result = await response.json();
+    assert.equal(result.degraded, false);
+    assert.equal(result.replyStyle, "brief");
+    assert.equal(result.model, ASSISTANT_MODEL);
+    assert.ok(result.answer.split(/\s+/).length <= 60);
+    assert.equal(JSON.parse(config.contents).topic, "Ekonomide neler var?");
+    assert.equal(config.config.thinkingConfig?.thinkingLevel, "LOW");
+    assert.match(config.config.systemInstruction, /HARD MAXIMUM: 60 words/);
+  });
+  await test("server-translated headlines render without a second headline request", async () => {
+    process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
+    globalThis.__intelmatrixAI = async (request) => {
+      const texts = JSON.parse(request.contents.slice(request.contents.indexOf("Input: ") + 7));
+      return { text: JSON.stringify({ translations: texts.map((text) => "Çevrilmiş başlık: " + text) }) };
+    };
+    const response = await news.GET(new Request("http://localhost/api/news?limit=2&language=tr"));
+    const data = await response.json();
+    assert.equal(response.status, 200);
+    assert.ok(data.items.every((item) => item.localized_title.language === "tr"));
+    assert.ok(response.headers.get("Vercel-CDN-Cache-Control").includes("s-maxage=120"));
+    let calls = 0;
+    const queue = new TranslationQueue(async () => { calls++; return {}; }, 0);
+    const entry = { text: data.items[0].original_title, source: "en", priority: 0, translated: data.items[0].localized_title.text };
+    queue.seed([entry], "tr");
+    const stop = queue.watch("translated-feed", [entry], "tr");
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    assert.equal(queue.get(entry.text, "en", "tr"), entry.translated);
+    assert.equal(calls, 0);
+    assert.equal(queue.get(entry.text, "en", "de"), undefined);
+    stop();
+    assert.ok(data.items[0].original_title !== entry.translated);
   });
 } finally {
   globalThis.fetch = oldFetch;

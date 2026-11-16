@@ -109,3 +109,5 @@ html.dark input::placeholder { color: #d1d5db; }
 
 
 html.dark main { background-color: #020617; }
+
+.news-feed-card { content-visibility: auto; contain-intrinsic-size: auto 520px; }

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { ImportanceBadge } from "@/components/ImportanceBadge";
 import { ui } from "@/lib/i18n/interface-labels";
 import Link from "next/link";
@@ -27,11 +28,11 @@ function formatPublishedAt(value: string | undefined, language: SupportedLanguag
   return new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(date);
 }
 
-export function NewsArticleCard({ story, layout = "compact", language = "tr" }: NewsArticleCardProps) {
+export const NewsArticleCard = memo(function NewsArticleCard({ story, layout = "compact", language = "tr" }: NewsArticleCardProps) {
   const feature = layout === "feature";
 
   return (
-    <article data-news-id={story.id} className={`group min-w-0 overflow-hidden border-b border-slate-200 bg-white ${feature ? "" : "pb-5"}`}>
+    <article data-news-id={story.id} className={`news-feed-card group min-w-0 overflow-hidden border-b border-slate-200 bg-white ${feature ? "" : "pb-5"}`}>
       <Link prefetch={false}
         href={`/news/${story.id}`}
         aria-label={`${story.translated_title} - ${story.source || "haber kaynağı"}`}
@@ -70,4 +71,4 @@ export function NewsArticleCard({ story, layout = "compact", language = "tr" }: 
       </div>
     </article>
   );
-}
+}, (previous, next) => previous.language === next.language && previous.layout === next.layout && (previous.story === next.story || (["id", "translated_title", "executive_summary", "image_url", "impact_score", "is_breaking", "category", "source", "published_at"] as const).every((key) => previous.story[key] === next.story[key])));

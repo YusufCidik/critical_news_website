@@ -1,5 +1,6 @@
 import type { SupportedLanguage } from "@/lib/store/language-store";
 const labels = {
+"references": ["Kaynaklar", "Sources", "Quellen", "Sources", "Fuentes"],
 "importance":["Önem puanı","Importance","Bedeutung","Importance","Importancia"],
 "assistantIntro":["Merhaba. Bu akıştaki haberleri özetleyebilirim. En önemli gelişmeleri sorabilirsin.","Hello. I can summarize this feed. Ask about the most important developments.","Hallo. Ich kann diese Nachrichten zusammenfassen. Frage nach den wichtigsten Entwicklungen.","Bonjour. Je peux résumer ce fil. Posez une question sur les événements essentiels.","Hola. Puedo resumir estas noticias. Pregunta por los acontecimientos más importantes."],
 "assistantContext":["Tüm güncel haberlerde arama","Search all current stories","Alle aktuellen Nachrichten durchsuchen","Recherche dans toute l’actualité","Buscar en todas las noticias actuales"],

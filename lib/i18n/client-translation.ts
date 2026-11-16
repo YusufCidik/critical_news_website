@@ -49,6 +49,15 @@ export class TranslationQueue {
   get(text: string, source: string, target: SupportedLanguage) {
     return !text.trim() || source === target ? text : this.cache.get(keyFor(text, source, target));
   }
+  seed(entries: Array<TranslationEntry & { translated: string }>, target: SupportedLanguage) {
+    this.hydrate();
+    let changed = false;
+    for (const entry of entries) if (entry.translated.trim()) {
+      const key = keyFor(entry.text, entry.source, target);
+      if (this.cache.get(key) !== entry.translated) { this.cache.set(key, entry.translated); changed = true; }
+    }
+    if (changed) { this.persist(); this.notify(); }
+  }
   status(entries: TranslationEntry[], target: SupportedLanguage): "loading" | "ready" | "error" {
     const missing = entries.filter((entry) => this.get(entry.text, entry.source, target) === undefined);
     if (!missing.length) return "ready";

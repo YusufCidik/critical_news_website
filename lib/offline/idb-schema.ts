@@ -18,6 +18,7 @@ export interface NewsItemRecord {
   id: string;
   original_title: string;
   translated_title: string;
+  localized_title?: { language: "tr" | "en" | "de" | "fr" | "es"; text: string };
   executive_summary: string;
   impact_score: number;
   category: NewsCategory;

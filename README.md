@@ -126,3 +126,19 @@ Importance is a keyword-based priority heuristic, independent of publication age
 Article availability follows the rolling RSS feed and its in-process cache. Cached articles can also be read from IndexedDB on the same device. This repository does not yet have a durable server-side article database, so older links may become unavailable after leaving RSS and a server restart. Service-worker responses use the browser Cache API, separately from article records in IndexedDB.
 
 Run `npm test`, `npm run lint` and `npm run build` to verify changes. The regression suite mocks external services and tests RSS media extraction, stable IDs and detail lookup, category filtering, pagination, full-length translations, retry behavior, AI schema validation, conversation context and article references. A real Gemini response requires a configured key and is not covered by the mocked tests.
+
+## Performance and editorial assistant controls
+
+The news API accepts `language=tr|en|de|fr|es` and includes confirmed `localized_title` values with each page. These seed the client translation queue, so a ready headline does not require a second request. Complete public feed responses are cached by language, filters and pagination at the Vercel CDN; partial translation responses are not cached. The browser shows its saved feed while refreshing and writes fresh records to IndexedDB without blocking rendering.
+
+Model roles are independent, server-side settings:
+
+```env
+GEMINI_TRANSLATION_MODEL=gemini-3.5-flash-lite
+GEMINI_SELECTION_MODEL=gemini-3.5-flash-lite
+GEMINI_ASSISTANT_MODEL=gemini-4-hydrogen
+```
+
+These are the defaults, verified against the available Gemini models. `GEMINI_MODEL` remains a legacy ingestion setting. The assistant and article briefings use the editorial model; translation and relevance selection use the fast model. Consult the [Gemini model reference](https://ai.google.dev/gemini-api/docs/models) for account availability.
+
+The assistant interprets concise/detailed requests and explicit word, sentence and bullet limits. The default answer is capped at 140 words; concise requests at 60; detailed requests at 360 unless the user supplies a different bounded word count. A final server-side check enforces the budget even if the model exceeds it. Formatting-only follow-ups reuse validated prior article references and preserve the topic. Source links remain available in a collapsed list. Long news grids skip offscreen rendering and unchanged cards avoid repeated React renders.

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getAllNewsItems, saveNewsItems } from "@/lib/offline/idb-schema";
+import { useLanguageStore } from "@/lib/store/language-store";
 import { useNewsStore, type NewsItem } from "@/lib/store/news-store";
 
 interface NewsResponse {
@@ -72,11 +73,18 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
       setError(null);
     });
 
+    let receivedLive = false;
+    void getAllNewsItems().then((cached) => {
+      if (!mounted || receivedLive) return;
+      const scoped = filterCachedItems(cached, country, category).filter((item) => Date.parse(item.published_at || "") >= Date.now() - 7 * 86400000).sort((a, b) => sort === "importance" ? b.impact_score - a.impact_score || Date.parse(b.published_at || "") - Date.parse(a.published_at || "") : Date.parse(b.published_at || "") - Date.parse(a.published_at || ""));
+      if (scoped.length) { setItems(scoped.slice(0, 12)); setActiveItem(scoped[0]); setTotal(scoped.length); setSources([...new Set(scoped.map((item) => item.source || ""))]); }
+    }).catch(() => {});
+
     const loadFirstPage = async () => {
       try {
-        const query = new URLSearchParams({ country, category, sort, cursor: "0", limit: "12" });
+        const query = new URLSearchParams({ language: useLanguageStore.getState().language, country, category, sort, cursor: "0", limit: "12" });
         const response = await fetch(`/api/news?${query.toString()}`, {
-          cache: "no-store",
+          cache: "default",
           signal: controller.signal,
         });
         if (!response.ok) throw new Error(`News request failed: ${response.status}`);
@@ -86,7 +94,10 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
 
         const freshItems = Array.isArray(payload.items) ? payload.items : [];
         const timestamp = new Date().toISOString();
-        await saveNewsItems(
+        receivedLive = true;
+        setItems(freshItems);
+        setActiveItem(freshItems[0] ?? null);
+        void saveNewsItems(
           freshItems.map((item) => ({
             ...item,
             created_at: item.created_at || timestamp,
@@ -95,8 +106,6 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
         ).catch((error) => console.warn("Offline cache write failed:", error));
         if (!mounted) return;
 
-        setItems(freshItems);
-        setActiveItem(freshItems[0] ?? null);
         nextCursorRef.current = payload.nextCursor;
         setHasMore(payload.nextCursor !== null);
         setTotal(payload.total || 0);
@@ -141,14 +150,14 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
     loadingMoreRef.current = true;
     setLoadingMore(true);
     try {
-      const query = new URLSearchParams({ country, category, sort, cursor: String(cursor), limit: "12" });
-      const response = await fetch(`/api/news?${query.toString()}`, { cache: "no-store" });
+      const query = new URLSearchParams({ language: useLanguageStore.getState().language, country, category, sort, cursor: String(cursor), limit: "12" });
+      const response = await fetch(`/api/news?${query.toString()}`, { cache: "default" });
       if (!response.ok) throw new Error(`News page request failed: ${response.status}`);
       const payload = (await response.json()) as NewsResponse;
       if (scopeRef.current !== scopeKey) return;
 
       const timestamp = new Date().toISOString();
-      await saveNewsItems(
+      void saveNewsItems(
         payload.items.map((item) => ({
           ...item,
           created_at: item.created_at || timestamp,
