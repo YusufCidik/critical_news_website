@@ -1,4 +1,4 @@
-import { ASSISTANT_MODEL, assistantThinking, getAIClient } from "@/lib/ai/client";
+import { ASSISTANT_MODEL, assistantThinking, getAIClient, generateEditorialContent } from "@/lib/ai/client";
 import type { NewsStory } from "@/lib/news/feed";
 
 export interface ArticleBriefing {
@@ -8,15 +8,16 @@ export interface ArticleBriefing {
   why_it_matters: string;
   uncertainty: string;
 }
-const cache = new Map<string, ArticleBriefing>();
-const pending = new Map<string, Promise<ArticleBriefing>>();
+type GeneratedBriefing = { briefing: ArticleBriefing; model: string };
+const cache = new Map<string, GeneratedBriefing>();
+const pending = new Map<string, Promise<GeneratedBriefing>>();
 export async function generateArticleBriefing(story: NewsStory, language: string) {
-  const ai = getAIClient();
+  const ai = getAIClient(16_000);
   if (!ai) return { available: false as const, reason: "not_configured" };
   const key = `${story.id}:${story.executive_summary}:${language}`;
-  if (cache.has(key)) return { available: true as const, briefing: cache.get(key)!, model: ASSISTANT_MODEL };
+  if (cache.has(key)) return { available: true as const, ...cache.get(key)! };
   async function generate() {
-    const response = await ai!.models.generateContent({
+    const { response, model } = await generateEditorialContent(ai!, {
       model: ASSISTANT_MODEL,
       contents: JSON.stringify({ title: story.original_title, source_summary: story.executive_summary, source: story.source, published_at: story.published_at }),
       config: {
@@ -33,13 +34,14 @@ export async function generateArticleBriefing(story: NewsStory, language: string
     }
     if (!Array.isArray(parsed.key_points) || !parsed.key_points.length || !parsed.key_points.every((value: unknown) => typeof value === "string" && value.length < 3000)) throw new Error("Invalid key points");
     if (cache.size >= 500) cache.delete(cache.keys().next().value!);
-    cache.set(key, parsed);
-    return parsed as ArticleBriefing;
+    const result = { briefing: parsed as ArticleBriefing, model };
+    cache.set(key, result);
+    return result;
   }
   try {
     let task = pending.get(key);
     if (!task) { task = generate(); pending.set(key, task); }
-    return { available: true as const, briefing: await task, model: ASSISTANT_MODEL };
+    return { available: true as const, ...await task };
   } catch {
     return { available: false as const, reason: "unavailable" };
   } finally { pending.delete(key); }

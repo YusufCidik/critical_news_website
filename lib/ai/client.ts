@@ -18,3 +18,16 @@ export function getAIClient(timeoutMs = 25_000) {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   return apiKey ? new GoogleGenAI({ apiKey, httpOptions: { timeout: timeoutMs } }) : null;
 }
+
+// Both attempts stay within the documented free-tier model list.
+export async function generateEditorialContent(ai: GoogleGenAI, params: Parameters<GoogleGenAI["models"]["generateContent"]>[0]) {
+  let lastError: unknown;
+  for (const model of new Set([ASSISTANT_MODEL, "gemini-3.5-flash-lite"])) {
+    try {
+      const response = await ai.models.generateContent({ ...params, model, config: { ...params.config, ...assistantThinking(model) } });
+      if (!response.text?.trim()) throw new Error("Empty editorial response");
+      return { response, model };
+    } catch (error) { lastError = error; }
+  }
+  throw lastError;
+}

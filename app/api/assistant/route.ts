@@ -1,6 +1,6 @@
 import { collectAssistantNews, selectAssistantNews } from "@/lib/news/assistant-context";
 import { NextResponse } from "next/server";
-import { ASSISTANT_MODEL, assistantThinking, getAIClient } from "@/lib/ai/client";
+import { ASSISTANT_MODEL, assistantThinking, getAIClient, generateEditorialContent } from "@/lib/ai/client";
 import { enforceReplyBudget, resolveReplyPolicy, type ReplyPolicy } from "@/lib/ai/reply-policy";
 import { LANGUAGES } from "@/lib/i18n/server-translate";
 export const maxDuration = 60;
@@ -50,9 +50,9 @@ export async function POST(request: Request) {
     const previousSources = policy.followUp ? (previous?.references || []).flatMap((reference) => byId.has(reference.id) ? [byId.get(reference.id)!] : []) : [];
     articles = previousSources.length ? previousSources : await selectAssistantNews(policy.topic, context.articles, history);
     articles = articles.slice(0, policy.maxSentences === 1 ? 2 : policy.mode === "brief" ? 16 : policy.mode === "detailed" ? 40 : 24);
-    const ai = getAIClient();
+    const ai = getAIClient(16_000);
     if (!ai) return NextResponse.json({ ...fallback(articles, language, policy), coverage: context.coverage, searchedArticles: context.total });
-    const response = await ai.models.generateContent({
+    const { response, model } = await generateEditorialContent(ai, {
       model: ASSISTANT_MODEL,
       contents: JSON.stringify({ question, topic: policy.topic, conversation: policy.followUp ? history.filter((message) => message.role === "user").slice(-2) : history, coverage: context.coverage, searched_articles: context.total, articles: articles.map((article, index) => ({ ...article, reference: index + 1 })) }),
       config: {
@@ -79,6 +79,6 @@ export async function POST(request: Request) {
     const answer = enforceReplyBudget(response.text?.trim() || "", policy, language);
     if (!answer) return NextResponse.json(fallback(articles, language, policy));
     const cited = new Set([...answer.matchAll(/\[(\d+)\]/g)].map((match) => Number(match[1])));
-    return NextResponse.json({ answer, model: ASSISTANT_MODEL, degraded: false, replyStyle: policy.mode, coverage: context.coverage, searchedArticles: context.total, references: articles.flatMap((article, index) => cited.has(index + 1) ? [{ id: article.id, title: article.title, number: index + 1 }] : []) });
+    return NextResponse.json({ answer, model, degraded: false, replyStyle: policy.mode, coverage: context.coverage, searchedArticles: context.total, references: articles.flatMap((article, index) => cited.has(index + 1) ? [{ id: article.id, title: article.title, number: index + 1 }] : []) });
   } catch { return NextResponse.json(fallback(articles, language, policy)); }
 }
