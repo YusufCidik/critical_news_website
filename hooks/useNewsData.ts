@@ -1,5 +1,6 @@
 "use client";
 
+import { compareNewsPriority, groupNewsByEvent, matchesCountry, matchesNewsSearch } from "@/lib/news/discovery";
 import { matchesNewsCategory } from "@/lib/news/categories";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getAllNewsItems, saveNewsItems } from "@/lib/offline/idb-schema";
@@ -18,35 +19,19 @@ interface NewsResponse {
 interface UseNewsDataOptions {
   country: string;
   category: string;
+  search?: string;
+  enabled?: boolean;
   sort?: "importance" | "latest";
 }
 
-const OFFLINE_COUNTRY_TERMS: Record<string, string[]> = {
-  turkey: ["turkey", "türkiye", "turkish", "ankara", "istanbul", "erdogan", "erdoğan"],
-  us: ["united states", "u.s.", "america", "american", "washington", "trump", "congress"],
-  uk: ["united kingdom", "britain", "british", "uk", "london"],
-  china: ["china", "chinese", "beijing", "taiwan"],
-  israel: ["israel", "israeli", "gaza", "palestine", "palestinian", "jerusalem"],
-  ukraine: ["ukraine", "ukrainian", "kyiv", "zelensky"],
-  russia: ["russia", "russian", "moscow", "putin"],
-  iran: ["iran", "iranian", "tehran"],
-  france: ["france", "french", "paris", "macron"],
-  germany: ["germany", "german", "berlin"],
-  india: ["india", "indian", "new delhi", "modi"],
-  japan: ["japan", "japanese", "tokyo"],
-};
-
-function filterCachedItems(items: NewsItem[], country: string, category: string): NewsItem[] {
-  return items.filter((item) => {
-    const categoryMatches = matchesNewsCategory(item, category);
-    const terms = OFFLINE_COUNTRY_TERMS[country];
-    if (!categoryMatches || country === "world" || !terms) return categoryMatches;
-    const text = `${item.original_title} ${item.executive_summary}`.toLowerCase();
-    return terms.some((term) => text.includes(term));
-  });
+function filterCachedItems(items: NewsItem[], country: string, category: string, search: string, sort: string) {
+  const cutoff = Date.now() - 7 * 86400000;
+  const matching = items.filter((item) => Date.parse(item.published_at || "") >= cutoff
+    && matchesCountry(item, country) && matchesNewsCategory(item, category) && matchesNewsSearch(item, search));
+  return groupNewsByEvent(matching.sort((a, b) => compareNewsPriority(a, b, sort, category)), (item) => item.event);
 }
 
-export function useNewsData({ country, category, sort = "importance" }: UseNewsDataOptions = { country: "world", category: "all" }) {
+export function useNewsData({ country, category, search = "", enabled = true, sort = "importance" }: UseNewsDataOptions = { country: "world", category: "all" }) {
   const { items, activeItem, loading, error, setItems, setActiveItem, setLoading, setError } = useNewsStore();
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
@@ -55,9 +40,11 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
   const nextCursorRef = useRef<number | null>(0);
   const loadingMoreRef = useRef(false);
   const scopeRef = useRef("");
-  const scopeKey = `${country}:${category}:${sort}`;
+  const scopeKey = JSON.stringify([enabled, country, category, sort, search]);
+  const pageRequest = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
     let mounted = true;
     const controller = new AbortController();
     scopeRef.current = scopeKey;
@@ -78,13 +65,14 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
     let receivedLive = false;
     void getAllNewsItems().then((cached) => {
       if (!mounted || receivedLive) return;
-      const scoped = filterCachedItems(cached, country, category).filter((item) => Date.parse(item.published_at || "") >= Date.now() - 7 * 86400000).sort((a, b) => sort === "importance" ? b.impact_score - a.impact_score || Date.parse(b.published_at || "") - Date.parse(a.published_at || "") : Date.parse(b.published_at || "") - Date.parse(a.published_at || ""));
+      const scoped = filterCachedItems(cached, country, category, search, sort);
       if (scoped.length) { setItems(scoped.slice(0, 12)); setActiveItem(scoped[0]); setTotal(scoped.length); setSources([...new Set(scoped.map((item) => item.source || ""))]); }
     }).catch(() => {});
 
     const loadFirstPage = async () => {
       try {
         const query = new URLSearchParams({ language: useLanguageStore.getState().language, country, category, sort, cursor: "0", limit: "12" });
+        if (search) query.set("q", search);
         const response = await fetch(`/api/news?${query.toString()}`, {
           cache: "default",
           signal: controller.signal,
@@ -118,8 +106,7 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
         try {
           const cached = await getAllNewsItems();
           if (!mounted) return;
-          const scoped = filterCachedItems(cached, country, category)
-            .sort((a, b) => Date.parse(b.published_at || "") - Date.parse(a.published_at || ""));
+          const scoped = filterCachedItems(cached, country, category, search, sort);
           setItems(scoped.slice(0, 12));
           setActiveItem(scoped[0] ?? null);
           setTotal(scoped.length);
@@ -141,22 +128,26 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
     return () => {
       mounted = false;
       controller.abort();
+      pageRequest.current?.abort();
       window.clearInterval(refreshTimer);
     };
-  }, [country, category, sort, scopeKey, setActiveItem, setError, setItems, setLoading]);
+  }, [enabled, country, category, search, sort, scopeKey, setActiveItem, setError, setItems, setLoading]);
 
   const loadMore = useCallback(async () => {
     const cursor = nextCursorRef.current;
-    if (cursor === null || loadingMoreRef.current || loading) return;
+    if (!enabled || cursor === null || loadingMoreRef.current || loading) return;
 
+    const controller = new AbortController();
+    pageRequest.current = controller;
     loadingMoreRef.current = true;
     setLoadingMore(true);
     try {
       const query = new URLSearchParams({ language: useLanguageStore.getState().language, country, category, sort, cursor: String(cursor), limit: "12" });
-      const response = await fetch(`/api/news?${query.toString()}`, { cache: "default" });
+      if (search) query.set("q", search);
+      const response = await fetch(`/api/news?${query.toString()}`, { cache: "default", signal: controller.signal });
       if (!response.ok) throw new Error(`News page request failed: ${response.status}`);
       const payload = (await response.json()) as NewsResponse;
-      if (scopeRef.current !== scopeKey) return;
+      if (controller.signal.aborted || scopeRef.current !== scopeKey) return;
 
       const timestamp = new Date().toISOString();
       void saveNewsItems(
@@ -166,7 +157,7 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
           updated_at: item.updated_at || timestamp,
         }))
       ).catch((error) => console.warn("Offline cache write failed:", error));
-      if (scopeRef.current !== scopeKey) return;
+      if (controller.signal.aborted || scopeRef.current !== scopeKey) return;
       setItems([...new Map([...useNewsStore.getState().items, ...payload.items].map((item) => [item.id, item])).values()]);
       setError(null);
       nextCursorRef.current = payload.nextCursor;
@@ -174,16 +165,16 @@ export function useNewsData({ country, category, sort = "importance" }: UseNewsD
       setTotal(payload.total || 0);
       setSources(payload.publishers || payload.sources || []);
     } catch (loadError) {
-      if (scopeRef.current !== scopeKey) return;
+      if (controller.signal.aborted || scopeRef.current !== scopeKey) return;
       console.warn("Unable to load the next news page:", loadError);
       setError("Yeni haberler yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.");
     } finally {
-      if (scopeRef.current === scopeKey) {
+      if (!controller.signal.aborted && scopeRef.current === scopeKey) {
         loadingMoreRef.current = false;
         setLoadingMore(false);
       }
     }
-  }, [category, country, sort, loading, scopeKey, setError, setItems]);
+  }, [enabled, category, country, search, sort, loading, scopeKey, setError, setItems]);
 
   return { items, activeItem, loading, loadingMore, hasMore, total, sources, error, loadMore };
 }

@@ -1,0 +1,68 @@
+import type { SupportedLanguage } from "@/lib/store/language-store";
+
+const en = {
+  agenda: "News agenda", saved: "Saved", savedEmpty: "Save articles to read them later on this device.", searchEmpty: "No matching reports in the current feed.",
+  global: "Global impact", category: "Category importance", evidence: "Score evidence", insufficient: "Insufficient evidence",
+  limited: "Limited confidence", moderate: "Moderate confidence", provisional: "Provisional", publisherText: "Publisher’s original wording",
+  publisherCount: "Publishers", reportCount: "Reports", timeline: "Related coverage", eventSummary: "Latest reported developments", fullTimeline: "Publication timeline", timelineNote: "Ordered by publication time. Publishers may carry the same reporting.",
+  disagreement: "Publishers reported different fatality counts", disagreementNote: "The counts may reflect different reporting times or methods.",
+  briefing: "Source briefing", prepare: "Prepare briefing", concise: "Concise", detailed: "Detailed", selected: "AI-selected passages",
+  extracted: "Publisher passages", excerpt: "RSS excerpt", content: "Publisher text supplied via RSS",
+  uncertainty: "These passages reflect what the publisher reported at the time. They may leave questions unanswered.",
+  population: "People affected", reach: "Geographic reach", economic: "Economic consequences", institutional: "Institutional consequences",
+  scientific: "Scientific evidence", duration: "Duration", magnitude: "Magnitude", reversibility: "Reversibility",
+};
+type Labels = typeof en;
+const messages: Record<SupportedLanguage, Labels> = {
+  en,
+  tr: {
+    agenda: "Haber gündemi", saved: "Kaydedilenler", savedEmpty: "Haberleri bu cihazda daha sonra okumak için kaydedin.", searchEmpty: "Güncel akışta eşleşen haber bulunamadı.",
+    global: "Küresel etki", category: "Kategori önemi", evidence: "Puanın dayanağı", insufficient: "Yetersiz kanıt",
+    limited: "Sınırlı güven", moderate: "Orta düzeyde güven", provisional: "Geçici değerlendirme", publisherText: "Yayıncının özgün metni",
+    publisherCount: "Yayıncı", reportCount: "Haber", timeline: "İlgili haberler", eventSummary: "Son bildirilen gelişmeler", fullTimeline: "Yayın zaman çizelgesi", timelineNote: "Yayın tarihine göre sıralanır. Yayıncılar aynı haberi aktarabilir.",
+    disagreement: "Yayıncılar farklı can kaybı sayıları verdi", disagreementNote: "Sayılar farklı bildirim zamanlarını veya yöntemlerini yansıtabilir.",
+    briefing: "Kaynak brifingi", prepare: "Brifingi hazırla", concise: "Kısa", detailed: "Ayrıntılı", selected: "Yapay zekânın seçtiği alıntılar",
+    extracted: "Yayıncıdan alıntılar", excerpt: "RSS özeti", content: "RSS ile sağlanan yayıncı metni",
+    uncertainty: "Alıntılar, yayıncının o tarihte bildirdiklerini aktarır. Bazı sorular yanıtsız kalabilir.",
+    population: "Etkilenen kişiler", reach: "Coğrafi kapsam", economic: "Ekonomik sonuçlar", institutional: "Kurumsal sonuçlar",
+    scientific: "Bilimsel kanıt", duration: "Süre", magnitude: "Büyüklük", reversibility: "Geri döndürülebilirlik",
+  },
+  de: {
+    agenda: "Nachrichtenübersicht", saved: "Gespeichert", savedEmpty: "Speichern Sie Artikel zum späteren Lesen auf diesem Gerät.", searchEmpty: "Keine passenden Meldungen im aktuellen Feed.",
+    global: "Globale Auswirkungen", category: "Bedeutung im Themengebiet", evidence: "Grundlage der Bewertung", insufficient: "Unzureichende Belege",
+    limited: "Begrenzte Sicherheit", moderate: "Mittlere Sicherheit", provisional: "Vorläufig", publisherText: "Originalwortlaut der Quelle",
+    publisherCount: "Quellen", reportCount: "Meldungen", timeline: "Weitere Berichte", eventSummary: "Neueste gemeldete Entwicklungen", fullTimeline: "Veröffentlichungsverlauf", timelineNote: "Nach Veröffentlichungszeit sortiert. Mehrere Quellen können denselben Bericht übernehmen.",
+    disagreement: "Quellen meldeten unterschiedliche Todeszahlen", disagreementNote: "Die Zahlen können auf verschiedenen Meldezeiten oder Methoden beruhen.",
+    briefing: "Quellenbriefing", prepare: "Briefing erstellen", concise: "Kurz", detailed: "Ausführlich", selected: "Von KI ausgewählte Passagen",
+    extracted: "Auszüge der Quelle", excerpt: "RSS-Auszug", content: "Über RSS bereitgestellter Quellentext",
+    uncertainty: "Die Auszüge geben den damaligen Bericht der Quelle wieder. Fragen können offenbleiben.",
+    population: "Betroffene Menschen", reach: "Geografische Reichweite", economic: "Wirtschaftliche Folgen", institutional: "Institutionelle Folgen",
+    scientific: "Wissenschaftliche Belege", duration: "Dauer", magnitude: "Ausmaß", reversibility: "Umkehrbarkeit",
+  },
+  fr: {
+    agenda: "Fil d’actualité", saved: "Enregistrés", savedEmpty: "Enregistrez des articles pour les lire plus tard sur cet appareil.", searchEmpty: "Aucun article correspondant dans le fil actuel.",
+    global: "Impact mondial", category: "Importance dans la catégorie", evidence: "Éléments de l’évaluation", insufficient: "Éléments insuffisants",
+    limited: "Confiance limitée", moderate: "Confiance modérée", provisional: "Provisoire", publisherText: "Texte original de la source",
+    publisherCount: "Sources", reportCount: "Articles", timeline: "Articles liés", eventSummary: "Derniers développements rapportés", fullTimeline: "Chronologie des publications", timelineNote: "Par ordre de publication. Plusieurs sources peuvent reprendre le même article.",
+    disagreement: "Les sources ont publié des bilans humains différents", disagreementNote: "Ces écarts peuvent tenir aux horaires ou aux méthodes de comptage.",
+    briefing: "Synthèse des sources", prepare: "Préparer la synthèse", concise: "Courte", detailed: "Détaillée", selected: "Passages sélectionnés par IA",
+    extracted: "Extraits de la source", excerpt: "Extrait RSS", content: "Texte de la source fourni par RSS",
+    uncertainty: "Ces passages reflètent les informations publiées à ce moment. Certaines questions peuvent rester ouvertes.",
+    population: "Personnes touchées", reach: "Portée géographique", economic: "Conséquences économiques", institutional: "Conséquences institutionnelles",
+    scientific: "Données scientifiques", duration: "Durée", magnitude: "Ampleur", reversibility: "Réversibilité",
+  },
+  es: {
+    agenda: "Agenda informativa", saved: "Guardados", savedEmpty: "Guarda artículos para leerlos después en este dispositivo.", searchEmpty: "No hay artículos que coincidan en el flujo actual.",
+    global: "Impacto global", category: "Importancia en la categoría", evidence: "Fundamento de la puntuación", insufficient: "Evidencia insuficiente",
+    limited: "Confianza limitada", moderate: "Confianza moderada", provisional: "Provisional", publisherText: "Texto original de la fuente",
+    publisherCount: "Fuentes", reportCount: "Artículos", timeline: "Cobertura relacionada", eventSummary: "Últimas novedades publicadas", fullTimeline: "Cronología de publicaciones", timelineNote: "En orden de publicación. Varias fuentes pueden republicar la misma información.",
+    disagreement: "Las fuentes publicaron cifras distintas de fallecidos", disagreementNote: "Las diferencias pueden deberse a horas o métodos de recuento distintos.",
+    briefing: "Resumen de la fuente", prepare: "Preparar resumen", concise: "Breve", detailed: "Detallado", selected: "Pasajes seleccionados por IA",
+    extracted: "Pasajes de la fuente", excerpt: "Extracto RSS", content: "Texto de la fuente publicado en RSS",
+    uncertainty: "Estos pasajes reflejan lo que informó la fuente en ese momento. Algunas preguntas pueden quedar abiertas.",
+    population: "Personas afectadas", reach: "Alcance geográfico", economic: "Consecuencias económicas", institutional: "Consecuencias institucionales",
+    scientific: "Evidencia científica", duration: "Duración", magnitude: "Magnitud", reversibility: "Reversibilidad",
+  },
+};
+
+export const intelligenceLabels = (language: SupportedLanguage) => messages[language];

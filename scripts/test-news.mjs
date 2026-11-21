@@ -26,6 +26,11 @@ const bundled = await build({
     export * as translate from "./app/api/translate/route";
     export * as assistant from "./app/api/assistant/route";
     export * as briefing from "./lib/news/briefing";
+    export { assessImpact } from "./lib/news/impact";
+    export { EventIndex } from "./lib/news/events";
+    export { compareNewsPriority, groupNewsByEvent, matchesCountry } from "./lib/news/discovery";
+    export { readResponseBytes } from "./lib/http/response";
+    export * as ingest from "./app/api/ingest/route";
     export * as detailApi from "./app/api/news/[id]/briefing/route";
   `, resolveDir: process.cwd(), sourcefile: "news-test-entry.ts", loader: "ts" },
   bundle: true, write: false, format: "cjs", platform: "node", packages: "external",
@@ -40,7 +45,7 @@ compiled.filename = filename;
 compiled.paths = Module._nodeModulePaths(path.dirname(filename));
 compiled._compile(bundled.outputFiles[0].text, filename);
 const { feed, news, translate, assistant, briefing, detailApi, images, imageApi, NewsFeed, NewsArticleCard, uniqueNews, TranslationQueue, isTranslationUsable, NewsDetail, resolveReplyPolicy, enforceReplyBudget, ASSISTANT_MODEL, FREE_TIER_MODELS, resolveFreeTierModel, generateEditorialContent } = compiled.exports;
-const { classifyNews, matchesNewsCategory, FEEDS, selectAssistantNews } = compiled.exports;
+const { classifyNews, matchesNewsCategory, FEEDS, selectAssistantNews, assessImpact, compareNewsPriority, EventIndex, groupNewsByEvent, matchesCountry, readResponseBytes, ingest } = compiled.exports;
 const oldFetch = globalThis.fetch;
 const oldKey = process.env.GEMINI_API_KEY;
 delete process.env.GEMINI_API_KEY;
@@ -62,7 +67,7 @@ try {
     const result = await feed.getStories();
     assert.equal(result.stories.length, 4);
     const hardware = result.stories.find((story) => story.source_url.endsWith("/hardware"));
-    assert.equal(hardware.impact_score, 5, "hardware/awarded must not match war");
+    assert.equal(hardware.impact.global, null, "hardware/awarded has no consequence evidence");
     assert.equal(result.stories.find((story) => story.source_url.endsWith("/sport")).is_breaking, false);
     assert.equal(result.stories.find((story) => story.source_url.endsWith("/health")).category, "Sağlık");
     const conflict = result.stories.find((story) => story.source_url.endsWith("/conflict"));
@@ -80,19 +85,19 @@ try {
   });
 
   await test("entity and publisher topics support overlapping categories without gaming or venue false positives", () => {
-    for (const title of ["Jensen Huang outlines Nvidia's next chapter", "DeepSeek releases a new reasoning model", "NVIDIA hisseleri yükseldi", "Yeni yapay zekânın yetenekleri açıklandı"]) {
+    for (const title of ["Nvidia releases a new reasoning model", "DeepSeek releases a new reasoning model", "Yeni yapay zekânın yetenekleri açıklandı"]) {
       const classified = classifyNews(title, "", "Teknoloji");
       assert.ok(classified.categories.includes("AI"), title);
       assert.ok(classified.categories.includes("Teknoloji"), title);
     }
-    assert.ok(classifyNews("A new benchmark is released", "", "AI").categories.includes("AI"));
-    assert.ok(classifyNews("A new benchmark is released", "", "Bilim", ["Machine Learning"]).categories.includes("AI"));
+    assert.ok(!classifyNews("A new benchmark is released", "", "AI").categories.includes("AI"));
+    assert.ok(!classifyNews("A new benchmark is released", "", "Bilim", ["Machine Learning"]).categories.includes("AI"));
     assert.ok(!classifyNews("Nvidia GeForce RTX gaming benchmarks", "", "Teknoloji").categories.includes("AI"));
     assert.ok(!classifyNews("Claude Monet exhibition opens", "", "Kültür").categories.includes("AI"));
     const politics = classifyNews("Yeni Parti Ankara Spor Salonu'nda kurultay düzenledi", "", "Dünya");
     assert.equal(politics.category, "Jeopolitik");
     assert.ok(!politics.categories.includes("Spor"));
-    assert.ok(matchesNewsCategory({ category: "Teknoloji", original_title: "Jensen Huang meets Nvidia investors", executive_summary: "" }, "AI"), "old offline records share the classifier");
+    assert.ok(!matchesNewsCategory({ category: "AI", categories: ["AI"], original_title: "Swiss protesters march against military spending", executive_summary: "" }, "AI"), "legacy cached AI labels are reclassified");
     assert.ok(new Set(FEEDS.map(feed => feed.publisher)).size >= 60);
     assert.equal(new Set(FEEDS.map(feed => feed.url)).size, FEEDS.length);
     assert.ok(FEEDS.filter(feed => feed.category === "AI").length >= 6);
@@ -101,7 +106,7 @@ try {
   await test("API includes the same article in every relevant category and only once in the combined feed", async () => {
     const snapshot = await feed.getStories();
     const original = [...snapshot.stories];
-    const story = { ...original[0], id: "0".repeat(40), original_title: "Jensen Huang meets Nvidia investors", source_url: "https://example.org/nvidia", ...classifyNews("Jensen Huang meets Nvidia investors", "", "Teknoloji") };
+    const story = { ...original[0], id: "0".repeat(40), original_title: "Nvidia releases a new reasoning model", source_url: "https://example.org/nvidia", ...classifyNews("Nvidia releases a new reasoning model", "", "Teknoloji") };
     snapshot.stories.push(story);
     try {
       for (const category of ["AI", "Teknoloji", "all"]) {
@@ -155,18 +160,21 @@ try {
     const stories = (await feed.getStories()).stories;
     const markup = renderToStaticMarkup(React.createElement(NewsFeed, { stories: [...stories, stories[0]], language: "tr" }));
     assert.equal((markup.match(/data-news-id=/g) || []).length, stories.length);
-    assert.equal((markup.match(/data-importance-score=/g) || []).length, stories.length);
+    assert.equal((markup.match(/Küresel etki/g) || []).length, stories.length);
+    assert.match(markup, /Yetersiz kanıt/);
     for (const story of stories) assert.equal(markup.split('data-news-id="' + story.id + '"').length - 1, 1);
     for (const layout of ["compact", "feature"]) {
-      const card = renderToStaticMarkup(React.createElement(NewsArticleCard, { story: stories[0], layout, language: "tr" }));
+      const impact = assessImpact("Parliament approves a law nationwide", "", "Jeopolitik");
+      const card = renderToStaticMarkup(React.createElement(NewsArticleCard, { story: { ...stories[0], impact }, layout, language: "tr" }));
       assert.equal((card.match(/data-importance-score=/g) || []).length, 1);
-      assert.ok(card.includes(stories[0].impact_score + "/10"));
+      assert.ok(card.includes(impact.global + "/10"));
     }
   });
   await test("tracking links and equal headlines are deduplicated without merging distinct updates", () => {
     const base = { id: "first", original_title: "A new energy agreement", source_url: "https://example.org/story?utm_source=rss" };
     const result = uniqueNews([base, { ...base, id: "second", source_url: "https://example.org/story?fbclid=abc" }, { ...base, id: "third", source_url: "https://other.org/story", original_title: "A NEW energy agreement!" }, { ...base, id: "fourth", original_title: "Energy agreement signed after a new vote", source_url: "https://example.org/update" }]);
     assert.deepEqual(result.map((v) => v.id), ["first", "fourth"]);
+    assert.equal(uniqueNews([base, { ...base, id: "other-edition", source_url: "https://other.org/another-event" }], false).length, 2);
   });
   await test("translation preserves full text and distinguishes equal prefixes", async () => {
     const queries = [];
@@ -200,30 +208,38 @@ try {
     assert.equal(retried.translations[0], "Erneut versuchen");
     assert.equal((await translate.POST(post("/api/translate", { texts: ["x"], targetLang: "invalid" }))).status, 400);
   });
-  await test("assistant fallback shows actual excerpts and article references", async () => {
-    const response = await assistant.POST(post("/api/assistant", { question: "Important news?", language: "en", articles: [{ id: "a".repeat(40), title: "Source headline", summary: "A concrete event described by the publisher.", source: "Test", impact_score: 8 }] }));
+  await test("assistant fallback cites publisher excerpts and ignores browser additions to a live feed", async () => {
+    const response = await assistant.POST(post("/api/assistant", { question: "War escalates", language: "en", articles: [{ id: "a".repeat(40), title: "War escalates, browser claim", summary: "Fabricated information.", source: "Test", impact_score: 8 }] }));
     const data = await response.json();
     assert.equal(data.degraded, true);
-    assert.match(data.answer, /A concrete event/);
-    assert.ok(data.references.some((reference) => reference.id === "a".repeat(40)));
+    assert.match(data.answer, /source excerpt for Breaking: War escalates/);
+    assert.ok(!data.references.some((reference) => reference.id === "a".repeat(40)));
     assert.equal((await assistant.POST(post("/api/assistant", { question: 42 }))).status, 400);
   });
-  await test("AI briefing distinguishes configuration errors and validates generated output", async () => {
-    const story = (await feed.getStories()).stories[0];
-    assert.equal((await briefing.generateArticleBriefing(story, "tr")).reason, "not_configured");
+
+  await test("briefing uses only exact publisher passages, preserves order and degrades on unsupported output", async () => {
+    const base = (await feed.getStories()).stories[0];
+    const story = { ...base, original_title: "Riverside opens water station", evidence: {
+      kind: "rss-content", text: "Riverside opens water station. Officials opened the temporary station on Monday. It serves residents of two towns. It serves residents of two towns. A second station was announced Tuesday. Officials will review opening hours on Friday.",
+    } };
+    const fallback = await briefing.generateArticleBriefing(story, "tr");
+    assert.equal(fallback.model, "extractive");
+    assert.equal(fallback.briefing.passages.length, 2);
+    assert.equal((await briefing.generateArticleBriefing({ ...story, evidence: { text: story.original_title, kind: "rss-excerpt" } }, "tr")).reason, "insufficient_evidence");
     process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
     let calls = 0;
-    const valid = { summary: "Supported summary", background: "Source context", key_points: ["Fact one", "Fact two"], why_it_matters: "Cautious interpretation", uncertainty: "Missing details" };
-    globalThis.__intelmatrixAI = async () => { calls++; return { text: JSON.stringify(valid) }; };
+    globalThis.__intelmatrixAI = async () => { calls++; return { text: '{"indices":[2,0]}' }; };
     const generated = await briefing.generateArticleBriefing(story, "tr");
     assert.equal(generated.available, true);
-    assert.equal(generated.briefing.summary, valid.summary);
+    assert.deepEqual(generated.briefing.passages, ["Officials opened the temporary station on Monday.", "A second station was announced Tuesday."]);
+    assert.equal(generated.briefing.source, story.publisher);
     await briefing.generateArticleBriefing(story, "tr");
-    assert.equal(calls, 1, "repeat requests reuse the briefing");
-    globalThis.__intelmatrixAI = async () => ({ text: "{}" });
-    assert.equal((await briefing.generateArticleBriefing(story, "fr")).available, false);
-    globalThis.__intelmatrixAI = async () => ({ text: JSON.stringify(valid) });
-    assert.equal((await briefing.generateArticleBriefing(story, "fr")).available, true, "failure is not cached");
+    assert.equal(calls, 1);
+    globalThis.__intelmatrixAI = async () => ({ text: '{"indices":[200],"summary":"Unsupported claim"}' });
+    assert.equal((await briefing.generateArticleBriefing(story, "fr")).model, "extractive");
+    globalThis.__intelmatrixAI = async () => ({ text: '{"indices":[1]}' });
+    assert.notEqual((await briefing.generateArticleBriefing(story, "fr")).model, "extractive");
+    assert.equal((await briefing.generateArticleBriefing(story, "fr", "detailed")).briefing.passages.length, 4);
     assert.equal((await detailApi.POST(post("/api/news/bad/briefing", { language: "tr" }), { params: Promise.resolve({ id: "bad" }) })).status, 404);
   });
 
@@ -401,7 +417,7 @@ try {
     const story = (await feed.getStories()).stories[0];
     const markup = renderToStaticMarkup(React.createElement(NewsDetail, { id: story.id, initialStory: story }));
     assert.equal((markup.match(/<h1/g) || []).length, 1);
-    assert.equal((markup.match(/data-importance-score=/g) || []).length, 1);
+    assert.equal((markup.match(/Küresel etki/g) || []).length > 0, true);
     assert.ok(markup.includes('id="source-summary"'));
     assert.ok(markup.includes('id="ai-briefing"'));
     assert.ok(markup.includes("detail-page"));
@@ -512,6 +528,105 @@ try {
     assert.equal(resolveFreeTierModel("models/gemini-3.1-flash-lite", "gemini-3.5-flash-lite"), "gemini-3.1-flash-lite");
     assert.ok(FREE_TIER_MODELS.includes(ASSISTANT_MODEL));
     assert.ok(!FREE_TIER_MODELS.some((model) => model.includes("hydrogen")));
+  });
+  await test("impact separates a championship milestone from broad consequences and speculative forecasts", () => {
+    const sport = assessImpact("World Cup championship final ends in extra time", "The visitors lifted the trophy.", "Spor");
+    assert.ok(sport.category >= 7);
+    assert.equal(sport.global, null);
+    const confirmed = assessImpact("Parliament approves nationwide flood relief", "Flooding affected 2 million people. A category 5 hurricane caused 5 billion dollars in losses. 200 households were evacuated.", "Jeopolitik", ["Jeopolitik", "İklim"]);
+    assert.ok(confirmed.global >= 6);
+    assert.equal(confirmed.confidence, "moderate");
+    assert.equal(confirmed.byCategory["İklim"], confirmed.category);
+    const speculative = assessImpact("Hurricane could become a category 5 storm", "A forecast says it could affect the power grid nationwide.", "İklim");
+    assert.ok(speculative.global < confirmed.global);
+    assert.ok(speculative.reasons.every((reason) => reason.provisional));
+    assert.equal(assessImpact("A nuclear expert writes about a war film", "", "Kültür").global, null);
+    assert.equal(assessImpact("Seismologists issue bulletin", "A magnitude 7.8 earthquake was recorded near the coast.", "Bilim").global, 2);
+    assert.equal(assessImpact("Peru’da 6,7 büyüklüğündeki depremde 15 kişi yaralandı", "", "Dünya").global, 2);
+    assert.equal(assessImpact("Officials denied a state of emergency", "", "Jeopolitik").global, null);
+    const a = { id: "a", impact: sport, impact_score: 0, published_at: new Date().toISOString() };
+    const b = { id: "b", impact: confirmed, impact_score: confirmed.global, published_at: a.published_at };
+    assert.ok(compareNewsPriority(a, b) > 0);
+    assert.ok(compareNewsPriority(a, b, "importance", "Spor") < 0);
+  });
+
+  await test("event updates add coverage without changing identity and isolate stale or unrelated reports", () => {
+    const report = (id, title, publisher, hours, excerpt) => ({
+      id, original_title: title, publisher, executive_summary: excerpt, source_url: "https://example.org/" + id,
+      published_at: new Date(Date.UTC(2026, 0, 1, 0) + hours * 3_600_000).toISOString(),
+    });
+    const first = report("a", "Riverside bridge collapse during holiday parade", "Publisher A", 0, "Police reported 12 fatalities.");
+    const next = report("b", "Holiday parade disrupted by Riverside bridge collapse", "Publisher B", 2, "Officials reported 15 fatalities.");
+    const unrelated = report("c", "Oakwood bridge collapse disrupts morning traffic", "Publisher C", 3, "");
+    const old = report("d", first.original_title, "Publisher D", -90, "");
+    const index = new EventIndex();
+    const bern = report("bern", "Hotel fire injures several guests in Bern", "Publisher E", 0, "");
+    const zurich = report("zurich", "Hotel fire injures several guests in Zurich", "Publisher F", 1, "");
+    index.update([first, old, unrelated, bern, zurich]);
+    assert.equal(index.badge("bern"), undefined, "templated headlines can describe different places");
+    assert.equal(index.badge("a"), undefined);
+    index.update([first, old, unrelated, next]);
+    const event = index.coverage("b");
+    assert.equal(event.id, "a");
+    assert.equal(event.publishers, 2);
+    assert.deepEqual(event.timeline.map(({ id }) => id), ["a", "b"]);
+    assert.deepEqual(event.highlights.map(({ id }) => id), ["b", "a"]);
+    assert.deepEqual(event.disagreements[0].claims.map(({ value }) => value).sort(), [12, 15]);
+    assert.deepEqual(groupNewsByEvent([next, first, unrelated], ({ id }) => index.badge(id)).map(({ id }) => id), ["b", "c"]);
+    const correction = { ...next, executive_summary: "Officials reported at least 12 fatalities." };
+    index.update([first, correction, unrelated]);
+    assert.deepEqual(index.coverage("b").disagreements, []);
+    index.update([correction]);
+    assert.equal(index.badge("b"), undefined);
+    assert.equal(index.badge("a"), undefined);
+  });
+
+  await test("similar RSS reports retain publisher attribution and tracked URLs resolve to one record", async () => {
+    const headline = "Riverside bridge collapse during holiday parade";
+    const tracked = item("riverside?utm_source=rss", headline);
+    const canonical = item("riverside", headline, "<category>Local news</category>");
+    const secondPublisher = item("related", "Holiday parade disrupted by Riverside bridge collapse");
+    const undated = "<item><title>False fresh item</title><link>https://example.org/undated</link></item>";
+    globalThis.fetch = async (url) => new Response(String(url).includes("feeds.bbci.co.uk/news/world/rss")
+      ? xml(tracked + canonical + undated) : String(url).includes("theguardian.com/world/rss") ? xml(secondPublisher) : emptyFeed);
+    const snapshot = await feed.getStories(true);
+    const reports = snapshot.stories.filter(({ source_url }) => /riverside|related/.test(source_url));
+    assert.equal(reports.length, 2);
+    assert.ok(!snapshot.stories.some(({ source_url }) => source_url.endsWith("/undated")));
+    const derbyUrl = new Request("http://localhost/api/news?q=riverside%20bridge&limit=1");
+    const response = await news.GET(derbyUrl);
+    const data = await response.json();
+    assert.equal(data.total, 1);
+    assert.equal(data.nextCursor, null);
+    assert.equal(data.items[0].event.publishers, 2);
+    assert.equal(data.items[0].event.reports, 2);
+    assert.equal(data.items[0].evidence, undefined);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(matchesCountry({ original_title: "Software modification announced", executive_summary: "" }, "india"), false);
+    assert.equal(matchesCountry({ original_title: "Modi announces a new policy", executive_summary: "" }, "india"), true);
+    const { byId } = snapshot;
+    const aliases = [...byId].filter(([, story]) => story.source_url.includes("riverside"));
+    assert.equal(aliases.length, 2);
+    assert.equal((await feed.getStory(aliases[0][0])).id, (await feed.getStory(aliases[1][0])).id);
+  });
+
+  await test("cron requires configured credentials and JSON/body limits return explicit client errors", async () => {
+    const previous = process.env.CRON_SECRET;
+    try {
+      delete process.env.CRON_SECRET;
+      assert.equal((await ingest.GET(new Request("http://localhost/api/ingest", { headers: { authorization: "Bearer intelmatrix-local-secret" } }))).status, 503);
+      process.env.CRON_SECRET = "test-only";
+      assert.equal((await ingest.POST(post("/api/ingest", { secret: "test-only" }))).status, 401);
+      const authorized = await ingest.GET(new Request("http://localhost/api/ingest", { headers: { authorization: "Bearer test-only" } }));
+      assert.equal(authorized.status, 200);
+      assert.ok((await authorized.json()).count > 0);
+    } finally {
+      if (previous === undefined) delete process.env.CRON_SECRET; else process.env.CRON_SECRET = previous;
+    }
+    assert.equal((await translate.POST(post("/api/translate", null))).status, 400);
+    const response = await assistant.POST(new Request("http://localhost/api/assistant", { method: "POST", body: JSON.stringify({ question: "a".repeat(129 * 1024) }) }));
+    assert.equal(response.status, 413);
+    await assert.rejects(readResponseBytes(new Response(new Uint8Array(20)), 10), /Response too large/);
   });
 } finally {
   globalThis.fetch = oldFetch;

@@ -1,8 +1,15 @@
 import { TRANSLATION_MODEL, getAIClient } from "@/lib/ai/client";
 
+import { workBudget } from "@/lib/http/work-budget";
+
+const spendTranslation = workBudget(30, 45);
 export const LANGUAGES = ["tr", "en", "de", "fr", "es"] as const;
 const cache = new Map<string, string>();
 const pending = new Map<string, Promise<string>>();
+
+export function cachedTranslation(text: string, target: string, source: string) {
+  return source === target ? text : cache.get(`${source}:${target}:${text}`);
+}
 export function isTranslationUsable(original: string, translated: unknown, source: string, target: string): translated is string {
   if (typeof translated !== "string" || !translated.trim() || /MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID LANGUAGE PAIR|USED ALL AVAILABLE/i.test(translated)) return false;
   const normalized = (value: string) => value.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
@@ -33,9 +40,10 @@ function chunks(text: string) {
 }
 async function publicTranslate(text: string, target: string, source: string) {
   const parts: string[] = [];
+  const signal = AbortSignal.timeout(8000);
   for (const chunk of chunks(text)) {
     const query = new URLSearchParams({ q: chunk, langpair: `${source}|${target}` });
-    const response = await fetch(`https://api.mymemory.translated.net/get?${query}`, { signal: AbortSignal.timeout(8000), cache: "no-store" });
+    const response = await fetch(`https://api.mymemory.translated.net/get?${query}`, { signal, cache: "no-store" });
     if (!response.ok) throw new Error("Translation unavailable");
     const data = await response.json();
     const translated = data?.responseData?.translatedText;
@@ -54,6 +62,7 @@ async function runBatch(texts: string[], target: string, sources: string[]) {
     return true;
   });
   if (!missing.length) return { translations: output, complete: true, resolved: texts.map(() => true) };
+  if (!spendTranslation()) return { translations: output, complete: false, resolved };
   const ai = getAIClient(8_000);
   if (ai) {
     for (const model of [...new Set([TRANSLATION_MODEL, "gemini-3.1-flash-lite"])]) {
@@ -77,6 +86,7 @@ async function runBatch(texts: string[], target: string, sources: string[]) {
       if (resolved[entry.index]) continue;
       try {
         let task = pending.get(entry.key);
+        if (!task && pending.size >= 12) continue;
         if (!task) { task = publicTranslate(entry.text, target, entry.source); pending.set(entry.key, task); }
         const value = await task;
         if (!isTranslationUsable(entry.text, value, entry.source, target)) throw new Error("Untranslated response");

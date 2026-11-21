@@ -1,4 +1,4 @@
-﻿import { SELECTION_MODEL, getAIClient } from "@/lib/ai/client";
+import { SELECTION_MODEL, getAIClient } from "@/lib/ai/client";
 import { getStories } from "@/lib/news/feed";
 import { uniqueNews } from "@/lib/news/unique";
 
@@ -13,10 +13,8 @@ export async function collectAssistantNews(visible: AssistantArticle[]) {
     const stories: AssistantArticle[] = result.stories
       .filter((story) => Date.parse(story.published_at) >= Date.now() - 7 * 86400000)
       .map((story) => ({ id: story.id, title: story.original_title, summary: story.executive_summary, source: story.source, source_url: story.source_url, category: story.category, categories: story.categories, impact_score: story.impact_score, published_at: story.published_at }));
-    // The server owns current records; browser excerpts supplement offline or
-    // recently removed stories, rather than defining the assistant's coverage.
-    const merged = [...new Map([...visible, ...stories].map((item) => [item.id, item])).values()];
-    return { articles: uniqueNews(merged.map((item) => ({ ...item, original_title: item.title }))), coverage: stories.length ? "current-feed" : "browser-cache", total: stories.length };
+    const available = stories.length ? stories : visible;
+    return { articles: uniqueNews(available.map((item) => ({ ...item, original_title: item.title }))), coverage: stories.length ? "current-feed" : "browser-cache", total: stories.length };
   } catch {
     return { articles: visible, coverage: "browser-cache", total: 0 };
   }
@@ -39,8 +37,10 @@ export function rankAssistantNews(question: string, articles: AssistantArticle[]
 }
 function articlePath(value?: string) { try { return value ? new URL(value).pathname : ""; } catch { return ""; } }
 export async function selectAssistantNews(question: string, articles: AssistantArticle[], history: ConversationEntry[]) {
-  const ranked = rankAssistantNews(question, articles, history).map((entry) => entry.article);
-  const directFootball = /futbol|football|soccer|fussball/.test(normalize(question)) ? rankAssistantNews(question, articles, history).filter((entry) => entry.score >= 20).map((entry) => entry.article) : [];
+  const results = rankAssistantNews(question, articles, history);
+  const ranked = results.map((entry) => entry.article);
+  const direct = results.filter((entry) => entry.score >= 20).map((entry) => entry.article);
+  const directFootball = /futbol|football|soccer|fussball/.test(normalize(question)) ? direct : [];
   if (directFootball.length >= 3) return directFootball.slice(0, 40);
   // Rank the entire feed locally, then bound the semantic request so added
   // publishers cannot inflate every chat request to thousands of excerpts.
@@ -62,7 +62,6 @@ export async function selectAssistantNews(question: string, articles: AssistantA
     if (!Array.isArray(parsed.indices)) throw new Error("Invalid news selection");
     const selected = [...new Set(parsed.indices)].filter((index): index is number => Number.isInteger(index) && Number(index) >= 0 && Number(index) < candidates.length).slice(0, 40).map((index) => candidates[index]);
     // Preserve strong direct matches if a selector overlooks an explicit topic.
-    const direct = rankAssistantNews(question, articles).filter((entry) => entry.score >= 20).map((entry) => entry.article);
     const result = [...new Map([...selected, ...direct].map((item) => [item.id, item])).values()].slice(0, 60);
     return result.length ? result : ranked.slice(0, 60);
   } catch {

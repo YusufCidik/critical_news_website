@@ -1,162 +1,56 @@
-# Critical News Website / IntelMatrix
+# Best News / INTELMATRIX
 
-IntelMatrix is a professional, responsive newsroom for world affairs, AI, technology, markets, science, health, climate, defense, culture, sports, energy, and travel. It combines multiple publisher RSS feeds, concise source-linked summaries, importance scoring, country/category views, live market data, offline caching, and a Gemini-powered news assistant.
+INTELMATRIX is a Next.js newsroom that aggregates public publisher RSS, groups related developments and displays source-attributed evidence. The recent feed, ranking, event grouping and extractive briefings run without an AI key.
 
-Repository: https://github.com/YusufCidik/critical_news_website
+## Run locally
 
-## Product features
+Requires Node.js 24 and npm. Run these commands from the repository root.
 
-- Professional white newsroom layout with optional dark mode.
-- Language selector: Turkish, English, German, French, and Spanish UI, headlines and publisher excerpts.
-- Relative publication times such as `40 dakika önce`, `2 saat önce`, and `3 gün önce`.
-- Seven-day rolling news window with importance and latest sorting.
-- Cursor pagination with an explicit load-more action.
-- World and country views for Türkiye, US, UK, China, Israel/Palestine, Ukraine, Russia, Iran, France, Germany, India, and Japan.
-- Categories for geopolitics, AI, technology, economics, science, sports, culture, health, climate, defense, energy, and travel.
-- Importance labels: `Kritik`, `Yüksek`, `İzlenmeli`, and `Düşük`, backed by a 1-10 impact score.
-- Breaking-news strip based on explicit publisher signals such as breaking, live updates, or developing.
-- Publisher name, publication time, image, and original source link on every article.
-- Markets panel with live USD-based EUR, TRY, GBP, JPY, CHF, and CAD reference rates from Frankfurter / ECB.
-- News AI assistant that answers questions using the currently loaded article context.
-- Gemini structured enrichment pipeline and optional ElevenLabs audio summaries.
-- IndexedDB cache and service-worker fallback for offline reading.
-- Vercel cron configuration for scheduled ingestion.
-
-## Local setup
-
-```powershell
-npm install
-Copy-Item .env.example .env.local
+```bash
+npm ci
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open <http://localhost:3000>. You can set optional credentials in `.env.local`.
 
-The RSS newsroom and market panel work without API keys. Gemini and ElevenLabs are optional.
-
-## Environment variables
-
-Add these to `.env.local` locally and to the hosting provider's environment settings:
-
-```env
+```dotenv
 GEMINI_API_KEY=
 ELEVENLABS_API_KEY=
-ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL
-CRON_SECRET=replace-with-a-long-random-secret
+ELEVENLABS_VOICE_ID=
+CRON_SECRET=
 ```
 
-Never commit `.env.local`, API keys, or other credentials.
+The daily Vercel cron uses `GET /api/ingest` at 06:00 UTC with an `Authorization: Bearer …` header. `POST` accepts the same header for manual refresh. The endpoint refreshes the shared RSS snapshot, and the configured upstream revalidation window still applies. Set `CRON_SECRET` in the runtime environment for scheduled refresh. Keep provider credentials server-side.
 
-## Gemini assistant
+## Newsroom
 
-The assistant endpoint is `POST /api/assistant`. The browser sends the currently loaded headlines, summaries, sources, dates, categories, and importance scores. The Gemini key is used only inside the server route and is never exposed to the browser.
+- The global and category feeds use separate impact and category-importance assessments. An assessment can abstain when source evidence is insufficient.
+- The story page exposes scoring evidence, related coverage in publisher order, and possible disagreements about narrowly comparable reported counts.
+- Search runs across the current seven-day feed and matches original publisher wording, tags and available cached translations. Its results represent the coverage returned by the registered feeds.
+- Saved stories, language and theme are stored on the current device. Saving has no effect on the global agenda. The app also retains recently fetched stories in IndexedDB for offline use.
+- Article briefings select exact passages from the RSS excerpt or fuller text included in a public feed. Gemini optionally selects relevant passages, and the app checks the selected indices. The publisher's original language remains visible alongside localized controls and the separate translated article excerpt. The interactive news assistant still generates prose from current server excerpts and validates source reference numbers.
+- The feed has process-local snapshots and Next upstream caching. A story link can expire when it leaves the rolling window. A saved copy remains available on the device that saved it.
 
-Without `GEMINI_API_KEY`, the assistant uses a deterministic local-context fallback so the UI remains usable during development.
+## Verification
 
-## GitHub
-
-The configured target repository is:
-
-```text
-https://github.com/YusufCidik/critical_news_website
-```
-
-From the project directory:
-
-```powershell
-cd "C:\Users\ycidi\Desktop\best_news"
-git add .
-git commit -m "Add professional newsroom, markets, and Gemini assistant"
-git branch -M main
-git remote add origin https://github.com/YusufCidik/critical_news_website.git
-git push -u origin main
-```
-
-If `origin` already exists:
-
-```powershell
-git remote set-url origin https://github.com/YusufCidik/critical_news_website.git
-git push -u origin main
-```
-
-If GitHub asks for authentication, use GitHub CLI (`gh auth login`) or a personal access token instead of a password.
-
-## Vercel deployment
-
-1. Open https://vercel.com/new.
-2. Import `YusufCidik/critical_news_website`.
-3. Keep the framework as Next.js and the build command as `npm run build`.
-4. Add `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, and `CRON_SECRET` in the project environment settings.
-5. Deploy and use the generated HTTPS URL from any device.
-6. Add a custom domain under Vercel Project Settings > Domains if needed.
-
-The included `vercel.json` schedules `/api/ingest` every 15 minutes. The live `/api/news` route independently reads the publisher feeds and serves the seven-day feed with source fallback handling.
-
-## Validation commands
-
-```powershell
+```bash
+npm test
+npm run evaluate:classification -- --check
+npm run typecheck
 npm run lint
 npm run build
-npm run start
+npx playwright install chromium
+npm run test:browser
+npm audit --omit=dev
 ```
 
-Lint may report non-blocking image optimization warnings because publisher RSS feeds use changing image CDN domains. The production build must complete with `Compiled successfully` and `Finished TypeScript`.
+The Node and browser suites use simulated provider responses. For a live read-only RSS comparison against the baseline, run `npm run evaluate:impact`. If your network requires an HTTP proxy, Node.js 24 supports `NODE_USE_ENV_PROXY=1`. Both evaluation commands need the baseline commit in local Git history. Publisher feeds can be checked individually with `node scripts/check-news-sources.mjs`.
 
-## Attribution and reliability
+## Documentation
 
-IntelMatrix displays shortened RSS summaries and sends readers to the original publisher. RSS availability, wording, images, and timestamps depend on each publisher. A single source timeout does not take down the newsroom; other sources continue and IndexedDB keeps the latest successful feed available offline.
-
-## Article pages, translation and AI setup
-
-Headlines, images, breaking-news links and assistant references now open `/news/[id]`. The detail page has the publisher excerpt, publication time, estimated reading time, a save action and an explicit external source button. Its AI briefing includes a summary, supported facts, available background, a cautious explanation of significance and uncertainties. AI uses the RSS headline and excerpt only; it does not claim to have read the full article.
-
-Select a language to translate headlines and excerpts throughout the feed and detail page. Translation prefers Gemini when configured and falls back to MyMemory. Public translation has service quotas: failures retain the original text, display a retry action and are not cached as successful translations.
-
-Configure the following server-side environment variables in `.env.local` and your hosting environment, then restart/redeploy:
-
-```env
-GEMINI_API_KEY=your-key-from-google-ai-studio
-GEMINI_MODEL=gemini-3.1-flash-lite
-```
-
-The model is configurable; consult [Google's model reference](https://ai.google.dev/gemini-api/docs/models) for models available to your account. Keys are never sent to the browser. Without a key, the assistant explicitly shows publisher excerpts instead of an AI answer, and the article page marks AI analysis as unavailable. Provider errors have the same visible fallback and can be retried.
-
-Importance is a keyword-based priority heuristic, independent of publication age; it is not an AI fact check. Sorting by importance or latest happens before pagination. Additional pages load only when requested.
-
-Article availability follows the rolling RSS feed and its in-process cache. Cached articles can also be read from IndexedDB on the same device. This repository does not yet have a durable server-side article database, so older links may become unavailable after leaving RSS and a server restart. Service-worker responses use the browser Cache API, separately from article records in IndexedDB.
-
-Run `npm test`, `npm run lint` and `npm run build` to verify changes. The regression suite mocks external services and tests RSS media extraction, stable IDs and detail lookup, category filtering, pagination, full-length translations, retry behavior, AI schema validation, conversation context and article references. A real Gemini response requires a configured key and is not covered by the mocked tests.
-
-## Performance and editorial assistant controls
-
-The news API accepts `language=tr|en|de|fr|es` and includes confirmed `localized_title` values with each page. These seed the client translation queue, so a ready headline does not require a second request. Complete public feed responses are cached by language, filters and pagination at the Vercel CDN; partial translation responses are not cached. The browser shows its saved feed while refreshing and writes fresh records to IndexedDB without blocking rendering.
-
-Model roles are independent, server-side settings:
-
-```env
-GEMINI_TRANSLATION_MODEL=gemini-3.5-flash-lite
-GEMINI_SELECTION_MODEL=gemini-3.5-flash-lite
-GEMINI_ASSISTANT_MODEL=gemini-3.8-flash
-```
-
-These are the defaults, verified against the available Gemini models. `GEMINI_MODEL` remains a legacy ingestion setting. The assistant and article briefings use the editorial model; translation and relevance selection use the fast model. Consult the [Gemini model reference](https://ai.google.dev/gemini-api/docs/models) for account availability.
-
-The assistant interprets concise/detailed requests and explicit word, sentence and bullet limits. The default answer is capped at 140 words; concise requests at 60; detailed requests at 360 unless the user supplies a different bounded word count. A final server-side check enforces the budget even if the model exceeds it. Formatting-only follow-ups reuse validated prior article references and preserve the topic. Source links remain available in a collapsed list. Long news grids skip offscreen rendering and unchanged cards avoid repeated React renders.
-
-Public RSS fetches use the Next.js Data Cache with five-minute revalidation, so a fresh feed-function instance can reuse upstream responses. The feed route stays dynamic through request query access; it avoids force-dynamic because that would disable the explicit upstream cache.
-
-Translation attempts have bounded per-model timeouts and fall back to Gemini 3.1 Flash-Lite on provider errors before using the public translation service. Successful partial translations are still returned immediately and never discarded.
-
-The assembled in-process feed snapshot is refreshed after 30 seconds, and the CDN feed window is 60 seconds plus a 60-second stale-while-revalidate window; this avoids stacking multiple five-minute caches on top of upstream RSS revalidation.
-
-Only the documented free-tier models Gemini 3.8 Flash, Gemini 3.5 Flash-Lite and Gemini 3.1 Flash-Lite are allowed by the application model resolver. Paid-only model overrides such as Hydrogen are ignored; provider failure does not switch to a paid-only model. Free-tier availability is not a billing guarantee: the API project must be on the free tier, and quota limits still apply. See https://ai.google.dev/gemini-api/docs/pricing#gemini-3.8-flash .
-
-### News coverage and category filtering
-
-The source registry in `lib/news/sources.ts` contains 95 public RSS/Atom feeds from 65 distinct publishers, including Turkish newsrooms and dedicated AI, science, health, climate, energy, defence, culture and sports sections. A live check on 16 November 2026 returned 2,462 unique recent articles, including 340 AI articles; these are observed counts, not guaranteed inventory. Feeds supply their latest items, so the seven-day window is not a complete historical archive.
-
-Articles have a primary `category` and multiple `categories`. Filtering uses all categories on the server and in offline storage. Publisher sections, RSS topics, title/excerpt signals and relevant entities contribute; NVIDIA/Jensen Huang reports can appear in AI and technology, while GeForce-only gaming reports do not automatically become AI stories. The combined feed deduplicates articles. Category assignment remains a local heuristic, not a claim of perfect semantic classification.
-
-Twenty bounded fetch workers reuse the existing five-minute upstream cache. Failed feeds do not prevent healthy feeds from loading; existing recent records remain available in the warm process. The snapshot cap is 12,000 and each feed contributes at most 200 items. API `coverage` reports configured and active feed/publisher counts; `publishers` distinguishes newsrooms from their section feeds.
-
-Run `node scripts/check-news-sources.mjs` to validate publishers' current RSS/Atom responses and dated items, and `node scripts/check-news-feed.mjs` to check the normalized, deduplicated feed and category counts. No API key is required.
+- [Architecture audit](docs/architecture-audit.md)
+- [Classification evaluation](docs/classification-evaluation.md)
+- [Impact scoring](docs/impact-scoring-v3.md)
+- [Event intelligence](docs/event-intelligence.md)
+- [Roadmap](docs/product-roadmap.md)
+- [Development report](NIGHT_REPORT.md)

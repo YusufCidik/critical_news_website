@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const response = await fetch(
       `https://api.frankfurter.app/latest?from=USD&to=${SYMBOLS.join(",")}`,
-      { next: { revalidate: 300 } }
+      { next: { revalidate: 300 }, signal: AbortSignal.timeout(5000) }
     );
 
     if (!response.ok) {

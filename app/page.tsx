@@ -2,7 +2,10 @@
 
 import { ui } from "@/lib/i18n/interface-labels";
 import { NewsFeed } from "@/components/NewsFeed";
-import { uniqueNews } from "@/lib/news/unique";
+import { intelligenceLabels } from "@/lib/i18n/intelligence-labels";
+import { compareNewsPriority, matchesCountry, matchesNewsSearch, MAX_SEARCH_LENGTH } from "@/lib/news/discovery";
+import { matchesNewsCategory } from "@/lib/news/categories";
+import { useBookmarkStore } from "@/lib/store/bookmark-store";
 import { useLocalizedNews } from "@/hooks/useLocalizedNews";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -54,30 +57,37 @@ export default function Home() {
   const [country, setCountry] = useState("world");
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
+  const [savedView, setSavedView] = useState(false);
+  const bookmarks = useBookmarkStore((state) => state.bookmarks);
+  const hydrateBookmarks = useBookmarkStore((state) => state.hydrateBookmarks);
+  const intel = intelligenceLabels(language);
+  useEffect(() => { hydrateBookmarks(); }, [hydrateBookmarks]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setQuery(search.trim()), 300);
+    return () => window.clearTimeout(timer);
+  }, [search]);
+
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [sort, setSort] = useState<"importance" | "latest">("importance");
   const { items: rawItems, loading, loadingMore, hasMore, total, sources, error, loadMore } = useNewsData({
     country,
     category,
     sort,
+    search: query,
+    enabled: !savedView,
   });
 
-  const localized = useLocalizedNews(rawItems, language);
-  const items = uniqueNews(localized.items);
+  const savedMatches = useMemo(() => savedView ? bookmarks.filter((story) => matchesNewsSearch(story, query)
+    && matchesNewsCategory(story, category) && matchesCountry(story, country))
+    .sort((a, b) => compareNewsPriority(a, b, sort, category)) : [], [bookmarks, savedView, query, category, country, sort]);
+  const localized = useLocalizedNews(savedView ? savedMatches : rawItems, language);
+  const items = localized.items;
   const regionNames = new Intl.DisplayNames([language], { type: "region" });
   const countryLabel = (value: string) => value === "world" ? getNewsLabel(language, "world") : regionNames.of(({ turkey: "TR", us: "US", uk: "GB", china: "CN", israel: "IL", ukraine: "UA", russia: "RU", iran: "IR", france: "FR", germany: "DE", india: "IN", japan: "JP" } as Record<string, string>)[value]) || value;
   const countryName = countryLabel(country);
   const activeCategoryLabel = category === "all" ? text.allCategories : getNewsLabel(language, category);
   const locale = language === "tr" ? "tr-TR" : language === "de" ? "de-DE" : language === "fr" ? "fr-FR" : language === "es" ? "es-ES" : "en-US";
-  const visibleStories = useMemo(() => {
-    const query = search.trim().toLocaleLowerCase("tr-TR");
-    const ordered = [...items].sort((a, b) => sort === "importance" ? b.impact_score - a.impact_score || Date.parse(b.published_at || "") - Date.parse(a.published_at || "") : Date.parse(b.published_at || "") - Date.parse(a.published_at || ""));
-    if (!query) return ordered;
-    return ordered.filter((story) =>
-      `${story.translated_title} ${story.executive_summary} ${story.source}`.toLocaleLowerCase("tr-TR").includes(query)
-    );
-  }, [items, search, sort]);
-
   useEffect(() => {
     const updateConnection = () => setOnline(navigator.onLine);
     updateConnection();
@@ -92,13 +102,13 @@ export default function Home() {
 
   useEffect(() => {
     const target = sentinelRef.current;
-    if (!target || !hasMore || loading || loadingMore || error) return;
+    if (savedView || !target || !hasMore || loading || loadingMore || error) return;
     const observer = new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting)) void loadMore();
     }, { rootMargin: "600px 0px" });
     observer.observe(target);
     return () => observer.disconnect();
-  }, [hasMore, loading, loadingMore, loadMore, error]);
+  }, [savedView, hasMore, loading, loadingMore, loadMore, error]);
 
   return (
     <main id="top" className="min-h-screen bg-[#f6f6f4] text-slate-950">
@@ -118,7 +128,7 @@ export default function Home() {
           </a>
 
           <div className="mt-5 flex flex-col gap-3 border-t border-slate-200 py-3 md:flex-row md:items-center md:justify-between">
-            <nav aria-label="Haber kategorileri" className="flex gap-1 overflow-x-auto whitespace-nowrap">
+            <nav aria-label={text.allCategories} className="flex gap-1 overflow-x-auto whitespace-nowrap">
               {CATEGORIES.map(([value]) => (
                 <button
                   key={value}
@@ -144,11 +154,12 @@ export default function Home() {
               >
                 {COUNTRIES.map(([value]) => <option key={value} value={value}>{countryLabel(value)}</option>)}
               </select>
-              <label htmlFor="news-search" className="sr-only">Haberlerde ara</label>
+              <label htmlFor="news-search" className="sr-only">{text.searchPlaceholder}</label>
               <input
                 id="news-search"
                 type="search"
                 value={search}
+                maxLength={MAX_SEARCH_LENGTH}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder={text.searchPlaceholder}
                 className="h-10 w-36 border border-slate-300 bg-white px-3 text-sm outline-none placeholder:text-slate-400 focus:border-sky-700 sm:w-48"
@@ -161,53 +172,57 @@ export default function Home() {
 
         <section className="px-4 pt-5 md:px-8">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-slate-200 bg-slate-50 p-3">
-            <p className="text-xs text-slate-600">{ui(language, "intro")}</p>
+            <div className="flex flex-wrap gap-2">
+              {[false, true].map((value) => <button key={String(value)} type="button" aria-pressed={savedView === value}
+                onClick={() => setSavedView(value)} className="min-h-10 border border-slate-300 bg-white px-3 text-sm font-semibold aria-pressed:border-sky-800 aria-pressed:text-sky-800">
+                {value ? intel.saved : intel.agenda}
+              </button>)}
+            </div>
             <select aria-label={text.sortBy} value={sort} onChange={(event) => setSort(event.target.value as "importance" | "latest")} className="min-h-10 border border-slate-300 bg-white px-3 text-sm">
-              <option value="importance">{text.sortImpact}</option>
+              <option value="importance">{category === "all" ? intel.global : intel.category}</option>
               <option value="latest">{text.sortLatest}</option>
             </select>
           </div>
-          {loading && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{ui(language, "updating")}</p>}
+          {!savedView && loading && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{ui(language, "updating")}</p>}
           {localized.status === "loading" && items.length > 0 && <p role="status" className="mb-3 text-xs text-slate-500">{ui(language, "translating")}</p>}
           {localized.status === "error" && <p role="status" className="mb-3 text-xs text-amber-700">{ui(language, "translationError")} <button type="button" onClick={localized.retry} className="min-h-10 underline">{ui(language, "retry")}</button></p>}
           <div className="mb-3 flex flex-wrap items-end justify-between gap-3 border-b border-slate-300 pb-2">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700">{text.topStories}</p>
-              <h1 className="mt-1 font-serif text-xl font-bold uppercase tracking-[0.08em]">{countryName}{category !== "all" ? ` · ${activeCategoryLabel}` : ` ${text.agenda}`}</h1>
+              <h1 className="mt-1 font-serif text-xl font-bold uppercase tracking-[0.08em]">{savedView ? intel.saved : `${countryName} ${text.agenda}`}{category !== "all" && ` · ${activeCategoryLabel}`}</h1>
             </div>
-            <p className="text-[11px] text-slate-500">{total} {ui(language, "news")} · {sources.length} {text.sourcesCount}</p>
+            <p className="text-[11px] text-slate-500">{savedView ? items.length : total} {ui(language, "news")}{!savedView && ` · ${sources.length} ${text.sourcesCount}`}</p>
           </div>
 
-          {error && <p role="status" className="mb-4 border-l-2 border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-900">{error}</p>}
+          {!savedView && error && <p role="status" className="mb-4 border-l-2 border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-900">{error}</p>}
 
-          {loading && items.length === 0 ? (
+          {!savedView && loading && items.length === 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[0, 1, 2, 3, 4, 5].map((value) => <div key={value} className="aspect-[16/10] animate-pulse bg-slate-100" />)}
             </div>
-          ) : <NewsFeed stories={visibleStories} language={language} />}
+          ) : <NewsFeed stories={items} language={language} category={category} />}
 
-          {!loading && visibleStories.length === 0 && !error && (
-            <p className="py-12 text-center text-sm text-slate-600">{ui(language, "noSearch")}</p>
+          {(savedView || !loading && !error) && items.length === 0 && (
+            <p className="py-12 text-center text-sm text-slate-600">{savedView && !bookmarks.length ? intel.savedEmpty : intel.searchEmpty}</p>
           )}
 
 
-          {loadingMore && <p className="py-6 text-center text-sm text-slate-500" role="status">{text.loadingNews}</p>}
+          {!savedView && loadingMore && <p className="py-6 text-center text-sm text-slate-500" role="status">{text.loadingNews}</p>}
           <div ref={sentinelRef} className="h-4" aria-hidden="true" />
-          {hasMore && !loadingMore && error && (
+          {!savedView && hasMore && !loadingMore && (
             <div className="py-6 text-center">
               <button type="button" onClick={() => void loadMore()} className="border border-slate-400 bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-800 hover:border-slate-900 hover:bg-slate-50">
                 {text.loadMore}
               </button>
             </div>
           )}
-          {!hasMore && items.length > 0 && <p className="py-6 text-center text-xs uppercase tracking-[0.15em] text-slate-400">{text.endOfStream}</p>}
+          {!savedView && !hasMore && items.length > 0 && <p className="py-6 text-center text-xs uppercase tracking-[0.15em] text-slate-400">{text.endOfStream}</p>}
         </section>
 
         <footer className="mt-4 flex flex-col gap-2 border-t border-slate-300 px-4 py-5 text-[10px] text-slate-500 md:flex-row md:items-center md:justify-between md:px-8">
           <span className="font-serif text-sm font-bold tracking-[0.12em] text-slate-700">INTELMATRIX</span>
           <span>{text.footerDesc}</span>
         </footer>
-        <NewsAssistant articles={items} />
+        <NewsAssistant articles={savedView ? [] : items} />
       </div>
     </main>
   );
