@@ -16,10 +16,17 @@ test("newsroom search, grouped coverage, extractive briefing and bookmarks", asy
   await expect(cards.first()).toContainText("2 publishers");
   await expect(cards.first()).toContainText("Global impact");
 
+  await page.getByRole("button", { name: "Science", exact: true }).click();
+  await expect(page.getByRole("heading", { name: /Science/ })).toBeVisible();
+  await expect(cards.first()).toContainText("Category importance");
+  await page.getByRole("button", { name: /^all categories$/i }).click();
   const search = page.getByRole("searchbox");
   await search.fill("unusual planets Vega");
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toContainText("Telescope maps unusual planets near Vega");
+  await search.fill("coastal delta");
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText("Provisional");
   await search.fill("no-such-report");
   await expect(page.getByText("No matching reports in the current feed.")).toBeVisible();
   await search.fill("riverside");
@@ -49,4 +56,22 @@ test("newsroom search, grouped coverage, extractive briefing and bookmarks", asy
   await expect(cards).toHaveCount(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(await page.evaluate(() => window.innerWidth));
   expect(errors).toEqual([]);
+});
+
+
+test("the feed announces loading and a localized upstream error", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("intelmatrix_lang", "en"));
+  let release;
+  const blocked = new Promise((resolve) => { release = resolve; });
+  await page.route("**/api/news?*", async (route) => {
+    await blocked;
+    await route.fulfill({ status: 502, json: { error: "fixture unavailable" } });
+  });
+  try {
+    await page.goto("/");
+    await expect(page.getByRole("status", { name: /loading news/i })).toBeVisible();
+  } finally {
+    release();
+  }
+  await expect(page.getByRole("status").filter({ hasText: "The live feed is unavailable" })).toBeVisible();
 });

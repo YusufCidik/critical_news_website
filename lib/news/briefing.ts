@@ -23,7 +23,9 @@ export function sourcePassages(title: string, text: string): string[] {
   const key = (value: string) => normalizeNewsText(value).replace(/[^\p{L}\p{N}]/gu, "");
   const seen = new Set([key(title)]);
   return newsSentences(text, 32).filter((passage) => {
-    if (passage.length < 15 || passage.length > 550) return false;
+    if (passage.length < 15 || passage.length > 550
+      || /^(?:continue reading|read more|sign up|advertisement|this article first appeared)\b/i.test(passage)
+      || /(?:\.{3}|…)\s*$/.test(passage)) return false;
     const normalized = key(passage);
     if (seen.has(normalized)) return false;
     seen.add(normalized);
@@ -37,7 +39,7 @@ function selectedPassages(output: unknown, passages: string[], limit: number) {
   return [...new Set<number>(output)].sort((a, b) => a - b).map((index) => passages[index]);
 }
 
-export async function generateArticleBriefing(story: NewsStory, language: string, mode: BriefingMode = "concise") {
+export async function generateArticleBriefing(story: NewsStory, mode: BriefingMode = "concise") {
   const evidence = story.evidence ?? { text: story.executive_summary, kind: "rss-excerpt" as const };
   const passages = sourcePassages(story.original_title, evidence.text || story.executive_summary);
   if (!passages.length) return { available: false as const, reason: "insufficient_evidence" };
@@ -46,7 +48,7 @@ export async function generateArticleBriefing(story: NewsStory, language: string
   const fallback = { available: true as const, briefing: { ...metadata, passages: passages.slice(0, limit) }, model: "extractive" };
   const ai = getAIClient(12_000);
   if (!ai || passages.length <= limit) return fallback;
-  const key = createHash("sha256").update(JSON.stringify([story.id, story.original_title, metadata, passages, language])).digest("hex");
+  const key = createHash("sha256").update(JSON.stringify([story.id, story.original_title, metadata, passages])).digest("hex");
   const existing = cache.get(key);
   if (existing) return { available: true as const, ...existing };
   const running = pending.get(key);

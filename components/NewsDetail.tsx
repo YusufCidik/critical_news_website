@@ -97,7 +97,7 @@ export function NewsDetail({ id, initialStory, event }: { id: string; initialSto
           <div className="mb-5 flex flex-wrap items-center gap-3">
             <span className="text-xs font-bold uppercase tracking-[0.16em] text-sky-800">{getNewsLabel(language, item.category === "Dünya" ? "world" : item.category)}</span>
             <span className="h-4 border-l border-slate-300" aria-hidden="true" />
-            <ImportanceBadge score={item.impact?.global} language={language} />
+            <ImportanceBadge score={item.impact?.global} language={language} provisional={item.impact?.status === "provisional"} />
           </div>
           <h1 className="text-balance font-serif text-[32px] font-bold leading-[1.13] tracking-[-0.025em] sm:text-[44px] lg:text-[54px]">{item.translated_title}</h1>
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs leading-6 text-slate-500">

@@ -19,10 +19,20 @@ export interface EventCoverage extends EventBadge {
 }
 
 const HOUR = 3_600_000;
-const stopWords = new Set("about after again amid and are before breaking could days from have into latest live more news says some than that their them there these they this through today update updates with would year olan icin sonra kadar yeni haber durch avec dans pour sobre para".split(" "));
+const stopWords = new Set("about after again amid and are before breaking could days from have into latest live more news says said some than that their them there these they this through today update updates with would year olan icin sonra kadar yeni haber durch avec dans pour sobre para its the new has how was were will".split(" "));
 const identity = (title: string) => normalizeNewsText(title).replace(/[^\p{L}\p{N}]+/gu, " ").trim();
-function terms(title: string) {
-  return new Set(identity(title).split(" ").filter((word) => word.length >= 3 && !stopWords.has(word)).slice(0, 30));
+const synonyms: Record<string, string> = {
+  capsized: "capsize", capsizes: "capsize", capsizing: "capsize", overturned: "capsize", overturns: "capsize",
+  dead: "fatality", died: "fatality", killed: "fatality", deaths: "fatality", fatalities: "fatality", kills: "fatality",
+  hacked: "hack", hacking: "hack", hackers: "hack", breached: "hack", breach: "hack", cyberattack: "hack",
+  captured: "capture", arrested: "capture", arrest: "capture", detained: "capture", detention: "capture",
+  gunbattle: "firefight", shootout: "firefight", "shoot-out": "firefight",
+  wins: "win", secure: "win", secures: "win", thrashes: "win", beat: "win", beats: "win", defeat: "win", thrash: "win", defeats: "win", dispatch: "win",
+  mexican: "mexico", fuels: "fuel", eleven: "11", mourners: "funeral", regulating: "regulate", controlling: "regulate",
+  negotiations: "talks", negotiating: "talks", deadlocked: "deadlock", impasse: "deadlock", stall: "deadlock", stalling: "deadlock",
+};
+function terms(text: string, limit: number) {
+  return new Set(identity(text).split(" ").map((word) => synonyms[word] ?? word).filter((word) => (word.length >= 3 || /^\d{2}$/.test(word)) && !stopWords.has(word)).slice(0, limit));
 }
 
 const relativeLocation = /\b(?:in|near|outside|at) ([\p{Lu}][\p{L}’'-]+(?: [\p{Lu}][\p{L}’'-]+){0,2})(?=[,.;:!?]|\s|$)/gu;
@@ -30,7 +40,7 @@ const nonLocations = /^(?:January|February|March|April|May|June|July|August|Sept
 function locations(title: string) {
   return [...title.matchAll(relativeLocation)].filter((match) => !nonLocations.test(match[1])).map((match) => normalizeNewsText(match[1]));
 }
-interface IndexedReport { report: Report; title: string; terms: Set<string>; locations: string[]; date: number; eventId: string }
+interface IndexedReport { report: Report; title: string; terms: Set<string>; context: Set<string>; locations: string[]; date: number; eventId: string }
 interface Group { anchor: IndexedReport; members: Set<string> }
 
 /** Retains group membership through warm refreshes. Candidate retrieval is
@@ -96,7 +106,7 @@ export class EventIndex {
 
   private removeGroup(id: string, { anchor }: Group) {
     this.groups.delete(id);
-    for (const term of anchor.terms) {
+    for (const term of anchor.context) {
       const posting = this.postings.get(term)!;
       posting.delete(id);
       if (!posting.size) this.postings.delete(term);
@@ -108,11 +118,13 @@ export class EventIndex {
 
   private add(report: Report) {
     const title = identity(report.original_title);
-    const tokens = terms(report.original_title);
+    const tokens = terms(report.original_title, 30);
+    const lead = newsSentences(report.executive_summary.slice(0, 360), 1)[0] ?? "";
+    const context = new Set([...tokens, ...terms(lead, 22)]);
     const places = locations(report.original_title);
     const date = Date.parse(report.published_at);
     const candidates = new Map<string, number>();
-    for (const token of tokens) {
+    for (const token of context) {
       const posting = this.postings.get(token);
       if (posting && posting.size <= 120) {
         for (const id of posting) candidates.set(id, (candidates.get(id) ?? 0) + 1);
@@ -123,22 +135,32 @@ export class EventIndex {
     }
     let eventId = report.id;
     let best = 0;
-    for (const [id, shared] of candidates) {
+    for (const [id, sharedContext] of candidates) {
       const { anchor } = this.groups.get(id)!;
-      if (shared < 4 || Math.abs(date - anchor.date) > 36 * HOUR) continue;
+      if (sharedContext < 4 || Math.abs(date - anchor.date) > 36 * HOUR) continue;
+      const headlineMatches = [...tokens].filter((token) => anchor.terms.has(token));
+      const minHeadline = Math.min(tokens.size, anchor.terms.size);
+      const shared = headlineMatches.length;
       if (places.length && anchor.locations.length && !places.some((place) =>
         anchor.locations.some((other) => place === other || place.startsWith(other + " ") || other.startsWith(place + " ")))) continue;
       const overlap = shared / (tokens.size + anchor.terms.size - shared);
-      const hasDistinguishingTerm = [...tokens].some((token) => anchor.terms.has(token) && (this.postings.get(token)?.size ?? 0) <= 25);
-      if ((title !== anchor.title && (overlap < 0.54 || !hasDistinguishingTerm)) || overlap < best) continue;
-      if (overlap === best && id >= eventId) continue;
+      const headlineContainment = shared / minHeadline;
+      const corroboration = sharedContext / Math.min(context.size, anchor.context.size);
+      const rare = headlineMatches.filter((token) => (this.postings.get(token)?.size ?? 0) <= 22 && !/^[0-9]+$/.test(token));
+      const exactTitle = title === anchor.title && shared >= 4;
+      const headlineMatch = shared >= 4 && (overlap >= 0.54 || headlineContainment >= 0.72) && rare.length >= 1;
+      const leadMatch = shared >= 2 && rare.length >= 2 && sharedContext >= 5 && corroboration >= (shared >= 3 ? 0.38 : 0.45)
+        && (shared > 2 || (headlineContainment >= 0.4 && Math.abs(date - anchor.date) <= 18 * HOUR));
+      if (!exactTitle && !headlineMatch && !leadMatch) continue;
+      const score = exactTitle ? 1 : 0.52 * headlineContainment + 0.48 * corroboration;
+      if (score < best || (score === best && id >= eventId)) continue;
       eventId = id;
-      best = overlap;
+      best = score;
     }
-    const entry = { report, title, terms: tokens, locations: places, date, eventId };
+    const entry = { report, title, terms: tokens, context, locations: places, date, eventId };
     if (!this.groups.has(eventId)) {
       this.groups.set(eventId, { anchor: entry, members: new Set() });
-      for (const token of tokens) {
+      for (const token of context) {
         if (!this.postings.has(token)) this.postings.set(token, new Set());
         this.postings.get(token)!.add(eventId);
       }
@@ -154,9 +176,9 @@ function conflictingCounts(reports: Report[]): EventCoverage["disagreements"] {
   const claims = reports.flatMap((report) => {
     const passages = newsSentences(report.executive_summary, 6);
     const counts = passages.flatMap((evidence) => {
-      if (/\b(?:at least|over|more than|up to|could|estimat\w*|unconfirmed|earlier|initially|previously|expected|fears?|denied|denies|false|rumou?rs?|not)\b/i.test(evidence)) return [];
-      const matches = [...evidence.matchAll(/\b(\d{1,7}) (?:people (?:were |are )?(?:killed|dead)|deaths|fatalities)\b/gi)];
-      return matches.length === 1 ? [{ value: Number(matches[0][1]), evidence }] : [];
+      if (/\b(?:at least|over|more than|up to|could|estimat\w*|unconfirmed|earlier|initially|previously|ris(?:e|es|en|ing)|increased to|revised|updated toll|expected|fears?|denied|denies|false|rumou?rs?|not)\b/i.test(evidence)) return [];
+      const matches = [...evidence.matchAll(/(?<![\d.,])(\d{1,3}(?:,\d{3})+|\d{1,7}) (?:people (?:were |are )?(?:killed|dead)|deaths|fatalities)\b/gi)];
+      return matches.length === 1 ? [{ value: Number(matches[0][1].replaceAll(",", "")), evidence }] : [];
     });
     if (counts.length !== 1) return [];
     return [{ reportId: report.id, ...counts[0], date: Date.parse(report.published_at) }];

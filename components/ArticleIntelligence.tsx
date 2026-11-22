@@ -13,7 +13,7 @@ export function ArticleIntelligence({ item, event, language }: { item: NewsItem;
       {impact && <details className="rounded-xl border border-slate-200 bg-white p-5">
         <summary className="cursor-pointer font-semibold">{t.evidence}</summary>
         <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-          <div><dt className="font-semibold">{t.global}</dt><dd>{impact.global == null ? t.insufficient : `${impact.global}/10`}</dd></div>
+          <div><dt className="font-semibold">{t.global}</dt><dd>{impact.global == null ? t.insufficient : `${impact.global}/10`}{impact.status === "provisional" && <span className="ml-2 font-semibold text-amber-800">{t.provisional}</span>}</dd></div>
           <div><dt className="font-semibold">{t.category} · {getNewsLabel(language, item.category)}</dt><dd>{impact.category == null ? t.insufficient : `${impact.category}/10`}</dd></div>
         </dl>
         <p className="mt-3 text-sm text-slate-600">{t[impact.confidence]} · {t.publisherText}</p>

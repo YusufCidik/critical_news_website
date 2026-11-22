@@ -35,15 +35,17 @@ export interface NewsItem {
   updated_at?: string;
 }
 
+export type NewsLoadError = "cachedFeed" | "feedUnavailable" | "pageUnavailable";
+
 interface NewsState {
   items: NewsItem[];
   activeItem: NewsItem | null;
   loading: boolean;
-  error: string | null;
+  error: NewsLoadError | null;
   setItems: (items: NewsItem[]) => void;
   setActiveItem: (item: NewsItem | null) => void;
   setLoading: (value: boolean) => void;
-  setError: (value: string | null) => void;
+  setError: (value: NewsLoadError | null) => void;
 }
 
 export const useNewsStore = create<NewsState>((set) => ({

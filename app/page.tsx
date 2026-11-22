@@ -193,11 +193,11 @@ export default function Home() {
             <p className="text-[11px] text-slate-500">{savedView ? items.length : total} {ui(language, "news")}{!savedView && ` · ${sources.length} ${text.sourcesCount}`}</p>
           </div>
 
-          {!savedView && error && <p role="status" className="mb-4 border-l-2 border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-900">{error}</p>}
+          {!savedView && error && <p role="status" className="mb-4 border-l-2 border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-900">{intel[error]}</p>}
 
           {!savedView && loading && items.length === 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {[0, 1, 2, 3, 4, 5].map((value) => <div key={value} className="aspect-[16/10] animate-pulse bg-slate-100" />)}
+            <div role="status" aria-label={text.loadingNews} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[0, 1, 2, 3, 4, 5].map((value) => <div key={value} aria-hidden="true" className="aspect-[16/10] animate-pulse bg-slate-100" />)}
             </div>
           ) : <NewsFeed stories={items} language={language} category={category} />}
 

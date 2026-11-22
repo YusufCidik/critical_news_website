@@ -120,7 +120,10 @@ function normalizeItem(item: Record<string, unknown>, feed: FeedDefinition): New
   const evidence = { text: (content.length > lead.length ? content : lead).slice(0, 6000), kind: (content.length > lead.length ? "rss-content" : "rss-excerpt") as NewsStory["evidence"]["kind"] };
   const topics = Array.isArray(item.categories) ? item.categories.filter((value): value is string => typeof value === "string") : [];
   const classification = classifyNews(title, lead || evidence.text, feed.category, topics);
-  const impact = assessImpact(title, (evidence.text || lead).slice(0, 2000), classification.category, classification.categories);
+  // Keep the publisher's separate lead even when content:encoded is
+  // longer and starts with boilerplate or a different framing.
+  const impactText = [...new Set([lead.slice(0, 650), evidence.text.slice(0, 1500)].filter(Boolean))].join("\n");
+  const impact = assessImpact(title, impactText.slice(0, 2000), classification.category, classification.categories);
   const id = createHash("sha1").update(url).digest("hex");
   const ageHours = Math.max(0, Date.now() - date.getTime()) / 3_600_000;
   const isBreaking = ageHours <= 24 && /(?:^|\s)(breaking(?: news)?|live updates|just in|developing|son dakika)(?:\s|:|$)/i.test(title);

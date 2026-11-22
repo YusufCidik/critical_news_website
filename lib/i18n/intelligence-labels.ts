@@ -1,6 +1,7 @@
 import type { SupportedLanguage } from "@/lib/store/language-store";
 
 const en = {
+  cachedFeed: "Showing recently cached reports.", feedUnavailable: "The live feed is unavailable and there are no cached results.", pageUnavailable: "More reports could not be loaded. Check your connection and retry.",
   agenda: "News agenda", saved: "Saved", savedEmpty: "Save articles to read them later on this device.", searchEmpty: "No matching reports in the current feed.",
   global: "Global impact", category: "Category importance", evidence: "Score evidence", insufficient: "Insufficient evidence",
   limited: "Limited confidence", moderate: "Moderate confidence", provisional: "Provisional", publisherText: "Publisher’s original wording",
@@ -10,12 +11,13 @@ const en = {
   extracted: "Publisher passages", excerpt: "RSS excerpt", content: "Publisher text supplied via RSS",
   uncertainty: "These passages reflect what the publisher reported at the time. They may leave questions unanswered.",
   population: "People affected", reach: "Geographic reach", economic: "Economic consequences", institutional: "Institutional consequences",
-  scientific: "Scientific evidence", duration: "Duration", magnitude: "Magnitude", reversibility: "Reversibility",
+  scientific: "Scientific evidence", duration: "Duration", magnitude: "Magnitude", reversibility: "Reversibility", bounded: "Observed, bounded outcome", developing: "Reported development with uncertain reach",
 };
 type Labels = typeof en;
 const messages: Record<SupportedLanguage, Labels> = {
   en,
   tr: {
+    cachedFeed: "Yakın zamanda önbelleğe alınan haberler gösteriliyor.", feedUnavailable: "Canlı akışa ulaşılamıyor ve önbellekte sonuç yok.", pageUnavailable: "Daha fazla haber yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
     agenda: "Haber gündemi", saved: "Kaydedilenler", savedEmpty: "Haberleri bu cihazda daha sonra okumak için kaydedin.", searchEmpty: "Güncel akışta eşleşen haber bulunamadı.",
     global: "Küresel etki", category: "Kategori önemi", evidence: "Puanın dayanağı", insufficient: "Yetersiz kanıt",
     limited: "Sınırlı güven", moderate: "Orta düzeyde güven", provisional: "Geçici değerlendirme", publisherText: "Yayıncının özgün metni",
@@ -25,9 +27,10 @@ const messages: Record<SupportedLanguage, Labels> = {
     extracted: "Yayıncıdan alıntılar", excerpt: "RSS özeti", content: "RSS ile sağlanan yayıncı metni",
     uncertainty: "Alıntılar, yayıncının o tarihte bildirdiklerini aktarır. Bazı sorular yanıtsız kalabilir.",
     population: "Etkilenen kişiler", reach: "Coğrafi kapsam", economic: "Ekonomik sonuçlar", institutional: "Kurumsal sonuçlar",
-    scientific: "Bilimsel kanıt", duration: "Süre", magnitude: "Büyüklük", reversibility: "Geri döndürülebilirlik",
+    scientific: "Bilimsel kanıt", duration: "Süre", magnitude: "Büyüklük", reversibility: "Geri döndürülebilirlik", bounded: "Gözlemlenen sınırlı sonuç", developing: "Kapsamı belirsiz gelişme",
   },
   de: {
+    cachedFeed: "Zuletzt gespeicherte Meldungen werden angezeigt.", feedUnavailable: "Der Live-Feed ist nicht verfügbar und es gibt keine zwischengespeicherten Ergebnisse.", pageUnavailable: "Weitere Meldungen konnten nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
     agenda: "Nachrichtenübersicht", saved: "Gespeichert", savedEmpty: "Speichern Sie Artikel zum späteren Lesen auf diesem Gerät.", searchEmpty: "Keine passenden Meldungen im aktuellen Feed.",
     global: "Globale Auswirkungen", category: "Bedeutung im Themengebiet", evidence: "Grundlage der Bewertung", insufficient: "Unzureichende Belege",
     limited: "Begrenzte Sicherheit", moderate: "Mittlere Sicherheit", provisional: "Vorläufig", publisherText: "Originalwortlaut der Quelle",
@@ -37,9 +40,10 @@ const messages: Record<SupportedLanguage, Labels> = {
     extracted: "Auszüge der Quelle", excerpt: "RSS-Auszug", content: "Über RSS bereitgestellter Quellentext",
     uncertainty: "Die Auszüge geben den damaligen Bericht der Quelle wieder. Fragen können offenbleiben.",
     population: "Betroffene Menschen", reach: "Geografische Reichweite", economic: "Wirtschaftliche Folgen", institutional: "Institutionelle Folgen",
-    scientific: "Wissenschaftliche Belege", duration: "Dauer", magnitude: "Ausmaß", reversibility: "Umkehrbarkeit",
+    scientific: "Wissenschaftliche Belege", duration: "Dauer", magnitude: "Ausmaß", reversibility: "Umkehrbarkeit", bounded: "Beobachtetes begrenztes Ergebnis", developing: "Gemeldete Entwicklung mit unklarer Reichweite",
   },
   fr: {
+    cachedFeed: "Affichage des articles récemment mis en cache.", feedUnavailable: "Le flux est indisponible et aucun résultat ne se trouve en cache.", pageUnavailable: "Impossible de charger plus d’articles. Vérifiez votre connexion et réessayez.",
     agenda: "Fil d’actualité", saved: "Enregistrés", savedEmpty: "Enregistrez des articles pour les lire plus tard sur cet appareil.", searchEmpty: "Aucun article correspondant dans le fil actuel.",
     global: "Impact mondial", category: "Importance dans la catégorie", evidence: "Éléments de l’évaluation", insufficient: "Éléments insuffisants",
     limited: "Confiance limitée", moderate: "Confiance modérée", provisional: "Provisoire", publisherText: "Texte original de la source",
@@ -49,9 +53,10 @@ const messages: Record<SupportedLanguage, Labels> = {
     extracted: "Extraits de la source", excerpt: "Extrait RSS", content: "Texte de la source fourni par RSS",
     uncertainty: "Ces passages reflètent les informations publiées à ce moment. Certaines questions peuvent rester ouvertes.",
     population: "Personnes touchées", reach: "Portée géographique", economic: "Conséquences économiques", institutional: "Conséquences institutionnelles",
-    scientific: "Données scientifiques", duration: "Durée", magnitude: "Ampleur", reversibility: "Réversibilité",
+    scientific: "Données scientifiques", duration: "Durée", magnitude: "Ampleur", reversibility: "Réversibilité", bounded: "Résultat observé de portée limitée", developing: "Évolution signalée de portée incertaine",
   },
   es: {
+    cachedFeed: "Se muestran artículos guardados en caché recientemente.", feedUnavailable: "El flujo en directo no está disponible y no hay resultados en caché.", pageUnavailable: "No se pudieron cargar más artículos. Comprueba tu conexión y vuelve a intentarlo.",
     agenda: "Agenda informativa", saved: "Guardados", savedEmpty: "Guarda artículos para leerlos después en este dispositivo.", searchEmpty: "No hay artículos que coincidan en el flujo actual.",
     global: "Impacto global", category: "Importancia en la categoría", evidence: "Fundamento de la puntuación", insufficient: "Evidencia insuficiente",
     limited: "Confianza limitada", moderate: "Confianza moderada", provisional: "Provisional", publisherText: "Texto original de la fuente",
@@ -61,7 +66,7 @@ const messages: Record<SupportedLanguage, Labels> = {
     extracted: "Pasajes de la fuente", excerpt: "Extracto RSS", content: "Texto de la fuente publicado en RSS",
     uncertainty: "Estos pasajes reflejan lo que informó la fuente en ese momento. Algunas preguntas pueden quedar abiertas.",
     population: "Personas afectadas", reach: "Alcance geográfico", economic: "Consecuencias económicas", institutional: "Consecuencias institucionales",
-    scientific: "Evidencia científica", duration: "Duración", magnitude: "Magnitud", reversibility: "Reversibilidad",
+    scientific: "Evidencia científica", duration: "Duración", magnitude: "Magnitud", reversibility: "Reversibilidad", bounded: "Resultado observado de alcance limitado", developing: "Novedad de alcance incierto",
   },
 };
 

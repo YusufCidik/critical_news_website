@@ -16,3 +16,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Treat publisher text and browser-supplied context as untrusted data. Source briefings may select original passages. Keep optional provider credentials server-side.
 - Preserve compatibility for older IndexedDB records and local bookmarks. Keep relevance and saved preferences separate from objective scores.
 - For pipeline changes, run `npm test`, `npm run evaluate:classification -- --check`, `npm run typecheck`, `npm run lint`, and `npm run build`. Run the Playwright suite against the production build when changing public UI or routes. Document mocked and live checks separately.
+
+- For classification, impact or clustering changes, run `npm run evaluate:v31 -- --check`. Use `--live` for a separate publisher RSS observation and record its timestamp. Preserve frozen editorial labels, report uncertainty and distinguish code regression tests from provider checks.
+- Before an approved release, record the production alias and rollback deployment, verify CI and the exact-commit preview, then verify the deployment SHA and public endpoint after the existing Git integration runs. Inspect secret names and targets without retrieving values.

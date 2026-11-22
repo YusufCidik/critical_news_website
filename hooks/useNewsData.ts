@@ -110,10 +110,10 @@ export function useNewsData({ country, category, search = "", enabled = true, so
           setItems(scoped.slice(0, 12));
           setActiveItem(scoped[0] ?? null);
           setTotal(scoped.length);
-          setError(scoped.length ? "Çevrimdışı görünüm: son kaydedilen haberler gösteriliyor." : "Haber kaynaklarına ulaşılamıyor ve bu kapsamda çevrimdışı haber bulunamadı.");
+          setError(scoped.length ? "cachedFeed" : "feedUnavailable");
         } catch (cacheError) {
           console.error("IndexedDB news fallback failed:", cacheError);
-          if (mounted) setError("Haberler şu anda yüklenemiyor.");
+          if (mounted) setError("feedUnavailable");
         }
       } finally {
         if (mounted) setLoading(false);
@@ -167,7 +167,7 @@ export function useNewsData({ country, category, search = "", enabled = true, so
     } catch (loadError) {
       if (controller.signal.aborted || scopeRef.current !== scopeKey) return;
       console.warn("Unable to load the next news page:", loadError);
-      setError("Yeni haberler yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.");
+      setError("pageUnavailable");
     } finally {
       if (!controller.signal.aborted && scopeRef.current === scopeKey) {
         loadingMoreRef.current = false;

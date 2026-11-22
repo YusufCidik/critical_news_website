@@ -222,24 +222,24 @@ try {
     const story = { ...base, original_title: "Riverside opens water station", evidence: {
       kind: "rss-content", text: "Riverside opens water station. Officials opened the temporary station on Monday. It serves residents of two towns. It serves residents of two towns. A second station was announced Tuesday. Officials will review opening hours on Friday.",
     } };
-    const fallback = await briefing.generateArticleBriefing(story, "tr");
+    const fallback = await briefing.generateArticleBriefing(story);
     assert.equal(fallback.model, "extractive");
     assert.equal(fallback.briefing.passages.length, 2);
-    assert.equal((await briefing.generateArticleBriefing({ ...story, evidence: { text: story.original_title, kind: "rss-excerpt" } }, "tr")).reason, "insufficient_evidence");
+    assert.equal((await briefing.generateArticleBriefing({ ...story, evidence: { text: story.original_title, kind: "rss-excerpt" } })).reason, "insufficient_evidence");
     process.env.GEMINI_API_KEY = "test-only-not-a-real-key";
     let calls = 0;
     globalThis.__intelmatrixAI = async () => { calls++; return { text: '{"indices":[2,0]}' }; };
-    const generated = await briefing.generateArticleBriefing(story, "tr");
+    const generated = await briefing.generateArticleBriefing(story);
     assert.equal(generated.available, true);
     assert.deepEqual(generated.briefing.passages, ["Officials opened the temporary station on Monday.", "A second station was announced Tuesday."]);
     assert.equal(generated.briefing.source, story.publisher);
-    await briefing.generateArticleBriefing(story, "tr");
+    await briefing.generateArticleBriefing(story);
     assert.equal(calls, 1);
     globalThis.__intelmatrixAI = async () => ({ text: '{"indices":[200],"summary":"Unsupported claim"}' });
-    assert.equal((await briefing.generateArticleBriefing(story, "fr")).model, "extractive");
+    assert.equal((await briefing.generateArticleBriefing({ ...story, id: "new-source" })).model, "extractive");
     globalThis.__intelmatrixAI = async () => ({ text: '{"indices":[1]}' });
-    assert.notEqual((await briefing.generateArticleBriefing(story, "fr")).model, "extractive");
-    assert.equal((await briefing.generateArticleBriefing(story, "fr", "detailed")).briefing.passages.length, 4);
+    assert.notEqual((await briefing.generateArticleBriefing({ ...story, id: "new-source" })).model, "extractive");
+    assert.equal((await briefing.generateArticleBriefing(story, "detailed")).briefing.passages.length, 4);
     assert.equal((await detailApi.POST(post("/api/news/bad/briefing", { language: "tr" }), { params: Promise.resolve({ id: "bad" }) })).status, 404);
   });
 
@@ -548,6 +548,21 @@ try {
     const b = { id: "b", impact: confirmed, impact_score: confirmed.global, published_at: a.published_at };
     assert.ok(compareNewsPriority(a, b) > 0);
     assert.ok(compareNewsPriority(a, b, "importance", "Spor") < 0);
+  });
+
+  await test("V3.1 distinguishes bounded outcomes, provisional impact and missing evidence", () => {
+    const population = assessImpact("Flood aftermath", "2 million residents lost power after officials announced a nationwide emergency.", "Dünya");
+    assert.equal(population.status, "supported");
+    assert.ok(population.reasons.some((reason) => reason.dimension === "population"));
+    const bounded = assessImpact("Wales beat Australia in a rugby final", "Wales secured the championship with a converted try during injury time.", "Spor");
+    assert.equal(bounded.global, 1);
+    assert.equal(bounded.status, "supported");
+    assert.ok(bounded.category > bounded.global);
+    const alleged = assessImpact("Forecasts say a storm could displace 2 million residents", "", "İklim");
+    assert.equal(alleged.status, "provisional");
+    assert.ok(alleged.global > 0 && alleged.global <= 4);
+    assert.equal(assessImpact("Could the region face nationwide evacuations?", "No evacuation order has been issued.", "İklim").status, "insufficient");
+    assert.equal(assessImpact("Officials said no evidence of 2 million residents displaced", "", "Dünya").status, "insufficient");
   });
 
   await test("event updates add coverage without changing identity and isolate stale or unrelated reports", () => {

@@ -52,7 +52,9 @@ export function compareNewsPriority(
   sort = "importance",
   category = "all",
 ) {
-  const score = (story: typeof a) => category === "all" ? (story.impact?.global ?? 0) : (story.impact?.byCategory?.[category as NewsCategory] ?? 0);
+  const score = (story: typeof a) => category === "all"
+    ? (story.impact?.global ?? 0) * (story.impact?.status === "provisional" ? 0.5 : 1)
+    : (story.impact?.byCategory?.[category as NewsCategory] ?? 0);
   return (sort === "latest" ? 0 : score(b) - score(a))
     || (Date.parse(b.published_at ?? "") || 0) - (Date.parse(a.published_at ?? "") || 0)
     || a.id.localeCompare(b.id);

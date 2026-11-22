@@ -10,6 +10,7 @@ const second = item("riverside-guardian", "Holiday parade disrupted by Riverside
   "Officials reported 15 fatalities. A category 5 storm damaged the region. The rescue effort continues.");
 const briefs = item("telescope", "Telescope maps unusual planets near Vega",
   "Astronomers announced the observations on Tuesday. The team gathered infrared readings from space. Independent teams will review the images.");
+const provisional = item("forecast", "Forecasters say Coastal Delta flooding could affect 2 million residents", "Officials are still assessing the geographic extent of the flood warnings.");
 const fixtures = Array.from({ length: 19 }, (_, i) =>
   item("travel-" + i, `Island travel guide ${i + 1}`, `Tourism staff published travel advice for island ${i + 1}.`)).join("");
 const rss = (items) => new Response(`<?xml version="1.0"?><rss version="2.0"><channel><title>Test</title>${items}</channel></rss>`, {
@@ -20,7 +21,7 @@ globalThis.fetch = async (request, options) => {
   if (["localhost", "127.0.0.1"].includes(url.hostname)) return realFetch(request, options);
   if (url.hostname.includes("frankfurter")) return Response.json({ base: "USD", date: "2026-01-01", rates: { EUR: 0.91 } });
   if (url.hostname === "api.mymemory.translated.net") return Response.json({ responseStatus: 429 });
-  if (url.href === "https://feeds.bbci.co.uk/news/world/rss.xml") return rss(first + briefs + fixtures);
+  if (url.href === "https://feeds.bbci.co.uk/news/world/rss.xml") return rss(first + briefs + provisional + fixtures);
   if (url.href === "https://www.theguardian.com/world/rss") return rss(second);
   return rss("");
 };

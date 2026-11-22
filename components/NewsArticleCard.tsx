@@ -55,7 +55,7 @@ export const NewsArticleCard = memo(function NewsArticleCard({ story, layout = "
         <div className={feature ? "pt-4" : "pt-3"}>
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-red-700">
             <span>{getNewsLabel(language, story.category === "Dünya" ? "world" : story.category)}</span>
-            <ImportanceBadge score={score} language={language} scope={scope} />
+            <ImportanceBadge score={score} language={language} scope={scope} provisional={scope === "global" && story.impact?.status === "provisional"} />
           </div>
           <h2 className={`font-serif font-bold leading-[1.12] text-slate-950 group-hover:text-sky-800 ${feature ? "text-3xl md:text-[38px]" : "text-[21px]"}`}>
             {story.translated_title}

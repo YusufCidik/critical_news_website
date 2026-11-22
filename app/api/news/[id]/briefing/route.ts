@@ -17,7 +17,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     }
     const story = await getStory(id);
     if (!story) return NextResponse.json({ error: "Haber güncel akışta bulunamadı." }, { status: 404 });
-    return NextResponse.json(await generateArticleBriefing(story, language, mode), { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json(await generateArticleBriefing(story, mode), { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const status = error instanceof RequestBodyError ? error.status : 502;
     return NextResponse.json({ error: "Özet hazırlanamadı." }, { status });

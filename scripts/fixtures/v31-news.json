@@ -1,0 +1,3888 @@
+{
+  "capturedAt": "2026-11-22T05:14:57.247Z",
+  "labeling": "Single editorial pass by Codex, based on publisher headline and short RSS lead, without using model outputs as labels.",
+  "classification": [
+    {
+      "id": "94",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "123",
+      "split": "development",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "124",
+      "split": "development",
+      "expected": "Jeopolitik",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "126",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "923",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "928",
+      "split": "development",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "56",
+      "split": "development",
+      "expected": "İklim"
+    },
+    {
+      "id": "168",
+      "split": "development",
+      "expected": "İklim"
+    },
+    {
+      "id": "462",
+      "split": "development",
+      "expected": "İklim"
+    },
+    {
+      "id": "1696",
+      "split": "development",
+      "expected": "Bilim"
+    },
+    {
+      "id": "236",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "501",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "833",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "931",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "668",
+      "split": "development",
+      "expected": "Enerji"
+    },
+    {
+      "id": "1106",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1145",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1175",
+      "split": "development",
+      "expected": "Seyahat"
+    },
+    {
+      "id": "1565",
+      "split": "development",
+      "expected": "AI",
+      "include": [
+        "Ekonomi"
+      ]
+    },
+    {
+      "id": "14",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "122",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "129",
+      "split": "development",
+      "expected": "Spor",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "151",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "924",
+      "split": "development",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "930",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "952",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "1063",
+      "split": "development",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "10",
+      "split": "development",
+      "expected": "Jeopolitik",
+      "include": [
+        "AI"
+      ],
+      "exclude": [
+        "Spor"
+      ]
+    },
+    {
+      "id": "70",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "79",
+      "split": "development",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "102",
+      "split": "development",
+      "expected": "Enerji"
+    },
+    {
+      "id": "447",
+      "split": "development",
+      "expected": "Savunma"
+    },
+    {
+      "id": "489",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "7",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "180",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "187",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "515",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "680",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "723",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "738",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "280",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "344",
+      "split": "development",
+      "expected": "Teknoloji",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "678",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "714",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "119",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "560",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "679",
+      "split": "development",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "13",
+      "split": "development",
+      "expected": "İklim"
+    },
+    {
+      "id": "26",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "61",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "69",
+      "split": "development",
+      "expected": "Dünya"
+    },
+    {
+      "id": "218",
+      "split": "development",
+      "expected": "Teknoloji",
+      "include": [
+        "AI"
+      ],
+      "exclude": [
+        "Ekonomi"
+      ]
+    },
+    {
+      "id": "244",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "359",
+      "split": "development",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "433",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "1158",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1176",
+      "split": "development",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "1209",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1577",
+      "split": "development",
+      "expected": "Teknoloji",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "1580",
+      "split": "development",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "1600",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "997",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "1033",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "1189",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "1572",
+      "split": "development",
+      "expected": "AI"
+    },
+    {
+      "id": "29",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "30",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "31",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "32",
+      "split": "development",
+      "expected": "Spor"
+    },
+    {
+      "id": "508",
+      "split": "development",
+      "expected": "Bilim"
+    },
+    {
+      "id": "523",
+      "split": "development",
+      "expected": "Bilim"
+    },
+    {
+      "id": "553",
+      "split": "development",
+      "expected": "Bilim"
+    },
+    {
+      "id": "571",
+      "split": "development",
+      "expected": "Bilim"
+    },
+    {
+      "id": "1530",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1739",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "101",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "108",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "148",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "263",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "172",
+      "split": "development",
+      "expected": "İklim"
+    },
+    {
+      "id": "232",
+      "split": "development",
+      "expected": "Savunma"
+    },
+    {
+      "id": "307",
+      "split": "development",
+      "expected": "İklim"
+    },
+    {
+      "id": "352",
+      "split": "development",
+      "expected": "Savunma"
+    },
+    {
+      "id": "841",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1800",
+      "split": "development",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "212",
+      "split": "development",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "287",
+      "split": "development",
+      "expected": "Savunma",
+      "exclude": [
+        "Spor"
+      ]
+    },
+    {
+      "id": "406",
+      "split": "development",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "474",
+      "split": "development",
+      "expected": "Kültür"
+    },
+    {
+      "id": "818",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "819",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "428",
+      "split": "development",
+      "expected": "Savunma"
+    },
+    {
+      "id": "496",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "519",
+      "split": "development",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "530",
+      "split": "development",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "189",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "1767",
+      "split": "review",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1712",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1749",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "1695",
+      "split": "review",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "185",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "213",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "1181",
+      "split": "review",
+      "expected": "Kültür"
+    },
+    {
+      "id": "1235",
+      "split": "review",
+      "expected": "Kültür"
+    },
+    {
+      "id": "315",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "1095",
+      "split": "review",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1171",
+      "split": "review",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "227",
+      "split": "review",
+      "expected": "Savunma"
+    },
+    {
+      "id": "241",
+      "split": "review",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "53",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "76",
+      "split": "review",
+      "expected": "Spor",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "726",
+      "split": "review",
+      "expected": "Kültür"
+    },
+    {
+      "id": "727",
+      "split": "review",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1931",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "2080",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1184",
+      "split": "review",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1201",
+      "split": "review",
+      "expected": "Ekonomi",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "46",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "224",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "602",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "872",
+      "split": "review",
+      "expected": "Savunma"
+    },
+    {
+      "id": "36",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "107",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "109",
+      "split": "review",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "157",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "166",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "176",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "181",
+      "split": "review",
+      "expected": "Spor"
+    },
+    {
+      "id": "234",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "255",
+      "split": "review",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "256",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "258",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "311",
+      "split": "review",
+      "expected": "Kültür"
+    },
+    {
+      "id": "383",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "420",
+      "split": "review",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "478",
+      "split": "review",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "551",
+      "split": "review",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "647",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "760",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "975",
+      "split": "review",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1317",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1383",
+      "split": "review",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1567",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1599",
+      "split": "review",
+      "expected": "Dünya"
+    },
+    {
+      "id": "1710",
+      "split": "review",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1715",
+      "split": "review",
+      "expected": "Kültür"
+    },
+    {
+      "id": "1795",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1858",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "2011",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "2013",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "2035",
+      "split": "review",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "9",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "43",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "694",
+      "split": "review",
+      "expected": "AI"
+    },
+    {
+      "id": "815",
+      "split": "review",
+      "expected": "AI"
+    },
+    {
+      "id": "1149",
+      "split": "review",
+      "expected": "AI"
+    },
+    {
+      "id": "1689",
+      "split": "review",
+      "expected": "Bilim",
+      "include": [
+        "AI"
+      ]
+    },
+    {
+      "id": "1699",
+      "split": "review",
+      "expected": "Teknoloji",
+      "include": [
+        "AI"
+      ]
+    },
+    {
+      "id": "1745",
+      "split": "review",
+      "expected": "AI"
+    },
+    {
+      "id": "1747",
+      "split": "review",
+      "expected": "Bilim",
+      "include": [
+        "AI"
+      ]
+    },
+    {
+      "id": "786",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "1727",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "1147",
+      "split": "review",
+      "expected": "İklim"
+    },
+    {
+      "id": "704",
+      "split": "holdout",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "947",
+      "split": "holdout",
+      "expected": "Savunma"
+    },
+    {
+      "id": "1197",
+      "split": "holdout",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "1474",
+      "split": "holdout",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1591",
+      "split": "holdout",
+      "expected": "Bilim"
+    },
+    {
+      "id": "1828",
+      "split": "holdout",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "1958",
+      "split": "holdout",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "713",
+      "split": "holdout",
+      "expected": "Savunma"
+    },
+    {
+      "id": "938",
+      "split": "holdout",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1299",
+      "split": "holdout",
+      "expected": "Kültür"
+    },
+    {
+      "id": "1503",
+      "split": "holdout",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1713",
+      "split": "holdout",
+      "expected": "Savunma"
+    },
+    {
+      "id": "1863",
+      "split": "holdout",
+      "expected": "Kültür"
+    },
+    {
+      "id": "1946",
+      "split": "holdout",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1688",
+      "split": "holdout",
+      "expected": "İklim"
+    },
+    {
+      "id": "1846",
+      "split": "holdout",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "1948",
+      "split": "holdout",
+      "expected": "AI"
+    },
+    {
+      "id": "2016",
+      "split": "holdout",
+      "expected": "AI"
+    },
+    {
+      "id": "2101",
+      "split": "holdout",
+      "expected": "AI"
+    },
+    {
+      "id": "914",
+      "split": "holdout",
+      "expected": "Bilim"
+    },
+    {
+      "id": "1514",
+      "split": "holdout",
+      "expected": "Bilim"
+    },
+    {
+      "id": "1810",
+      "split": "holdout",
+      "expected": "Bilim"
+    },
+    {
+      "id": "1960",
+      "split": "holdout",
+      "expected": "Bilim"
+    },
+    {
+      "id": "2103",
+      "split": "holdout",
+      "expected": "Bilim"
+    },
+    {
+      "id": "2128",
+      "split": "holdout",
+      "expected": "Bilim"
+    },
+    {
+      "id": "890",
+      "split": "holdout",
+      "expected": "Teknoloji"
+    },
+    {
+      "id": "1034",
+      "split": "holdout",
+      "expected": "Enerji",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "1086",
+      "split": "holdout",
+      "expected": "Enerji"
+    },
+    {
+      "id": "1239",
+      "split": "holdout",
+      "expected": "AI"
+    },
+    {
+      "id": "1257",
+      "split": "holdout",
+      "expected": "Ekonomi",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "1523",
+      "split": "holdout",
+      "expected": "AI"
+    },
+    {
+      "id": "1611",
+      "split": "holdout",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "945",
+      "split": "holdout",
+      "expected": "Spor"
+    },
+    {
+      "id": "946",
+      "split": "holdout",
+      "expected": "Spor"
+    },
+    {
+      "id": "955",
+      "split": "holdout",
+      "expected": "Spor"
+    },
+    {
+      "id": "706",
+      "split": "holdout",
+      "expected": "Savunma"
+    },
+    {
+      "id": "840",
+      "split": "holdout",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1060",
+      "split": "holdout",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1296",
+      "split": "holdout",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1421",
+      "split": "holdout",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1627",
+      "split": "holdout",
+      "expected": "Dünya"
+    },
+    {
+      "id": "1842",
+      "split": "holdout",
+      "expected": "İklim"
+    },
+    {
+      "id": "827",
+      "split": "holdout",
+      "expected": "Dünya"
+    },
+    {
+      "id": "1006",
+      "split": "holdout",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1016",
+      "split": "holdout",
+      "expected": "Jeopolitik",
+      "exclude": [
+        "AI"
+      ]
+    },
+    {
+      "id": "1200",
+      "split": "holdout",
+      "expected": "Jeopolitik"
+    },
+    {
+      "id": "1219",
+      "split": "holdout",
+      "expected": "Ekonomi"
+    },
+    {
+      "id": "1564",
+      "split": "holdout",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "2084",
+      "split": "holdout",
+      "expected": "Sağlık"
+    },
+    {
+      "id": "1762",
+      "split": "holdout",
+      "expected": "Enerji"
+    },
+    {
+      "id": "1774",
+      "split": "holdout",
+      "expected": "Enerji"
+    },
+    {
+      "id": "1928",
+      "split": "holdout",
+      "expected": "Enerji"
+    },
+    {
+      "id": "2086",
+      "split": "holdout",
+      "expected": "Enerji"
+    }
+  ],
+  "impact": [
+    {
+      "id": "124",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "126",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "56",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "168",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "462",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "236",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "833",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "1565",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "122",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "151",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "930",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "79",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "489",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        5
+      ]
+    },
+    {
+      "id": "7",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "180",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "187",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "723",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "61",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "69",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "218",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "244",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "359",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "1176",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "1577",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "1033",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "29",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "508",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "523",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "108",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "1931",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "227",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "224",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "602",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "36",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "107",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "109",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "166",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "234",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "383",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "551",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "760",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "975",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "1599",
+      "expectedStatus": "supported",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "1710",
+      "expectedStatus": "provisional",
+      "range": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "1795",
+      "expectedStatus": "insufficient",
+      "range": null
+    },
+    {
+      "id": "2013",
+      "expectedStatus": "supported",
+      "range": [
+        3,
+        7
+      ]
+    },
+    {
+      "id": "2035",
+      "expectedStatus": "supported",
+      "range": [
+        3,
+        7
+      ]
+    },
+    {
+      "id": "496",
+      "expectedStatus": "supported",
+      "range": [
+        4,
+        8
+      ]
+    },
+    {
+      "id": "1201",
+      "expectedStatus": "supported",
+      "range": [
+        2,
+        5
+      ]
+    }
+  ],
+  "events": [
+    {
+      "left": "56",
+      "right": "13",
+      "same": true,
+      "reason": "COP31 talks extended over fossil fuels"
+    },
+    {
+      "left": "56",
+      "right": "189",
+      "same": true,
+      "reason": "same COP31 impasse"
+    },
+    {
+      "left": "13",
+      "right": "46",
+      "same": true,
+      "reason": "same COP31 overtime"
+    },
+    {
+      "left": "56",
+      "right": "307",
+      "same": false,
+      "reason": "COP31 diplomatic remarks, a distinct development"
+    },
+    {
+      "left": "61",
+      "right": "256",
+      "same": true,
+      "reason": "same cartel capture and fatalities"
+    },
+    {
+      "left": "61",
+      "right": "258",
+      "same": true,
+      "reason": "same operation"
+    },
+    {
+      "left": "61",
+      "right": "383",
+      "same": true,
+      "reason": "same operation"
+    },
+    {
+      "left": "383",
+      "right": "602",
+      "same": true,
+      "reason": "same capture and fatality count"
+    },
+    {
+      "left": "61",
+      "right": "69",
+      "same": false,
+      "reason": "different fatal incidents"
+    },
+    {
+      "left": "69",
+      "right": "224",
+      "same": true,
+      "reason": "same funeral boat incident"
+    },
+    {
+      "left": "157",
+      "right": "234",
+      "same": true,
+      "reason": "same funeral boat incident"
+    },
+    {
+      "left": "224",
+      "right": "1599",
+      "same": false,
+      "reason": "different capsizes and countries"
+    },
+    {
+      "left": "151",
+      "right": "154",
+      "same": true,
+      "reason": "same rugby result"
+    },
+    {
+      "left": "151",
+      "right": "166",
+      "same": true,
+      "reason": "same rugby result"
+    },
+    {
+      "left": "154",
+      "right": "166",
+      "same": true,
+      "reason": "same rugby result"
+    },
+    {
+      "left": "151",
+      "right": "185",
+      "same": true,
+      "reason": "same rugby result"
+    },
+    {
+      "left": "151",
+      "right": "181",
+      "same": false,
+      "reason": "different matches"
+    },
+    {
+      "left": "180",
+      "right": "151",
+      "same": false,
+      "reason": "different matches"
+    },
+    {
+      "left": "107",
+      "right": "7",
+      "same": false,
+      "reason": "different competitions at the same venue"
+    },
+    {
+      "left": "123",
+      "right": "359",
+      "same": true,
+      "reason": "same FBI database incident and official reaction"
+    },
+    {
+      "left": "123",
+      "right": "420",
+      "same": true,
+      "reason": "same FBI database incident"
+    },
+    {
+      "left": "123",
+      "right": "551",
+      "same": true,
+      "reason": "same database incident"
+    },
+    {
+      "left": "420",
+      "right": "478",
+      "same": true,
+      "reason": "same breach and official reaction"
+    },
+    {
+      "left": "123",
+      "right": "1176",
+      "same": false,
+      "reason": "different data disclosures"
+    },
+    {
+      "left": "2013",
+      "right": "2035",
+      "same": true,
+      "reason": "US loss of measles elimination status"
+    },
+    {
+      "left": "2013",
+      "right": "2011",
+      "same": true,
+      "reason": "reaction to that milestone"
+    },
+    {
+      "left": "2013",
+      "right": "489",
+      "same": false,
+      "reason": "distinct fatality"
+    },
+    {
+      "left": "2013",
+      "right": "647",
+      "same": false,
+      "reason": "distinct prevention piece"
+    },
+    {
+      "left": "818",
+      "right": "1184",
+      "same": false,
+      "reason": "same company, different developments"
+    },
+    {
+      "left": "818",
+      "right": "1383",
+      "same": false,
+      "reason": "different bidders"
+    },
+    {
+      "left": "1184",
+      "right": "1710",
+      "same": false,
+      "reason": "different stages of rescue"
+    },
+    {
+      "left": "496",
+      "right": "1106",
+      "same": false,
+      "reason": "different trade agreements"
+    },
+    {
+      "left": "1106",
+      "right": "1145",
+      "same": false,
+      "reason": "agreement versus separate analysis"
+    },
+    {
+      "left": "1106",
+      "right": "1171",
+      "same": true,
+      "reason": "same UK–EU agreement"
+    },
+    {
+      "left": "975",
+      "right": "1171",
+      "same": false,
+      "reason": "analysis versus announcement"
+    },
+    {
+      "left": "447",
+      "right": "287",
+      "same": true,
+      "reason": "same failed UN negotiations"
+    },
+    {
+      "left": "1565",
+      "right": "244",
+      "same": false,
+      "reason": "different story about same company"
+    },
+    {
+      "left": "679",
+      "right": "255",
+      "same": false,
+      "reason": "different Canadian political developments"
+    }
+  ],
+  "reports": {
+    "7": {
+      "id": "7",
+      "title": "Las Vegas Grand Prix: Formula One 2026 race updates – live",
+      "summary": "Updates from the Formula 1 GP in Las Vegas Any thoughts? Get in touch with an email Lap 2/50 Oscar Piastri has done some fast overtaking, moving himself up from 17 to 12, now sitting behind Carlos Sainz.",
+      "source": "The Guardian Sport",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/sport/live/2026/nov/22/las-vegas-grand-prix-formula-one-2026-race-updates-live",
+      "date": "2026-11-22T05:09:40.000Z",
+      "feed": "Spor"
+    },
+    "10": {
+      "id": "10",
+      "title": "South Korea education minister resigns after AI cheating scandal engulfs university exams",
+      "summary": "Choi Kyo-jin said he ‘failed to prepare adequately’ for entrance exams, which this year had phones banned and checks for cameras hidden in clothing South Korea’s education minister resigned on Sunday after an AI-assisted cheating ",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/world/2026/nov/22/south-korea-education-minister-resigns-after-ai-cheating-scandal-engulfs-university-exams",
+      "date": "2026-11-22T05:04:39.000Z",
+      "feed": "Dünya"
+    },
+    "13": {
+      "id": "13",
+      "title": "Fossil fuel impasse pushes COP31 climate talks into second day of overtime",
+      "summary": "COP31 President ​Murat Kurum asks negotiators to consider a last-minute proposal in attempt to reach an agreement.",
+      "source": "Al Jazeera",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/news/2026/11/22/fossil-fuel-impasse-pushes-cop31-climate-talks-into-second-day-of-overtime?traffic_source=rss",
+      "date": "2026-11-22T04:51:35.000Z",
+      "feed": "Dünya"
+    },
+    "14": {
+      "id": "14",
+      "title": "Wales coach Tandy frustrated by Australia defeat",
+      "summary": "Wales head coach Steve Tandy said he was frustrated after his side failed to back up their epic win over New Zealand with victory against Australia.",
+      "source": "BBC Sport",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/rugby-union/articles/c6gregq87258o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T04:50:34.000Z",
+      "feed": "Spor"
+    },
+    "26": {
+      "id": "26",
+      "title": "First images of Mexican cartel boss ‘El Chapo Isidro’ after arrest",
+      "summary": "",
+      "source": "Al Jazeera",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/video/newsfeed/2026/11/22/first-images-of-mexican-cartel-boss-el-chapo-isidro-after-arrest?traffic_source=rss",
+      "date": "2026-11-22T04:42:02.000Z",
+      "feed": "Dünya"
+    },
+    "29": {
+      "id": "29",
+      "title": "Indiana's CFP, Big Ten title hopes in peril after OT loss at Washington",
+      "summary": "Indiana might not get a chance to defend its national championship after losing 27-24 at Washington on Saturday.",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/college-football/story/_/id/50556327/indiana-cfp-hopes-take-hit-ot-loss-washington",
+      "date": "2026-11-22T04:38:02.000Z",
+      "feed": "Spor"
+    },
+    "30": {
+      "id": "30",
+      "title": "UCLA loses Dieffenbach to injury, stays resolute with B1G title game in reach",
+      "summary": "UCLA coach Bob Chesney said his message to the Bruins was, \"Nobody hang your head,\" despite losing QB Ty Dieffenbach to injury in a tough, 18-16 defeat at Michigan on Saturday.",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/college-football/story/_/id/50556107/ucla-qb-ty-dieffenbach-carted-3ot-loss-michigan",
+      "date": "2026-11-22T04:38:02.000Z",
+      "feed": "Spor"
+    },
+    "31": {
+      "id": "31",
+      "title": "😈 Nebraska's jab at Ohio State leads top trolls of CFB Week 12",
+      "summary": "Nebraska deployed a simple but effective troll that poked fun at its opponent's propensity to emphasize the \"the\" in \"The Ohio State University.\"",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/college-football/story/_/id/50554531/nebraska-ohio-state-trolls-college-football-week-12",
+      "date": "2026-11-22T04:38:02.000Z",
+      "feed": "Spor"
+    },
+    "32": {
+      "id": "32",
+      "title": "Sources: Nacua needs 4-5 months to recover from knee surgery, out for playoffs",
+      "summary": "Puka Nacua's recovery time from MCL surgery is considered to be four to five months, sources told ESPN, meaning he will miss the playoffs.",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/nfl/story/_/id/50556613/sources-rams-puka-nacua-4-5-months-knee-surgery",
+      "date": "2026-11-22T04:38:01.000Z",
+      "feed": "Spor"
+    },
+    "36": {
+      "id": "36",
+      "title": "Kansas City wins 1st NWSL Championship as Rodman, Spirit lose 3rd straight final",
+      "summary": "The Kansas City Current won their first NWSL Championship, defeating the Washington Spirit 2-1 to hand the Spirit a third consecutive loss in the league final.",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/soccer/story/_/id/50557858/nwsl-championship-kansas-city-current-washington-spirit",
+      "date": "2026-11-22T04:38:01.000Z",
+      "feed": "Spor"
+    },
+    "46": {
+      "id": "46",
+      "title": "'We have not lost hope' - Last-gasp bid to avoid failure as clock ticks down at COP31",
+      "summary": "The president of COP31 has said countries \"have not lost hope\" despite time fast running out to break the deadlock and agree a deal.",
+      "source": "Sky News World",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/desperate-bid-to-achieve-deal-as-clock-ticks-down-at-cop31-climate-summit-in-turkey-13615099",
+      "date": "2026-11-22T04:20:00.000Z",
+      "feed": "Dünya"
+    },
+    "53": {
+      "id": "53",
+      "title": "DiBernardo joins Rapinoe, Pulisic in pantheon of great Olimpicos",
+      "summary": "Vanessa DiBernardo joined an elite list on Saturday, scoring for Kansas City direct from a corner. Known in soccer circles as an Olimpico, here are some of the very best.",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/soccer/story/_/id/46407078/celebrating-olimpico-one-soccers-most-audacious-goals",
+      "date": "2026-11-22T04:03:22.000Z",
+      "feed": "Spor"
+    },
+    "56": {
+      "id": "56",
+      "title": "Fossil fuel dispute threatens to derail COP31 climate deal",
+      "summary": "The UN summit in Turkey enters second day of overtime as countries struggle to reach an agreement.",
+      "source": "BBC Science",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cq7827z2841zo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T03:58:31.000Z",
+      "feed": "Bilim"
+    },
+    "61": {
+      "id": "61",
+      "title": "Eleven killed in burst of violence during Mexican cartel leader’s capture",
+      "summary": "Seven alleged cartel gunmen and four soldiers were killed in operation to arrest cartel boss Fausto Isidro Meza Flores.",
+      "source": "Al Jazeera",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/news/2026/11/22/eleven-killed-in-burst-of-violence-during-mexican-cartel-leaders-capture?traffic_source=rss",
+      "date": "2026-11-22T03:34:02.000Z",
+      "feed": "Dünya"
+    },
+    "69": {
+      "id": "69",
+      "title": "Overturned boat carrying mourners to funeral kills at least 24 in Nigeria",
+      "summary": "Police say the boat driver fled and the vessel’s manager was taken into custody.",
+      "source": "Al Jazeera",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/news/2026/11/22/overturned-boat-carrying-mourners-to-funeral-kills-at-least-four-in-nigeria?traffic_source=rss",
+      "date": "2026-11-22T02:45:36.000Z",
+      "feed": "Dünya"
+    },
+    "70": {
+      "id": "70",
+      "title": "Man found dead on Flinders Island believed to have been shot by officer, police say",
+      "summary": "The sergeant, who was shot, fired his weapon a number of times after alleged ‘targeted’ attack outside island’s police station Get our breaking news email, free app or daily news podcast A police officer who was shot outside a rem",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/australia-news/2026/nov/22/man-found-dead-on-flinders-island-linked-to-shooting-of-police-officer-tasmanian-authorities-say",
+      "date": "2026-11-22T02:44:01.000Z",
+      "feed": "Dünya"
+    },
+    "76": {
+      "id": "76",
+      "title": "Columbus stun Messi, Miami to take Match 1 in MLS playoffs",
+      "summary": "",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/soccer/match/_/gameId/401933739/columbus-crew-inter-miami-cf",
+      "date": "2026-11-22T02:17:36.000Z",
+      "feed": "Spor"
+    },
+    "79": {
+      "id": "79",
+      "title": "Victorian Greens win injunction over how-to-vote cards mimicking party’s branding but preferencing it last",
+      "summary": "Exclusive: Independent candidate Tosh-Jake Finnigan’s cards instructed people to vote in a way that would benefit Liberal party Get our daily political email, free app or daily news podcast The Victorian Greens have won a supreme ",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/australia-news/2026/nov/21/victorian-greens-seek-urgent-injunction-over-how-to-vote-cards-mimicking-branding-but-preferencing-it-last-ntwnfb",
+      "date": "2026-11-22T02:08:49.000Z",
+      "feed": "Dünya"
+    },
+    "94": {
+      "id": "94",
+      "title": "Mexican drug lord on FBI's 10 most wanted list arrested in shoot-out",
+      "summary": "Fausto Isidro \"Chapo Idisro\" Meza Flores, who is accused of drug trafficking and torture, is detained after gun fight with authorities.",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/ckz749ey0r75o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T01:25:03.000Z",
+      "feed": "Dünya"
+    },
+    "101": {
+      "id": "101",
+      "title": "Jennifer Lopez Teases ‘Monster-in-Law’ Sequel With Jane Fonda: ‘We’re Talking About Maybe Doing Another One’",
+      "summary": "Jennifer Lopez and Jane Fonda might reunite for a “Monster-in-Law” follow-up, the singer and actress teased recently. In a clip from Lopez’s upcoming appearance on “The Drew Barrymore Show,” she reminisced with the host about past",
+      "source": "Variety",
+      "publisher": "Variety",
+      "url": "https://variety.com/2026/film/news/jennifer-lopez-jane-fonda-monster-in-law-follow-up-1236955143/",
+      "date": "2026-11-22T01:00:57.000Z",
+      "feed": "Kültür"
+    },
+    "102": {
+      "id": "102",
+      "title": "‘No time for a culture war’: Victoria’s electricity supply is at risk. Can it avoid power shortages and bill shocks?",
+      "summary": "State faces electricity supply gap when Yallourn coal-fired power station closes in 2028 as experts warn neither Labor nor the Coalition has adequate plans Sign up for climate and environment editor Adam Morton’s free Clear Air ne",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/australia-news/2026/nov/22/victoria-election-2026-what-are-parties-promising-energy-policy",
+      "date": "2026-11-22T01:00:13.000Z",
+      "feed": "Dünya"
+    },
+    "107": {
+      "id": "107",
+      "title": "Palmowski wins season-finale in Las Vegas after epic battle with Larsen",
+      "summary": "",
+      "source": "Sky Sports Football",
+      "publisher": "Sky Sports",
+      "url": "https://www.skysports.com/f1/live-blog/12040/13518208/f1-academy-2026-reports-calendar-news-results-standings-and-highlights-for-races-this-season",
+      "date": "2026-11-22T00:55:00.000Z",
+      "feed": "Spor"
+    },
+    "108": {
+      "id": "108",
+      "title": "Kieran Culkin Says a ‘Succession’ Spinoff ‘Would Be a Terrible Idea’: ‘What Are You Hoping For? “Cousin Greg: The Sitcom?”‘",
+      "summary": "Sorry, “Succession” fans — Kieran Culkin is shutting down any possibility of a spinoff once and for all. The actor, currently starring in “The Hunger Games: Sunrise on the Reaping” as a young Caesar Flickerman, joined the “Heart B",
+      "source": "Variety",
+      "publisher": "Variety",
+      "url": "https://variety.com/2026/tv/news/kieran-culkin-succession-spinoff-terrible-idea-1236955146/",
+      "date": "2026-11-22T00:52:28.000Z",
+      "feed": "Kültür"
+    },
+    "109": {
+      "id": "109",
+      "title": "U.S. Agriculture Department and FBI breached by hackers, reports say",
+      "summary": "The reports come as concerns deepened over the recent spate of tech outages at key American institutions.",
+      "source": "The Japan Times",
+      "publisher": "The Japan Times",
+      "url": "https://www.japantimes.co.jp/news/2026/11/22/world/crime-legal/us-fbi-usda-cyberattacks/",
+      "date": "2026-11-22T00:52:00.000Z",
+      "feed": "Dünya"
+    },
+    "119": {
+      "id": "119",
+      "title": "California train burglars carefully executed heists for ‘staggering’ $22m haul",
+      "summary": "US justice department brings charges against group after at least 36 trains burglarized for shoes and tools Fourteen people in southern California have been accused of burglarizing more than $22m worth of goods from moving freight",
+      "source": "The Guardian Business",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/us-news/2026/nov/21/california-arrests-train-heists",
+      "date": "2026-11-22T00:20:41.000Z",
+      "feed": "Ekonomi"
+    },
+    "122": {
+      "id": "122",
+      "title": "'Unbelievable' - how Spurs teenager Williams-Barnett impressed on first start",
+      "summary": "Match of the Day pundit Joe Hart explains how teenager Luca Williams-Barnett caused problems for Ipswich Town on his first Premier League start for Tottenham in their 2-0 home win.",
+      "source": "BBC Sport",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/football/videos/cm5y149qg4yqo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T00:13:01.000Z",
+      "feed": "Spor"
+    },
+    "123": {
+      "id": "123",
+      "title": "FBI reportedly investigating apparent hack of its criminal database",
+      "summary": "The National Crime Information Center database is used by federal and local law enforcement to share information.",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cvze7de86pk3o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T00:10:44.000Z",
+      "feed": "Dünya"
+    },
+    "124": {
+      "id": "124",
+      "title": "Nigerian youth have shown their power in the past - why aren't they shaping this election?",
+      "summary": "Fewer young people have registered to vote in next year's election than in 2023 - are young people losing faith in democracy?",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/ck4g174n020eo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T00:10:37.000Z",
+      "feed": "Dünya"
+    },
+    "126": {
+      "id": "126",
+      "title": "How a teen gamer and his mother helped rescue a missing girl",
+      "summary": "When 16-year-old Landon Tresp met a teenage girl in an online game, it led to him and his mother helping the FBI rescue her from kidnapping.",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cmq8lyv8lkjwo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T00:09:58.000Z",
+      "feed": "Dünya"
+    },
+    "129": {
+      "id": "129",
+      "title": "I wish referee had opportunity to see 'handball' again - Hart",
+      "summary": "Match of the Day pundits Joe Hart and Alan Shearer disagree with Morgan Rogers being penalised for handball, as the Chelsea forward \"didn't make himself bigger\" with the use of his arms in his side's 4-1 defeat to Leeds United in ",
+      "source": "BBC Sport",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/football/videos/cme3dvk1kzgqo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-22T00:08:13.000Z",
+      "feed": "Spor"
+    },
+    "148": {
+      "id": "148",
+      "title": "Mahershala Ali Says It ‘Doesn’t Matter’ That He’s Won 2 Oscars Because ‘There Are Not Roles for Me’ in ‘the Vast Majority of Projects’: ‘You’re Like Everybody Else Waiting’",
+      "summary": "Mahershala Ali got candid about the impact — or lack thereof — his two Oscar wins have had on his career in Hollywood while appearing on a recent episode of Carmelo Anthony and Kazeem “Kaz” Famuyide’s “7PM in Brooklyn” podcast. Th",
+      "source": "Variety",
+      "publisher": "Variety",
+      "url": "https://variety.com/2026/film/news/mahershala-ali-oscars-wins-hollywood-1236955111/",
+      "date": "2026-11-21T23:40:06.000Z",
+      "feed": "Kültür"
+    },
+    "151": {
+      "id": "151",
+      "title": "France thrash Argentina to reach Nations Championship final",
+      "summary": "France beat Argentina 45-17 in Paris to set up a clash with South Africa in the Nations Championship final at the Allianz Stadium.",
+      "source": "BBC Sport",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/rugby-union/videos/cm879py9n9xwo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T23:22:40.000Z",
+      "feed": "Spor"
+    },
+    "154": {
+      "id": "154",
+      "title": "France reach Nations Championship final with bonus-point Argentina win",
+      "summary": "France reached the Nations Championship final after beating Argentina 45-17 with seven tries on Saturday.",
+      "source": "Sky Sports Football",
+      "publisher": "Sky Sports",
+      "url": "https://www.skysports.com/rugby-union/france-vs-argentina/report/111696",
+      "date": "2026-11-21T23:15:00.000Z",
+      "feed": "Spor"
+    },
+    "157": {
+      "id": "157",
+      "title": "At least 24 dead in Nigeria when boat going to funeral capsizes",
+      "summary": "Authorities haven't said how many passengers were believed to be on board.",
+      "source": "ABC News International",
+      "publisher": "ABC News",
+      "url": "https://abcnews.com/International/wireStory/24-dead-nigeria-boat-capsizes-carrying-people-funeral-138348287",
+      "date": "2026-11-21T23:06:21.000Z",
+      "feed": "Dünya"
+    },
+    "166": {
+      "id": "166",
+      "title": "France beat Argentina to set up Nations Championship final with South Africa",
+      "summary": "England face All Blacks rematch in third-place game Ireland take on Australia to decide fifth spot France and South Africa will contest the inaugural Nations Championship grand final next Sunday in London, while England will face ",
+      "source": "The Guardian Sport",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/sport/2026/nov/21/france-beat-argentina-to-set-up-nations-championship-final-with-south-africa",
+      "date": "2026-11-21T22:46:00.000Z",
+      "feed": "Spor"
+    },
+    "168": {
+      "id": "168",
+      "title": "Will COP31 end with a new global climate deal?",
+      "summary": "BBC Climate editor Justin Rowlatt reports from the COP 31 UN climate summit in Antalya, Turkey.",
+      "source": "BBC Science",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/videos/cqn0dwrewrwxo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T22:44:52.000Z",
+      "feed": "Bilim"
+    },
+    "172": {
+      "id": "172",
+      "title": "Bakan Kurum: Antalya Mutabakatını çıkarmak için tüm gücümüzle çalışıyoruz",
+      "summary": "COP31 Başkanı ve Çevre, Şehircilik ve İklim Değişikliği Bakanı Murat Kurum, Antalya Mutabakatını çıkarmak için tüm güçleriyle çalıştıklarını belirterek, \"Son metni sekretaryaya gönderdik. Birazdan tüm ülkelere gönderilecek.",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/bakan-kurum-antalya-mutabakatini-cikarmak-icin-tum-gucumuzle-calisiyoruz-964104.html",
+      "date": "2026-11-21T22:38:00.000Z",
+      "feed": "Dünya"
+    },
+    "176": {
+      "id": "176",
+      "title": "Mao Shimada wins Finlandia Trophy to book spot in Grand Prix Final",
+      "summary": "Shimada, a four-time world junior champion, secured the second win of her debut season after taking gold at Skate Canada earlier this month",
+      "source": "The Japan Times",
+      "publisher": "The Japan Times",
+      "url": "https://www.japantimes.co.jp/sports/2026/11/22/more-sports/mao-shimada-wins-finland/",
+      "date": "2026-11-21T22:33:00.000Z",
+      "feed": "Dünya"
+    },
+    "180": {
+      "id": "180",
+      "title": "Wales fightback not enough as Australia edge thriller thanks to Gordon",
+      "summary": "Wales 26-29 Australia Wales to face Japan in ninth-place final One step at a time. Historic victories are one thing, but the boring need to back up such a win proved beyond Wales.",
+      "source": "The Guardian Sport",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/sport/2026/nov/21/wales-australia-nations-championship-rugby-union-match-report",
+      "date": "2026-11-21T22:28:08.000Z",
+      "feed": "Spor"
+    },
+    "181": {
+      "id": "181",
+      "title": "Can win over All Blacks finally break England's boom-bust cycle?",
+      "summary": "Twelve months ago, England beat New Zealand and flopped in the following Six Nations. Can their 2026 success pave the way to more permanent success?",
+      "source": "BBC Sport",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/rugby-union/articles/c6gregx71gjro?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T22:27:36.000Z",
+      "feed": "Spor"
+    },
+    "185": {
+      "id": "185",
+      "title": "France secure Nations Championship final with Springboks",
+      "summary": "France dispatch Argentina in Paris to book their spot against South Africa in the Nations Championship final at Allianz Stadium next Sunday.",
+      "source": "BBC Sport",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/rugby-union/articles/c3zxv4e5g5g5o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T22:22:36.000Z",
+      "feed": "Spor"
+    },
+    "187": {
+      "id": "187",
+      "title": "Scottish Premiership roundup: Dundee left reeling after 8-0 mauling by Hearts",
+      "summary": "Steven Pressley: ‘I’m embarrassed … I apologise’ Celtic 4-1 St Mirren; Rangers 2-1 Motherwell Wouter Vrancken said Hearts’ remarkable 8-0 demolition of 10-man Dundee was his team’s best performance since he took charge at Tynecast",
+      "source": "The Guardian Sport",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/football/2026/nov/21/scottish-premiership-roundup-celtic-sweep-st-mirren-aside-to-strengthen-grip-at-top",
+      "date": "2026-11-21T22:20:19.000Z",
+      "feed": "Spor"
+    },
+    "189": {
+      "id": "189",
+      "title": "Fight over fossil fuels leaves COP31 climate talks in deadlock",
+      "summary": "Countries from nearly 200 countries are in a deadlock to try and get a new global climate agreement.",
+      "source": "BBC Science",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c6ly5w40eg07o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T22:19:43.000Z",
+      "feed": "Bilim"
+    },
+    "212": {
+      "id": "212",
+      "title": "Amazon is complaining about NYC Council on shipping labels, too",
+      "summary": "Amazon is getting increasingly aggressive about not wanting to employ its army of delivery workers. | Photo: The Verge Amazon is leaving no venue unexplored in its fight against the New York City Council and the Delivery Protectio",
+      "source": "The Verge",
+      "publisher": "The Verge",
+      "url": "https://www.theverge.com/tech/1039564/amazon-nyc-council-packages-shipping-label",
+      "date": "2026-11-21T21:59:31.000Z",
+      "feed": "Teknoloji"
+    },
+    "213": {
+      "id": "213",
+      "title": "Rising star Stirling knocks out Prochazka",
+      "summary": "Rising star Navajo Stirling earns the biggest win of his career as he knocks out former champion Jiri Prochazka in the second round at UFC Qatar.",
+      "source": "BBC Sport",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/mixed-martial-arts/articles/ckgj3l8nxev5o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T21:51:51.000Z",
+      "feed": "Spor"
+    },
+    "218": {
+      "id": "218",
+      "title": "Signal restricts mobile screenshots as it confronts ‘existential threat’ of AI surveillance",
+      "summary": "Signal is limiting users' ability to take screenshots in both its Android and iOS apps.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/21/signal-restricts-mobile-screenshots-as-it-confronts-existential-threat-of-ai-surveillance/",
+      "date": "2026-11-21T21:37:10.000Z",
+      "feed": "Teknoloji"
+    },
+    "224": {
+      "id": "224",
+      "title": "At least 24 dead after boat taking passengers to funeral capsizes in Nigeria",
+      "summary": "At least 24 people have died after a boat capsized carrying people to a funeral in Nigeria, according to emergency services.",
+      "source": "Sky News World",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/at-least-24-dead-after-boat-taking-passengers-to-funeral-capsizes-in-nigeria-13615057",
+      "date": "2026-11-21T21:32:00.000Z",
+      "feed": "Dünya"
+    },
+    "227": {
+      "id": "227",
+      "title": "Bahrain says Iranian attack causes fire at industrial facility",
+      "summary": "Bahrain reports no injuries, as Iran's IRGC says it targeted US military positions at two bases in al-Riffa and Awali.",
+      "source": "Al Jazeera",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/news/2026/11/21/bahrain-says-iranian-attack-causes-fire-at-industrial-facility?traffic_source=rss",
+      "date": "2026-11-21T21:31:03.000Z",
+      "feed": "Dünya"
+    },
+    "232": {
+      "id": "232",
+      "title": "Silah kazasında yaralanan bir askerimiz şehit oldu",
+      "summary": "Şırnak'ta silah kazasında yaralanan İstihbarat Astsubay Çavuş Yalın Gergün, kaldırıldığı hastanede şehit oldu.",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/silah-kazasinda-yaralanan-bir-askerimiz-sehit-oldu-964102.html",
+      "date": "2026-11-21T21:28:00.000Z",
+      "feed": "Dünya"
+    },
+    "234": {
+      "id": "234",
+      "title": "24 dead after boat carrying mourners to funeral capsizes in Nigeria",
+      "summary": "The boat captain fled after the accident and the vessel's manager was taken into custody, police said",
+      "source": "The Independent World",
+      "publisher": "The Independent",
+      "url": "https://www.independent.co.uk/news/world/africa/nigeria-funeral-boat-capsizes-victims-b3089271.html",
+      "date": "2026-11-21T21:23:44.000Z",
+      "feed": "Dünya"
+    },
+    "236": {
+      "id": "236",
+      "title": "'It gives me the ick': Can you cheat on someone with a video game?",
+      "summary": "Grand Theft Auto VI lets you build and nurture a romantic relationship but some say dates with a fictional character are a step too far.",
+      "source": "BBC Health",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/ckn9wrr75dyeo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T21:21:57.000Z",
+      "feed": "Sağlık"
+    },
+    "241": {
+      "id": "241",
+      "title": "Impunity fuels surge in settler violence across occupied West Bank",
+      "summary": "",
+      "source": "Al Jazeera",
+      "publisher": "Al Jazeera",
+      "url": "https://www.aljazeera.com/video/newsfeed/2026/11/21/impunity-fuels-surge-in-settler-violence-across-occupied-west-bank?traffic_source=rss",
+      "date": "2026-11-21T21:11:54.000Z",
+      "feed": "Dünya"
+    },
+    "244": {
+      "id": "244",
+      "title": "A tale of two Nvidias",
+      "summary": "We got two very different pictures of Nvidia — the company’s latest earnings report vs. the tech executives loudly calling for Jensen Huang’s return.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/21/a-tale-of-two-nvidias/",
+      "date": "2026-11-21T21:07:42.000Z",
+      "feed": "Teknoloji"
+    },
+    "255": {
+      "id": "255",
+      "title": "Taiwan warns Canada’s Carney that deeper ties with China come with risks",
+      "summary": "Canadian Prime Minister Mark Carney has tried to deepen trade ties with China.",
+      "source": "ABC News International",
+      "publisher": "ABC News",
+      "url": "https://abcnews.com/International/wireStory/taiwan-warns-canada-faces-china-risks-carney-cautioned-138346706",
+      "date": "2026-11-21T20:50:14.000Z",
+      "feed": "Dünya"
+    },
+    "256": {
+      "id": "256",
+      "title": "11 killed in burst of violence in northern Mexico after capture of cartel leader",
+      "summary": "At least 11 people have been killed in a burst of violence in Mexico’s Sinaloa state",
+      "source": "ABC News International",
+      "publisher": "ABC News",
+      "url": "https://abcnews.com/International/wireStory/mexico-detains-top-cartel-boss-el-chapo-isidro-138341584",
+      "date": "2026-11-21T20:50:13.000Z",
+      "feed": "Dünya"
+    },
+    "258": {
+      "id": "258",
+      "title": "11 killed in burst of violence in northern Mexico after capture of cartel leader Meza Flores",
+      "summary": "Flores climbed the cartel ranks to lead the Beltrán-Leyva cartel and later became the leader of his own group, the Meza-Flores Transnational Criminal Organisation",
+      "source": "The Hindu International",
+      "publisher": "The Hindu",
+      "url": "https://www.thehindu.com/news/international/11-killed-in-burst-of-violence-in-northern-mexico-after-capture-of-cartel-leader-meza-flores/article71729468.ece",
+      "date": "2026-11-21T20:49:00.000Z",
+      "feed": "Dünya"
+    },
+    "263": {
+      "id": "263",
+      "title": "Seth Rogen Says Brad Pitt and ‘12 Years a Slave’ Cast Would Visit ‘This Is the End’ Set to ‘Perk Up’ Because They Were ‘in a Bummed-Out Headspace’ While Filming",
+      "summary": "Seth Rogen and Brad Pitt spent time together while shooting very different films in 2013. Rogen recalled Pitt, Michael Fassbender, Chiwetel Ejiofor and other cast members from “12 Years a Slave” spending time on the set of his com",
+      "source": "Variety",
+      "publisher": "Variety",
+      "url": "https://variety.com/2026/film/news/seth-rogen-brad-pitt-12-years-a-slave-cast-set-visit-1236955074/",
+      "date": "2026-11-21T20:40:44.000Z",
+      "feed": "Kültür"
+    },
+    "280": {
+      "id": "280",
+      "title": "Two groups verify mathematician’s claim that Claude helped prove mathematics problem",
+      "summary": "Anthropic’s Levent Alpöge says it took six weeks for him using the AI tool to solve 19th-century Riemann hypothesis A mathematician at Anthropic has said that the San Francisco-based artificial intelligence (AI) company’s software",
+      "source": "The Guardian AI",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/technology/2026/nov/21/anthropic-riemann-hypothesis-solved-claude-ai",
+      "date": "2026-11-21T20:15:57.000Z",
+      "feed": "AI"
+    },
+    "287": {
+      "id": "287",
+      "title": "The UN fails to agree on rules regulating ‘killer robots’",
+      "summary": "One of the items on the agenda for UN diplomats meeting in Geneva this week was working towards rules regarding the use of autonomous weapons, or so-called \"killer robots.\" Eventually, representatives left the meetings agreeing to",
+      "source": "The Verge",
+      "publisher": "The Verge",
+      "url": "https://www.theverge.com/tech/1039554/un-regulations-killer-robots",
+      "date": "2026-11-21T20:03:37.000Z",
+      "feed": "Teknoloji"
+    },
+    "307": {
+      "id": "307",
+      "title": "Duran: Türkiye, COP31 ile küresel iklim diplomasisinin buluşma noktası oldu",
+      "summary": "İletişim Başkanı Burhanettin Duran, \"Türkiye, başkanlığını ve ev sahipliğini üstlendiği COP31 ile küresel iklim diplomasisinin buluşma noktası oldu.\" dedi.",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/duran-turkiye-cop31-ile-kuresel-iklim-diplomasisinin-bulusma-noktasi-oldu-964098.html",
+      "date": "2026-11-21T19:54:00.000Z",
+      "feed": "Dünya"
+    },
+    "311": {
+      "id": "311",
+      "title": "Jeff Goldblum Performs a Piano Medley and Reflects on His Career at Marrakech Film Festival: ‘The Stories That We Tell Matter’",
+      "summary": "Jeff Goldblum was honored with a tribute award at the Marrakech Film Festival on Saturday, delighting the audience with a surprise piano performance before reflecting on more than half a century in cinema, giving a heartfelt speec",
+      "source": "Variety",
+      "publisher": "Variety",
+      "url": "https://variety.com/2026/film/global/jeff-goldblum-career-marrakech-film-festival-tilda-swinton-1236954972/",
+      "date": "2026-11-21T19:51:33.000Z",
+      "feed": "Kültür"
+    },
+    "315": {
+      "id": "315",
+      "title": "Climate talks stall as countries mull showdown with Saudi Arabia over fossil fuel phaseout",
+      "summary": "New draft text released at Cop31 summit after countries fail to agree on electrification and finance for developing world Climate talks reached a standstill on Saturday night in Turkey as some countries mulled whether to force a s",
+      "source": "The Guardian Business",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/environment/2026/nov/21/climate-talks-stall-countries-mull-showdown-saudi-arabia-over-fossil-fuels",
+      "date": "2026-11-21T19:43:52.000Z",
+      "feed": "Ekonomi"
+    },
+    "344": {
+      "id": "344",
+      "title": "Anthony Albanese talks a big game about sovereignty. But Australia remains in thrall to its ‘unreliable boyfriend’ | Julianne Schultz",
+      "summary": "We rely on US tech platforms to provide the digital infrastructure of daily life. What happens when they all go dark?",
+      "source": "The Guardian AI",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/commentisfree/2026/nov/22/anthony-albanese-talks-a-big-game-about-sovereignty-but-australia-remains-in-thrall-to-its-unreliable-boyfriend",
+      "date": "2026-11-21T19:00:06.000Z",
+      "feed": "AI"
+    },
+    "352": {
+      "id": "352",
+      "title": "Bakan Fidan: Yemen içinde asker bulundurulmasına yönelik alınmış bir karar yok",
+      "summary": "Dışişleri Bakan Hakan Fidan, Mekke İttifakı kapsamında Türkiye'nin politikasının Suudi Arabistan'ın savunmasına yönelik olduğunu, Yemen'de asker bulundurma kararı olmadığını söyledi.",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/bakan-fidan-yemen-icinde-asker-bulundurulmasina-yonelik-alinmis-bir-karar-yok-964092.html",
+      "date": "2026-11-21T18:52:00.000Z",
+      "feed": "Dünya"
+    },
+    "359": {
+      "id": "359",
+      "title": "Trump says reported FBI database hack is ‘not good’",
+      "summary": "The FBI is reportedly investigating a hack of the National Crime Information Center.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/21/trump-says-reported-fbi-database-hack-is-not-good/",
+      "date": "2026-11-21T18:44:53.000Z",
+      "feed": "Teknoloji"
+    },
+    "383": {
+      "id": "383",
+      "title": "Cartel leader captured in northern Mexico in a bloody firefight that left 11 dead",
+      "summary": "Fausto Isidro Meza Flores, better known as \"El Chapo Isidro,\" was one of the FBI's most wanted fugitives. His arrest in northwest Mexico on Saturday has sparked violence in the region.",
+      "source": "NPR World",
+      "publisher": "NPR",
+      "url": "https://www.npr.org/2026/11/21/nx-s1-6049672/cartel-boss-el-chapo-isidro-detained",
+      "date": "2026-11-21T18:08:55.000Z",
+      "feed": "Dünya"
+    },
+    "406": {
+      "id": "406",
+      "title": "The FBI and USDA were reportedly hacked",
+      "summary": "Friday, it was reported that both the US Department of Agriculture (USDA) and the FBI were hacked. In reporting on the FBI hack, CNN noted that this is the second such attack on the agency in the last few months, this time targeti",
+      "source": "The Verge",
+      "publisher": "The Verge",
+      "url": "https://www.theverge.com/tech/1039543/fbi-usda-hacked",
+      "date": "2026-11-21T17:42:27.000Z",
+      "feed": "Teknoloji"
+    },
+    "420": {
+      "id": "420",
+      "title": "FBI criminal database hacked",
+      "summary": "The FBI is investigating a reported major cyberattack targeting its national law enforcement database, the National Crime Information Center (NCIC), which holds sensitive criminal justice records, including information on fugitive",
+      "source": "France 24",
+      "publisher": "France 24",
+      "url": "https://www.france24.com/en/fbi-criminal-database-hacked",
+      "date": "2026-11-21T17:23:18.000Z",
+      "feed": "Dünya"
+    },
+    "428": {
+      "id": "428",
+      "title": "Russian helicopter suspected of violating Finnish airspace",
+      "summary": "Finland's Defense Ministry thinks the incursion is linked to a drone strike earlier Saturday on a Russian cargo ship, which is on a US sanctions list.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/russian-helicopter-suspected-of-violating-finnish-airspace/a-80010133?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-21T17:08:00.000Z",
+      "feed": "Dünya"
+    },
+    "433": {
+      "id": "433",
+      "title": "Here are the top AI agents that can live in your text messages",
+      "summary": "We created a list of the most notable AI agents that can live in your text messages, from general assistants to agents designed for families, travel, and work.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/21/all-the-ai-agents-that-can-live-in-your-text-messages/",
+      "date": "2026-11-21T17:00:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "447": {
+      "id": "447",
+      "title": "International UN talks on controlling use of autonomous weapons collapse",
+      "summary": "Week-long efforts fail to establish negotiating mandate on AI warfare after Russian ‘filibustering’ Week-long efforts to agree a negotiating mandate for a legally binding international treaty to control the use of autonomous weapo",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/technology/2026/nov/21/international-talks-control-ai-autonomous-weapons-collapse",
+      "date": "2026-11-21T16:36:11.000Z",
+      "feed": "Dünya"
+    },
+    "462": {
+      "id": "462",
+      "title": "Hormuz swim highlights environmental cost of war",
+      "summary": "Ocean campaigner Lewis Pugh completes Hormuz challenge and warns of lasting environmental damage.",
+      "source": "BBC Science",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c95y1gr27xplo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T16:12:31.000Z",
+      "feed": "Bilim"
+    },
+    "474": {
+      "id": "474",
+      "title": "John Roberts, the voice of Linda Belcher, is just happy to finish a thing",
+      "summary": "You probably know John Roberts best as the voice of Linda Belcher on Bob's Burgers. The show just wrapped up its 16th season and shows no signs of slowing down anytime soon.",
+      "source": "The Verge",
+      "publisher": "The Verge",
+      "url": "https://www.theverge.com/report/1038463/john-roberts-linda-belcher-bobs-burgers-interview",
+      "date": "2026-11-21T16:00:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "478": {
+      "id": "478",
+      "title": "Trump says ‘maybe we’ll learn things’ after FBI is hacked again: ‘I always like to put things in a positive spin’",
+      "summary": "‘Maybe we’ll learn about voter fraud,’ the president told Fox News after yet another hacking incident",
+      "source": "The Independent World",
+      "publisher": "The Independent",
+      "url": "https://www.independent.co.uk/news/world/americas/us-politics/trump-fbi-hack-fox-news-b3089188.html",
+      "date": "2026-11-21T15:51:45.000Z",
+      "feed": "Dünya"
+    },
+    "489": {
+      "id": "489",
+      "title": "Virginia child dies in state’s first measles-associated death of 2026",
+      "summary": "Death adds to national measles outbreak that recently cost the US its measles elimination status after 26 years Virginia reported its first measles-associated death of 2026 ⁠on Friday, involving a child who tested positive for the",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/us-news/2026/nov/21/virginia-child-dies-measles",
+      "date": "2026-11-21T15:30:07.000Z",
+      "feed": "Dünya"
+    },
+    "496": {
+      "id": "496",
+      "title": "EU and Indonesia sign trade deal",
+      "summary": "A deal covering 730 million people promises lower tariffs and new investment opportunities as the European Union seeks to diversify trade ties amid growing global economic tensions.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/eu-and-indonesia-sign-trade-deal/a-80010099?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-21T15:21:00.000Z",
+      "feed": "Dünya"
+    },
+    "501": {
+      "id": "501",
+      "title": "Independent review ordered into surgery carried out by NHS Grampian",
+      "summary": "It follows a whistleblower's leaking of a document which shows there were 19 avoidable deaths at the health board.",
+      "source": "BBC Health",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cr62pxzyql1jo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T15:15:29.000Z",
+      "feed": "Sağlık"
+    },
+    "508": {
+      "id": "508",
+      "title": "Time may be far stranger than we realize. Scientists have a way to test it",
+      "summary": "Time may be far stranger than we realize, and scientists have proposed a way to detect clocks experiencing multiple flows of time simultaneously. Using atomic clocks with dramatically enhanced sensitivity, researchers hope to reve",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261120075558.htm",
+      "date": "2026-11-21T15:09:46.000Z",
+      "feed": "Bilim"
+    },
+    "515": {
+      "id": "515",
+      "title": "SNL’s skit Sister captures the quiet agony of caregiving for women: ‘I’ve never felt seen like that’",
+      "summary": "The viral satirization of the caregiving burden left to women and daughters hit home for many viewers The Saturday Night Live sketch, titled Sister quickly went viral this week for its satirization of the burden that women and dau",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/tv-and-radio/2026/nov/21/snl-sister-caregiving",
+      "date": "2026-11-21T15:00:01.000Z",
+      "feed": "Kültür"
+    },
+    "519": {
+      "id": "519",
+      "title": "New EU budget proposal aims at tax gobal tech giants",
+      "summary": "European Council President Antonio Costa has proposed a smaller EU budget for 2028-2034, including a 3% tax on major digital firms to ease member states' contributions. France has already rejected the plan as inadequate.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/new-eu-budget-proposal-aims-at-tax-gobal-tech-giants/a-80009255?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-21T14:58:00.000Z",
+      "feed": "Dünya"
+    },
+    "523": {
+      "id": "523",
+      "title": "A giant star swallowed another star. James Webb reveals the aftermath",
+      "summary": "Astronomers have witnessed a spectacular cosmic collision in the Andromeda galaxy, where a small star spiraled into a giant star 18,000 times brighter than the Sun, triggering a violent eruption. NASA’s James Webb Space Telescope ",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261120075556.htm",
+      "date": "2026-11-21T14:53:40.000Z",
+      "feed": "Bilim"
+    },
+    "530": {
+      "id": "530",
+      "title": "Russia strikes Zelenskyy's hometown, killing 2",
+      "summary": "The attacks follow Russian President Vladimir Putin's vow of a \"painful\" response to Ukraine's attacks this week on the Kerch Bridge, linking Russian-occupied Crimea.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/russia-strikes-zelenskyy-s-hometown-killing-2/a-80009458?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-21T14:44:00.000Z",
+      "feed": "Dünya"
+    },
+    "551": {
+      "id": "551",
+      "title": "FBI reportedly hacked again, this time targeting nationwide police database",
+      "summary": "FBI systems have reportedly been breached for the second time in two months, this time targeting the agency's National Crime Information Center (NCIC), which is used to share information between local, state, and federal law enfor",
+      "source": "BleepingComputer",
+      "publisher": "BleepingComputer",
+      "url": "https://www.bleepingcomputer.com/news/security/fbi-reportedly-hacked-again-this-time-targeting-nationwide-police-database/",
+      "date": "2026-11-21T14:26:04.000Z",
+      "feed": "Teknoloji"
+    },
+    "553": {
+      "id": "553",
+      "title": "Who was buried in Westminster Abbey's Roman coffin? A 150-year mystery may be solved",
+      "summary": "A mysterious skeleton discovered in a Roman sarcophagus at Westminster Abbey may finally be identified after more than 150 years. New dating evidence suggests the remains belonged to a high-ranking medieval abbot who was buried in",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261119194553.htm",
+      "date": "2026-11-21T14:25:39.000Z",
+      "feed": "Bilim"
+    },
+    "560": {
+      "id": "560",
+      "title": "Elon Musk’s lawyer joining Tom Brady in buying Chelsea stake",
+      "summary": "Attorney also representing Joshua Kushner in Uefa battle Clearlake Capital seeking additional investors Elon Musk’s lawyer is joining Tom Brady in buying a stake in Chelsea. The Guardian revealed on Friday that the much-decorated ",
+      "source": "The Guardian Business",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/football/2026/nov/21/elon-musk-lawyer-tom-brady-nfl-chelsea-stake",
+      "date": "2026-11-21T14:20:05.000Z",
+      "feed": "Ekonomi"
+    },
+    "571": {
+      "id": "571",
+      "title": "A 50-year-old theory about evolution may have been wrong all along",
+      "summary": "A decades-old theory suggesting that evolution protects its most important genes from mutations has been dealt a major blow. An extensive new analysis of mutations in bacteria and yeast found no evidence that essential genes mutat",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261119194538.htm",
+      "date": "2026-11-21T14:06:15.000Z",
+      "feed": "Bilim"
+    },
+    "602": {
+      "id": "602",
+      "title": "At least 11 dead after suspected cartel leader 'El Chapo Isidro' captured in Mexico",
+      "summary": "An outburst of violence has killed at least 11 people after Mexican authorities captured suspected cartel leader Fausto Isidro Meza Flores, known as El Chapo Isidro.",
+      "source": "Sky News World",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/suspected-cartel-leader-el-chapo-isidro-from-fbi-most-wanted-list-captured-in-mexico-13614689",
+      "date": "2026-11-21T13:34:00.000Z",
+      "feed": "Dünya"
+    },
+    "647": {
+      "id": "647",
+      "title": "Philadelphia neonatologist Joanna Parga-Belinkie on keeping babies safe from measles",
+      "summary": "Amid ongoing measles outbreaks, Philadelphia neonatologist Joanna Parga-Belinkie talks with NPR's Scott Simon about how she keeps infants too young for the vaccine safe.",
+      "source": "NPR Health",
+      "publisher": "NPR",
+      "url": "https://www.npr.org/2026/11/21/nx-s1-6038857/philadelphia-neonatologist-joanna-parga-belinkie-on-keeping-babies-safe-from-measles",
+      "date": "2026-11-21T12:40:10.000Z",
+      "feed": "Sağlık"
+    },
+    "668": {
+      "id": "668",
+      "title": "Sessions offer advice on rising energy costs",
+      "summary": "A council is urging people to seek support with rising energy costs on heating this winter.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cmy49l3x893jo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T12:09:49.000Z",
+      "feed": "Ekonomi"
+    },
+    "678": {
+      "id": "678",
+      "title": "I’m a priest. Silicon Valley’s search for the ‘soul’ of AI is deeply troubling | Rev Kevin Deal",
+      "summary": "Humans experience beauty and sit with mysteries. Unlike AI, we do not exist merely for utility Last month, religious leaders from across San Francisco gathered behind closed doors to discuss what it means to be human in the age of",
+      "source": "The Guardian AI",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/commentisfree/2026/nov/21/silicon-valleys-ai-soul-search",
+      "date": "2026-11-21T12:00:58.000Z",
+      "feed": "AI"
+    },
+    "679": {
+      "id": "679",
+      "title": "Mark Carney is so popular he can get away with a lot. Will it last if the Trump spell breaks?",
+      "summary": "Canadians have put a lot of trust in their prime minister but some question if it can last if the trade wars were to end In the hours after polls in the US midterm elections closed and it became clear that Donald Trump had been re",
+      "source": "The Guardian Business",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/world/2026/nov/21/mark-carney-popular-will-it-last-trump-spell-breaks-canada",
+      "date": "2026-11-21T12:00:58.000Z",
+      "feed": "Ekonomi"
+    },
+    "680": {
+      "id": "680",
+      "title": "A Robbie Williams film starring a CGI chimp helped me come to terms with my hearing loss",
+      "summary": "I was bullied for my deafness as a child, and just when I was finding myself, a car crash set me back years. But then I watched the movie Better Man, and had my life explained for me I cannot say I’ve ever been a Robbie Williams f",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/culture/2026/nov/21/my-cultural-awakening-robbie-williams-biopic-better-man-hearing-loss-gambling-addiction",
+      "date": "2026-11-21T12:00:58.000Z",
+      "feed": "Kültür"
+    },
+    "714": {
+      "id": "714",
+      "title": "‘I’m opening the cage of a monster’: Taxi Driver scriptwriter Paul Schrader on unleashing AI at 80",
+      "summary": "Director and Scorsese collaborator is using AI in films and sees its takeover as inevitable, not just in cinema Paul Schrader was sipping white wine in a Greenwich Village trattoria when he said how he felt about using AI to make ",
+      "source": "The Guardian AI",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/film/2026/nov/21/taxi-driver-scriptwriter-paul-schrader-ai-film-making-martin-scorsese",
+      "date": "2026-11-21T11:00:57.000Z",
+      "feed": "AI"
+    },
+    "723": {
+      "id": "723",
+      "title": "Fontaines DC review – thrilling gothic grandeur from a band vaulting into greatness",
+      "summary": "M&S Bank Arena, Liverpool Just a few years since playing little dive bars, the Irish rockers have confidently scaled up to huge rooms like this – and are now one of the key interpreters of modern malaise A mere seven years since t",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/music/2026/nov/21/fontaines-dc-review-liverpool-arena-uk-tour",
+      "date": "2026-11-21T10:42:12.000Z",
+      "feed": "Kültür"
+    },
+    "726": {
+      "id": "726",
+      "title": "Hititlerden Cumhuriyete Anadolu'nun doğa mirası COP31'de",
+      "summary": "Türkiye'nin ev sahipliğinde Antalya'da düzenlenen Birleşmiş Milletler (BM) İklim Değişikliği Çerçeve Sözleşmesi 31. Taraflar Konferansı'nda (COP31) kurulan Anadolu Hazineleri Bahçesi'nde, Hititlerden Cumhuriyet dönemine uzanan sür",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/hititlerden-cumhuriyete-anadolunun-doga-mirasi-cop31de-964056.html",
+      "date": "2026-11-21T10:36:00.000Z",
+      "feed": "Dünya"
+    },
+    "727": {
+      "id": "727",
+      "title": "Emine Erdoğan'dan Kadın Kooperatifleri Fuarı'na ilişkin paylaşım",
+      "summary": "Cumhurbaşkanı Recep Tayyip Erdoğan'ın eşi Emine Erdoğan, Türkiye Yüzyılı'nda Kadın Emeğinin Güçlendirilmesi Kadın Kooperatifleri Fuarı'na ilişkin paylaşım yaptı.",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/emine-erdogandan-kadin-kooperatifleri-fuarina-iliskin-paylasim-964055.html",
+      "date": "2026-11-21T10:31:00.000Z",
+      "feed": "Dünya"
+    },
+    "738": {
+      "id": "738",
+      "title": "‘Shakespearean tale of ego, greed and ambition’: the scandalous story of televangelism",
+      "summary": "Netflix documentary Primetime Preacher$ travels back to a time when evangelism found a dominant place on US television – and the shocking tabloid stories that followed For three decades, film-maker Joe Berlinger has gripped true-c",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/film/2026/nov/21/primetime-preachers-documentary-televangelism",
+      "date": "2026-11-21T10:00:56.000Z",
+      "feed": "Kültür"
+    },
+    "760": {
+      "id": "760",
+      "title": "Opinion: How Kennedy and MAHA could help stop measles",
+      "summary": "Kennedy and MAHA say they aren’t anti-vaccine. They can prove it by promoting the MMR vaccine, writes Brinda Adhikari.",
+      "source": "STAT",
+      "publisher": "STAT",
+      "url": "https://www.statnews.com/2026/11/21/rfk-jr-maha-measles-outbreak-elimination-status-promote-mmr-vaccine/?utm_campaign=rss",
+      "date": "2026-11-21T09:30:00.000Z",
+      "feed": "Sağlık"
+    },
+    "818": {
+      "id": "818",
+      "title": "German bidder stages last-gasp bid to rescue Poundland",
+      "summary": "A German investment firm has made a last-minute entry into the race to save Poundland, just days before its directors face the bleak prospect of appointing administrators to one of Britain's biggest high street retailers.",
+      "source": "Sky News Business",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/german-bidder-stages-last-gasp-bid-to-rescue-poundland-13614626",
+      "date": "2026-11-21T07:36:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "819": {
+      "id": "819",
+      "title": "Ladbrokes-owner Entain in talks with CVC after gambling tax hit",
+      "summary": "The London-listed owner of Ladbrokes and Coral is in talks to sell part of its business to one of the world's biggest private equity firms as it tries to mitigate the impact of Labour's latest tax raid on the gambling industry.",
+      "source": "Sky News Business",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/ladbrokes-owner-entain-in-talks-with-cvc-after-gambling-tax-hit-13614625",
+      "date": "2026-11-21T07:34:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "833": {
+      "id": "833",
+      "title": "Further walkout planned by NI doctors as strike ends",
+      "summary": "Consultants and specialist doctors will begin a separate 24-hour strike on Monday morning as part of the same pay dispute.",
+      "source": "BBC Health",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c6d71e9epe8qo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T07:01:13.000Z",
+      "feed": "Sağlık"
+    },
+    "841": {
+      "id": "841",
+      "title": "Çocuklarda ilk diş muayenesi ne zaman yapılmalı?",
+      "summary": "Uzmanlar, çocuklarda ağız ve diş sağlığı sorunlarının erken dönemde önlenebilmesi için ilk süt dişinin çıkmasıyla ağız bakımına başlanmasını, ilk diş hekimi muayenesinin ise en geç 1 yaşında yapılmasını öneriyor.",
+      "source": "TRT Haber Sağlık",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/saglik/cocuklarda-ilk-dis-muayenesi-ne-zaman-yapilmali-964034.html",
+      "date": "2026-11-21T06:45:00.000Z",
+      "feed": "Sağlık"
+    },
+    "872": {
+      "id": "872",
+      "title": "Denmark says it thwarted 'Russian plot' to kill US-Ukrainian rapper",
+      "summary": "Police thwarted a Russian plot to kill a US-Ukrainian rapper who was performing in Denmark, according to authorities.",
+      "source": "Sky News World",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/denmark-says-it-thwarted-russian-plot-to-kill-us-ukrainian-rapper-kyivstoner-13614604",
+      "date": "2026-11-21T05:15:00.000Z",
+      "feed": "Dünya"
+    },
+    "923": {
+      "id": "923",
+      "title": "They were fined $811m for conning detained migrants, but the scams didn't stop",
+      "summary": "How convicted fraudsters made millions from detained immigrants, evaded efforts to shut down their bail business and left migrants behind bars.",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cqgm0zlkgrm2o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T01:02:39.000Z",
+      "feed": "Dünya"
+    },
+    "924": {
+      "id": "924",
+      "title": "Tech Now",
+      "summary": "Alasdair Keane is in Naples exploring how tech is transforming the America's Cup race.",
+      "source": "BBC Technology",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/iplayer/episode/m0034tjc?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T01:00:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "928": {
+      "id": "928",
+      "title": "ANC fights to keep control of South Africa's key cities after election setback",
+      "summary": "The ANC appears reluctant to replicate its national power-sharing deal with the pro-business DA at the local level.",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cqpv94d10rwpo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T00:34:51.000Z",
+      "feed": "Dünya"
+    },
+    "930": {
+      "id": "930",
+      "title": "Can AI really help spot Black Friday deals? We put it to the test",
+      "summary": "We put four AI models to the test to see if they could save us money on a new TV.",
+      "source": "BBC Technology",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cw8dv4jmnle2o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T00:06:11.000Z",
+      "feed": "Teknoloji"
+    },
+    "931": {
+      "id": "931",
+      "title": "Sales of baby sleeping bag halted by Next after new mum raises alarm",
+      "summary": "The sleeping bag’s neck hole was far too big, meaning Emma's baby daughter could wriggle down and it could cover her face.",
+      "source": "BBC Health",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cw9874p114dro?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T00:02:09.000Z",
+      "feed": "Sağlık"
+    },
+    "952": {
+      "id": "952",
+      "title": "GTA 6 sales hit $3.8bn in a single day - the biggest entertainment launch in history",
+      "summary": "The mammoth figure surpasses every video game launch and single-day film box office record.",
+      "source": "BBC Technology",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c9zr5nyv5dj2o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T22:53:24.000Z",
+      "feed": "Teknoloji"
+    },
+    "975": {
+      "id": "975",
+      "title": "What the new UK-EU deal could mean for future post-Brexit relations",
+      "summary": "The BBC's political and Europe editors analyse the new agreements between the UK and EU.",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/videos/c90k6gl3lyxeo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T21:43:22.000Z",
+      "feed": "Dünya"
+    },
+    "997": {
+      "id": "997",
+      "title": "Q&A: Enabling more human-like interactions and understanding in multimodal foundation models",
+      "summary": "Senior Research Scientist Jim Glass discusses how his MIT-IBM Computing Research Lab collaboration connects perception and language, and addresses the shortcoming of current models.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/qa-enabling-more-human-interactions-understanding-multimodal-foundation-models-1120",
+      "date": "2026-11-20T21:00:00.000Z",
+      "feed": "AI"
+    },
+    "1033": {
+      "id": "1033",
+      "title": "New approach enables physically consistent AI models of chaotic systems",
+      "summary": "Enforcing physics-based constraints prevents AI models from generating unreliable predictions for complex nonlinear systems in weather, climate, and turbulent flows.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/new-approach-enables-physically-consistent-ai-models-chaotic-systems-1120",
+      "date": "2026-11-20T20:00:00.000Z",
+      "feed": "AI"
+    },
+    "1063": {
+      "id": "1063",
+      "title": "White House removes cyber-security chief after series of tech outages",
+      "summary": "He has been fired after losing the confidence of new White House chief of staff Stephen Miller, according to reports.",
+      "source": "BBC Technology",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cwz0k3nn5p5mo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T19:03:56.000Z",
+      "feed": "Teknoloji"
+    },
+    "1095": {
+      "id": "1095",
+      "title": "The Guardian view on Britain and Europe: Burnham’s reset cannot be the final destination | Editorial",
+      "summary": "It’s welcome news that Labour has reopened doors that the Conservatives slammed shut. But the fundamental dilemma over European integration remains Andy Burnham on Friday announced a long-awaited deal to ease some of Brexit’s barr",
+      "source": "The Guardian Business",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/commentisfree/2026/nov/20/the-guardian-view-on-britain-and-europe-burnhams-reset-cannot-be-the-final-destination",
+      "date": "2026-11-20T18:13:24.000Z",
+      "feed": "Ekonomi"
+    },
+    "1106": {
+      "id": "1106",
+      "title": "UK to explore even closer ties with EU after agreeing deal, says Burnham",
+      "summary": "The UK-EU deal agreed on Friday covers British food exports, emissions trading and a youth experience scheme.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c6jreyqgw4e9o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T17:49:48.000Z",
+      "feed": "Ekonomi"
+    },
+    "1145": {
+      "id": "1145",
+      "title": "Faisal Islam: This cost-cutting UK-EU deal doesn't mean lower prices will follow",
+      "summary": "The trade deal is unlikely lower food prices for shoppers, but should boost the economy more than other post-Brexit agreements.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cm1wr029evnqo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T16:41:52.000Z",
+      "feed": "Ekonomi"
+    },
+    "1158": {
+      "id": "1158",
+      "title": "Bending Spoons buys Mailchimp for $3.68B",
+      "summary": "Intuit acquired the company in 2021 for roughly $12 billion, so it looks like Bending Spoons is getting quite a bargain.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/20/bending-spoons-buys-mailchimp-for-3-68-billion/",
+      "date": "2026-11-20T16:16:06.000Z",
+      "feed": "Teknoloji"
+    },
+    "1171": {
+      "id": "1171",
+      "title": "Andy Burnham and EU leaders call UK-EU reset deal a 'win-win' – video",
+      "summary": "The UK prime minister called the newly agreed post-Brexit reset deal a 'win-win' for the UK and the EU, although the level of tuition fees EU students will pay to study at UK universities remains unresolved. The prime minister met",
+      "source": "The Guardian Business",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/politics/video/2026/nov/20/andy-burnham-and-eu-leaders-call-uk-eu-reset-deal-a-win-win-video",
+      "date": "2026-11-20T15:54:50.000Z",
+      "feed": "Ekonomi"
+    },
+    "1175": {
+      "id": "1175",
+      "title": "Airbnb's divisive new house rules come into force",
+      "summary": "New rules on what Airbnb hosts can reasonably ask guests to do could mean fewer chores but higher costs for customers.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cmx278n2genyo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T15:48:35.000Z",
+      "feed": "Ekonomi"
+    },
+    "1176": {
+      "id": "1176",
+      "title": "A transcription firm used by police, prosecutors, and tech giants exposed customer data online",
+      "summary": "Exclusive: A simple security lapse exposed transcriptions of police interviews and bodycam footage on a cloud server without a password.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/20/a-transcription-firm-used-by-police-prosecutors-and-tech-giants-exposed-customer-data-online/",
+      "date": "2026-11-20T15:46:07.000Z",
+      "feed": "Teknoloji"
+    },
+    "1181": {
+      "id": "1181",
+      "title": "Melania: the series review – so bad it robbed me of my capacity to discern time and space",
+      "summary": "The first lady’s two-part TV documentary is a dead-eyed advert that barely manages to masquerade as entertainment. Calling it thin gruel would be an insult to the gruel industry Previously on Melania: earlier this year – either be",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/tv-and-radio/2026/nov/20/melania-review-tv-documentary-prime",
+      "date": "2026-11-20T15:38:39.000Z",
+      "feed": "Kültür"
+    },
+    "1184": {
+      "id": "1184",
+      "title": "Poundland chief shares pain with staff amid last-ditch rescue talks",
+      "summary": "Poundland's boss has told thousands of employees at the discount chain of his \"hurt\" at the parlous position in which it finds itself, days before it faces collapsing into administration.",
+      "source": "Sky News Business",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/poundland-chief-shares-pain-with-staff-amid-last-ditch-rescue-talks-13614407",
+      "date": "2026-11-20T15:32:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "1189": {
+      "id": "1189",
+      "title": "Following the “mathocalypse,” mathematicians consider the future",
+      "summary": "A panel discussion at MIT explored AI’s implications for mathematical discovery and the people who make it their profession.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/following-mathocalypse-mathematicians-consider-future-1120",
+      "date": "2026-11-20T15:20:00.000Z",
+      "feed": "AI"
+    },
+    "1201": {
+      "id": "1201",
+      "title": "British Gas owner Centrica cuts hundreds of jobs in Business unit",
+      "summary": "The FTSE 100 energy company Centrica is cutting hundreds of jobs as part of a cost-saving drive.",
+      "source": "Sky News Business",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/british-gas-owner-centrica-cuts-hundreds-of-jobs-in-business-unit-13614396",
+      "date": "2026-11-20T15:01:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "1209": {
+      "id": "1209",
+      "title": "The fallout from Nvidia’s Jensen Huang scandal continues",
+      "summary": "In the midst of dealing with the fallout from its ouster of CEO Jensen Huang, Nvidia delivered its latest earnings report this week, with healthy growth and promises that the good times will continue. At the same time, the chipmak",
+      "source": "TechCrunch AI",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/podcast/the-fallout-from-nvidias-jensen-huang-scandal-continues/",
+      "date": "2026-11-20T14:55:44.000Z",
+      "feed": "AI"
+    },
+    "1235": {
+      "id": "1235",
+      "title": "The Body is a hit – and every lesbian I know is obsessed. Why aren’t there more sapphic stories on screen?",
+      "summary": "The queer female characters in Netflix’s Catholic school girl horror series are messy and relatable – and unreasonably rare I haven’t been able to get away from Netflix’s The Body. Since the show’s release this month, it’s taken o",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/tv-and-radio/2026/nov/21/every-lesbian-i-know-is-obsessed-with-the-body-on-netflix",
+      "date": "2026-11-20T14:00:31.000Z",
+      "feed": "Kültür"
+    },
+    "1317": {
+      "id": "1317",
+      "title": "Measles is officially back in the USA. Will Maha pay the price? - video",
+      "summary": "This week the US lost its measles elimination status, an official recognition that the infectious disease is endemic in the country after being eliminated for 26 years. To find out what this means in practical terms for citizens, ",
+      "source": "The Guardian Science",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/science/video/2026/nov/20/measles-is-officially-back-in-the-usa-will-maha-pay-the-price-video",
+      "date": "2026-11-20T11:40:07.000Z",
+      "feed": "Bilim"
+    },
+    "1383": {
+      "id": "1383",
+      "title": "Gulf wholesaler makes late entry in dash to save Poundland",
+      "summary": "A Gulf-based wholesale group has made a late entrance into the race to save Poundland just days before the discount retailer faces collapsing into administration.",
+      "source": "Sky News Business",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/gulf-wholesaler-makes-late-entry-in-dash-to-save-poundland-13614276",
+      "date": "2026-11-20T09:25:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "1530": {
+      "id": "1530",
+      "title": "Experimental compound burns fat without sacrificing muscle",
+      "summary": "Researchers at UC Berkeley have identified a compound that could transform weight-loss treatment by helping the body burn more energy instead of suppressing appetite like Ozempic and Wegovy. In mice, the compound boosted energy ex",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261118073918.htm",
+      "date": "2026-11-20T00:19:49.000Z",
+      "feed": "Bilim"
+    },
+    "1565": {
+      "id": "1565",
+      "title": "California targets Nvidia in China AI chip probe",
+      "summary": "The probe by California, where the AI chipmaker has its global headquarters, follows former CEO Jensen Huang's departure.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cqn70vxp5p4no?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-19T23:04:30.000Z",
+      "feed": "Ekonomi"
+    },
+    "1567": {
+      "id": "1567",
+      "title": "Opinion: The U.S. lost measles elimination status. The next Congress should help restore it",
+      "summary": "Infectious disease physician and STAT “ID Consult” columnist Krutika Kuppalli offers Congress a must-do list on measles.",
+      "source": "STAT",
+      "publisher": "STAT",
+      "url": "https://www.statnews.com/2026/11/19/measles-elimination-status-congress-should-prioritize-restoration/?utm_campaign=rss",
+      "date": "2026-11-19T22:55:19.000Z",
+      "feed": "Sağlık"
+    },
+    "1572": {
+      "id": "1572",
+      "title": "AI helps researchers investigate how thousands of medical studies share code",
+      "summary": "An MIT and Dana-Farber Institute-led team used large language models to examine nearly 4,000 studies and hundreds of code repositories, revealing gaps in the information needed to scrutinize and reuse published research.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/ai-helps-researchers-investigate-how-medical-studies-share-code-1119",
+      "date": "2026-11-19T22:15:00.000Z",
+      "feed": "AI"
+    },
+    "1577": {
+      "id": "1577",
+      "title": "Meta’s new Muse Charm device may cost $300",
+      "summary": "Meta hasn't denied the reporting from The Information, saying only that it will \"have more to share soon\" about its upcoming AI wearable.",
+      "source": "TechCrunch AI",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/19/metas-new-muse-charm-device-may-cost-300/",
+      "date": "2026-11-19T21:58:06.000Z",
+      "feed": "AI"
+    },
+    "1580": {
+      "id": "1580",
+      "title": "These tech outages are giving Y2K, AI agent style",
+      "summary": "Are the recent outages in the airline booking systems, banking platforms, and productivity platforms really a coincidence? There's actually likely something deeper going on, cybersecurity experts say.",
+      "source": "TechCrunch AI",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/19/these-tech-outages-are-giving-y2k-ai-agent-style/",
+      "date": "2026-11-19T21:42:31.000Z",
+      "feed": "AI"
+    },
+    "1599": {
+      "id": "1599",
+      "title": "At least one dead and dozens missing after migrant boat capsizes off Senegal en route to Spain",
+      "summary": "The latest sinking comes amid a sharp rise in departures towards the Canary Islands, with more than 11,000 people reaching the Spanish archipelago in the first two weeks of November.",
+      "source": "Euronews",
+      "publisher": "Euronews",
+      "url": "https://www.euronews.com/2026/11/19/at-least-one-dead-and-dozens-missing-after-migrant-boat-capsizes-off-senegal-en-route-to-s",
+      "date": "2026-11-19T20:21:25.000Z",
+      "feed": "Dünya"
+    },
+    "1600": {
+      "id": "1600",
+      "title": "The unfolding Jensen Huang scandal: a timeline",
+      "summary": "Jensen Huang has resigned from Nvidia following an affair, which could have ramifications for national security as the U.S. and China race to develop the most advanced AI infrastructure.",
+      "source": "TechCrunch AI",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/19/nvidia-ceo-jensen-huangs-affair-with-alleged-chinese-spy-a-timeline/",
+      "date": "2026-11-19T20:18:49.000Z",
+      "feed": "AI"
+    },
+    "1695": {
+      "id": "1695",
+      "title": "Viagogo may have broken law on hidden fees, watchdog provisionally finds",
+      "summary": "The UK's competition body says initial findings suggest the ticket-reselling website used drip pricing.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cmvg2ex7j30lo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-19T13:35:52.000Z",
+      "feed": "Ekonomi"
+    },
+    "1696": {
+      "id": "1696",
+      "title": "Wading bird called Phil tracked in epic migration to Siberia and back",
+      "summary": "A bird has astonished conservationists by completing a 6,800-mile round trip to Siberia and back.",
+      "source": "BBC Science",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c6qj5dl29zqro?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-19T13:35:29.000Z",
+      "feed": "Bilim"
+    },
+    "1710": {
+      "id": "1710",
+      "title": "Poundland bosses warn of funding squeeze in fresh talks with minister",
+      "summary": "Poundland's bosses have told the government that the discount retailer faces a further funding crisis just days before a cliff-edge which could lead to its collapse.",
+      "source": "Sky News Business",
+      "publisher": "Sky News",
+      "url": "https://news.sky.com/story/poundland-bosses-warn-of-funding-squeeze-in-fresh-talks-with-minister-13613974",
+      "date": "2026-11-19T12:58:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "1712": {
+      "id": "1712",
+      "title": "Covid inquiry report: key findings on testing, tracing and 'the pingdemic'",
+      "summary": "Early efforts to contain coronavirus \"were doomed to fail\", the public inquiry has found. Here's what you need to know.",
+      "source": "BBC Health",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/crx20q8ql4gwo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-19T12:47:27.000Z",
+      "feed": "Sağlık"
+    },
+    "1715": {
+      "id": "1715",
+      "title": "13. Zeugma Film Festivali 27 Kasım’da başlıyor",
+      "summary": "Kırkayak Kültür tarafından düzenlenen 13. Zeugma Film Festivali, 27-29 Kasım tarihlerinde Antep'te sinemaseverlerle buluşacak.",
+      "source": "Bianet",
+      "publisher": "Bianet",
+      "url": "https://bianet.org/haber/13-zeugma-film-festivali-27-kasimda-basliyor-325577",
+      "date": "2026-11-19T12:29:00.000Z",
+      "feed": "Dünya"
+    },
+    "1739": {
+      "id": "1739",
+      "title": "Scientists tested 212 plant-based foods. Every single one contained fungal toxins",
+      "summary": "A new study has uncovered a surprising concern hiding in popular plant-based foods and drinks. Researchers tested 212 vegan and vegetarian products sold in the UK, including meat alternatives, oat milk, almond milk, and soy milk, ",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261118073749.htm",
+      "date": "2026-11-19T11:13:29.000Z",
+      "feed": "Bilim"
+    },
+    "1749": {
+      "id": "1749",
+      "title": "Tennis my 'saviour' after trying to take my own life - Riedi",
+      "summary": "Swiss tennis player Leandro Riedi says the sport was his \"saviour\" after he attempted to take his own life shortly before Wimbledon qualifying began in June 2024.",
+      "source": "BBC Health",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sport/tennis/videos/cw1mdn0n531lo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-19T10:55:19.000Z",
+      "feed": "Sağlık"
+    },
+    "1767": {
+      "id": "1767",
+      "title": "Survivors of Uganda's deadly landslide seek justice at the UN",
+      "summary": "Survivors reject relocation plans they say ignore their safety, land rights and livelihoods.",
+      "source": "BBC Science",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c920xgxp5785o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-19T09:21:54.000Z",
+      "feed": "Bilim"
+    },
+    "1795": {
+      "id": "1795",
+      "title": "Could measles and midterms bring down Maha? – podcast",
+      "summary": "This week the US lost its measles elimination status, an official recognition that the infectious disease is endemic in the country after being eliminated for 26 years. To find out what this means in practical terms for citizens, ",
+      "source": "The Guardian Science",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/science/audio/2026/nov/19/could-measles-and-midterms-bring-down-maha-podcast",
+      "date": "2026-11-19T05:00:19.000Z",
+      "feed": "Bilim"
+    },
+    "1800": {
+      "id": "1800",
+      "title": "Bilim insanları, dişlerin arasındaki kalıntılardan metabolizmayı takip eden akıllı diş ipi geliştirdi",
+      "summary": "Hong Kong Bilim ve Teknoloji Üniversitesindeki bilim insanları, diş eti oluğu sıvısını analiz ederek hem ağız sağlığını hem de vücut metabolizmasını takip edebilen akıllı bir diş ipi geliştirdi.",
+      "source": "TRT Haber Sağlık",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/saglik/bilim-insanlari-dislerin-arasindaki-kalintilardan-metabolizmayi-takip-eden-akilli-dis-ipi-gelistirdi-963758.html",
+      "date": "2026-11-19T04:23:00.000Z",
+      "feed": "Sağlık"
+    },
+    "1858": {
+      "id": "1858",
+      "title": "Bernie Sanders previews Democratic investigations into RFK, Jr., amid nationwide measles outbreaks",
+      "summary": "Sanders, an Independent who caucuses with the Democrats, told reporters on Wednesday that congressional investigations into the Trump administration’s actions could be coming in 2027",
+      "source": "Scientific American",
+      "publisher": "Scientific American",
+      "url": "https://www.scientificamerican.com/article/bernie-sanders-previews-democratic-investigations-into-rfk-jr-amid-nationwide-measles-outbreaks/",
+      "date": "2026-11-18T17:30:00.000Z",
+      "feed": "Bilim"
+    },
+    "1931": {
+      "id": "1931",
+      "title": "Çocuklarda omega3 eksikliğine karşı haftada 2 öğün balık önerisi",
+      "summary": "Uzmanlar, dünyada ve Türkiye'de her 3 çocuktan 2'sinde omega-3 düzeyinin yetersiz olduğunu belirterek, çocukların sağlıklı gelişimi için 1 yaşından itibaren haftada en az 2 öğün yağlı balık tüketilmesini önerdi.",
+      "source": "TRT Haber Sağlık",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/saglik/cocuklarda-omega-3-eksikligine-karsi-haftada-2-ogun-balik-onerisi-963671.html",
+      "date": "2026-11-18T09:07:00.000Z",
+      "feed": "Sağlık"
+    },
+    "2011": {
+      "id": "2011",
+      "title": "Public health expert reacts to latest measles milestone",
+      "summary": "NPR's Scott Detrow talks with Dr. Ashish Jha, senior fellow at Harvard's Belfer Center and former White House coronavirus czar, about the news that the U.S. has lost its measles elimination status.",
+      "source": "NPR Health",
+      "publisher": "NPR",
+      "url": "https://www.npr.org/2026/11/17/nx-s1-6043126/public-health-expert-reacts-to-latest-measles-milestone",
+      "date": "2026-11-17T22:20:41.000Z",
+      "feed": "Sağlık"
+    },
+    "2013": {
+      "id": "2013",
+      "title": "U.S. officially loses its measles elimination status",
+      "summary": "The Pan American Health Organization announced that measles is no longer considered eliminated in the U.S. It's classified as endemic now because a strain has lingered in the U.S. for over a year.",
+      "source": "NPR Health",
+      "publisher": "NPR",
+      "url": "https://www.npr.org/2026/11/17/nx-s1-6044227/u-s-officially-loses-its-measles-elimination-status",
+      "date": "2026-11-17T21:53:30.000Z",
+      "feed": "Sağlık"
+    },
+    "2035": {
+      "id": "2035",
+      "title": "U.S. officially loses measles elimination status in a body blow to public health",
+      "summary": "The decision comes amid a widespread outbreak of the disease across the country",
+      "source": "Scientific American",
+      "publisher": "Scientific American",
+      "url": "https://www.scientificamerican.com/article/u-s-officially-loses-measles-elimination-status-in-a-body-blow-to-public-health/",
+      "date": "2026-11-17T16:10:00.000Z",
+      "feed": "Bilim"
+    },
+    "2080": {
+      "id": "2080",
+      "title": "Bu yıl 703 bin 506 bebeğe yeni doğan taraması yapıldı",
+      "summary": "Sağlık Bakanlığı, bu yılın 10 ayında 703 bin 506 bebeğe Yenidoğan Tarama Programı uygulandığını belirtti.",
+      "source": "TRT Haber Sağlık",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/saglik/bu-yil-703-bin-506-bebege-yeni-dogan-taramasi-yapildi-963550.html",
+      "date": "2026-11-17T10:42:00.000Z",
+      "feed": "Sağlık"
+    },
+    "9": {
+      "id": "9",
+      "title": "COP31 struggles to reach deal with parties at odds over fossil fuels",
+      "summary": "The language around fossil fuels remains a flashpoint at UN climate talks in Türkiye, where negotiations have gone into a second day past the deadline.",
+      "source": "ABC Australia",
+      "publisher": "ABC Australia",
+      "url": "https://www.abc.net.au/news/2026-11-22/cop31-at-odds-over-fossil-fuels/107414330",
+      "date": "2026-11-22T05:04:51.000Z",
+      "feed": "Dünya"
+    },
+    "43": {
+      "id": "43",
+      "title": "Fossil fuels still missing from latest COP31 draft deal",
+      "summary": "New draft calls for global efforts to boost the share of electricity in total final energy consumption to 35 percent by 2035 and the expansion of 'clean energy,' but fails to mention fossil fuels by name.",
+      "source": "Le Monde English",
+      "publisher": "Le Monde",
+      "url": "https://www.lemonde.fr/en/environment/article/2026/11/22/fossil-fuels-still-missing-from-latest-cop31-draft-deal_6786496_114.html",
+      "date": "2026-11-22T04:27:26.000Z",
+      "feed": "Dünya"
+    },
+    "694": {
+      "id": "694",
+      "title": "ChatGPT shrunk down to run on a Super Nintendo",
+      "summary": "Just don't expect complex, coherent, or always correct answers",
+      "source": "The Register",
+      "publisher": "The Register",
+      "url": "https://www.theregister.com/offbeat/2026/11/21/chatgpt-shrunk-down-to-run-on-a-super-nintendo/5311418",
+      "date": "2026-11-21T11:46:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "815": {
+      "id": "815",
+      "title": "Anthropic researcher says Claude solved math’s greatest riddle",
+      "summary": "The firm's chatbot may have helped prove the Riemann Hypothesis, a problem that has eluded mathematicians for more than 160 years.",
+      "source": "The Japan Times",
+      "publisher": "The Japan Times",
+      "url": "https://www.japantimes.co.jp/news/2026/11/21/world/science-health/ai-anthropic-claude-riemann-hypothesis/",
+      "date": "2026-11-21T07:46:00.000Z",
+      "feed": "Dünya"
+    },
+    "1149": {
+      "id": "1149",
+      "title": "Anthropic mathematician claims to have solved prestigious Millennium Prize problem with Claude",
+      "summary": "Anthropic went public on November 19th, 2026. | Photo: Getty Images Anthropic mathematician Levent Alpöge claims he has proved the Riemann hypothesis, one of mathematics's most notoriously difficult problems, with the help of Clau",
+      "source": "The Verge AI",
+      "publisher": "The Verge",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1010051/anthropic-riemann-hypothesis-millennium-prize-problem",
+      "date": "2026-11-20T16:34:13.000Z",
+      "feed": "AI"
+    },
+    "1689": {
+      "id": "1689",
+      "title": "The AI ‘supertelescope’ that could transform the universe",
+      "summary": "Astronomers want to combine data from three new giant telescope surveys into a fourth virtual observatory",
+      "source": "Scientific American",
+      "publisher": "Scientific American",
+      "url": "https://www.scientificamerican.com/article/the-ai-supertelescope-that-could-transform-the-universe/",
+      "date": "2026-11-19T14:00:00.000Z",
+      "feed": "Bilim"
+    },
+    "1699": {
+      "id": "1699",
+      "title": "A cyberattack using artificial intelligence targeted the EU in October, official says",
+      "summary": "An official in Brussels says a cyberattack using software powered by artificial intelligence targeted the European Union in October",
+      "source": "ABC News International",
+      "publisher": "ABC News",
+      "url": "https://abcnews.com/International/wireStory/cyberattack-artificial-intelligence-targeted-eu-october-official-138284407",
+      "date": "2026-11-19T13:30:35.000Z",
+      "feed": "Dünya"
+    },
+    "1745": {
+      "id": "1745",
+      "title": "Google, GPT-6.2 Sol ve Claude Opus 5.5'e rakip Gemini 4 Neon'u tanıttı",
+      "summary": "Google, Gemini 4 ailesinin yeni üyesi Gemini 4 Neon'u tanıttı. Karmaşık yazılım geliştirme, analitik akıl yürütme, kurumsal iş akışları ve bilimsel çalışmalar için geliştirilen model, Gemini ailesinde...",
+      "source": "Webrazzi",
+      "publisher": "Webrazzi",
+      "url": "https://webrazzi.com/2026/11/19/google-gpt-6-2-sol-ve-claude-opus-5-5-e-rakip-gemini-4-neon-u-tanitti/",
+      "date": "2026-11-19T11:00:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "1747": {
+      "id": "1747",
+      "title": "Ancient Maya site uncovered with ‘vibe archaeology’ ignites firestorm over AI in science",
+      "summary": "Contrary to online claims, AI did not discover an ancient Maya site. But it did spark a clash over how the technology should be used in science",
+      "source": "Scientific American",
+      "publisher": "Scientific American",
+      "url": "https://www.scientificamerican.com/article/ancient-maya-site-uncovered-with-vibe-archaeology-ignites-firestorm-over-ai-in-science/",
+      "date": "2026-11-19T11:00:00.000Z",
+      "feed": "Bilim"
+    },
+    "786": {
+      "id": "786",
+      "title": "Fossil fuel dispute threatens to scupper climate deal",
+      "summary": "More than 130 countries want fossil fuel phase-out language restored to the COP31 text, but divisions over carbon capture and climate finance stall a deal.",
+      "source": "Channel NewsAsia",
+      "publisher": "Channel NewsAsia",
+      "url": "https://www.channelnewsasia.com/world/cop31-fossil-fuel-climate-talks-6571376",
+      "date": "2026-11-21T08:41:00.000Z",
+      "feed": "Dünya"
+    },
+    "1727": {
+      "id": "1727",
+      "title": "COP31: Ambition goes missing as fossil fuel language drops from draft deal",
+      "summary": "A cat named Ambition went missing again at COP31 on Thursday. While activists delivered the message with humour, it reflected a serious concern: explicit references to moving away from fossil fuels had disappeared from the latest ",
+      "source": "UN News",
+      "publisher": "UN News",
+      "url": "https://news.un.org/feed/view/en/story/2026/11/1168839",
+      "date": "2026-11-19T12:00:00.000Z",
+      "feed": "Dünya"
+    },
+    "1147": {
+      "id": "1147",
+      "title": "UN climate talks run into overtime as countries clash over fossil fuel cuts",
+      "summary": "Deep divisions over fossil fuels and financial support for poorer nations pushed the Cop31 climate summit in Turkey beyond its scheduled closing day on Friday, as nearly 200 countries struggled to agree on how to tackle global war",
+      "source": "RFI",
+      "publisher": "RFI",
+      "url": "https://www.rfi.fr/en/environment/20261120-un-climate-talks-run-into-overtime-as-countries-clash-over-fossil-fuel-cuts-cop31",
+      "date": "2026-11-20T16:38:58.000Z",
+      "feed": "Dünya"
+    },
+    "704": {
+      "id": "704",
+      "title": "Teknoloji hisselerindeki düşüş için uzmanlar ne diyor?",
+      "summary": "Anthropic’in hisseleri borsadaki ikinci gününde halka arz fiyatına yaklaşırken, yapay zekâ yatırımlarının ne zaman karşılığını vereceğine ilişkin kaygılar teknoloji hisselerindeki satış dalgasını derinleştirdi.",
+      "source": "BBC Türkçe",
+      "publisher": "BBC",
+      "url": "https://www.bbc.com/turkce/articles/cx7v2ne04np2o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-21T11:23:53.000Z",
+      "feed": "Dünya"
+    },
+    "947": {
+      "id": "947",
+      "title": "US declassifies more UFO footage filmed in the Middle East",
+      "summary": "The Pentagon has released an eighth tranche of UFO records, which includes three video clips recorded in 2020, 2023 and 2026.",
+      "source": "BBC World",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/videos/cqdr1x8mypnko?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T23:15:20.000Z",
+      "feed": "Dünya"
+    },
+    "1197": {
+      "id": "1197",
+      "title": "The secret cyber scramble to protect UK fridge freezers",
+      "summary": "A behind the scenes cyber-security operation has taken place to secure tens of thousands of refrigeration units from hackers, the BBC has learned.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/videos/cqpv94x1zj89o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T15:08:16.000Z",
+      "feed": "Ekonomi"
+    },
+    "1474": {
+      "id": "1474",
+      "title": "'It's a lifeline': Breast cancer support group that's helped thousands",
+      "summary": "The King's Award for Voluntary Service is the highest award given to voluntary groups in the UK.",
+      "source": "BBC Health",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/c862p6v3wx43o?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-20T06:10:40.000Z",
+      "feed": "Sağlık"
+    },
+    "1591": {
+      "id": "1591",
+      "title": "BBC Inside Science",
+      "summary": "SpaceX is on the verge of making space affordable.",
+      "source": "BBC Science",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/sounds/play/w3ct978m?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-19T21:00:00.000Z",
+      "feed": "Bilim"
+    },
+    "1828": {
+      "id": "1828",
+      "title": "Why has Waymo pulled all its driverless cars from US freeways?",
+      "summary": "The vehicles currently operate in 15 US cities, though freeway rides are only offered in a handful, including San Francisco and Los Angeles.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/videos/cmx2ryw97x4go?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-18T23:47:46.000Z",
+      "feed": "Ekonomi"
+    },
+    "1958": {
+      "id": "1958",
+      "title": "Nvidia says it won't reinstate Huang as it reports soaring sales",
+      "summary": "The AI chip giant reported strong quarterly earnings on Tuesday after the dramatic exit of Jensen Huang.",
+      "source": "BBC Business",
+      "publisher": "BBC",
+      "url": "https://www.bbc.co.uk/news/articles/cm2kl50vkwkdo?at_medium=RSS&at_campaign=rss",
+      "date": "2026-11-18T01:18:18.000Z",
+      "feed": "Ekonomi"
+    },
+    "713": {
+      "id": "713",
+      "title": "Haitians excited but uneasy as El Salvador troops fight gangs",
+      "summary": "Foreign combatants in Port-au-Prince welcomed by many after years of gang control but some fear offensive could exacerbate volatile situation A bullet-peppered mural of the Haitian striker Emmanuel Sanon covers the facade of Port-",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/world/2026/nov/21/excitement-unease-haiti-el-salvador-troops-gangs-war-bukele",
+      "date": "2026-11-21T11:00:57.000Z",
+      "feed": "Dünya"
+    },
+    "938": {
+      "id": "938",
+      "title": "Judge approves $7.25bn Bayer payout to settle claims that Roundup causes cancer",
+      "summary": "German company faced 65,000 claims from people who said they developed cancer after using weedkiller A Missouri judge on Friday approved Bayer’s $7.25bn settlement of lawsuits ⁠alleging that its weedkiller ​Roundup causes cancer, ",
+      "source": "The Guardian Business",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/business/2026/nov/20/bayer-roundup-cancer-litigation",
+      "date": "2026-11-20T23:42:43.000Z",
+      "feed": "Ekonomi"
+    },
+    "1299": {
+      "id": "1299",
+      "title": "The week’s best new tracks and the act you need to know: the rangy folk-prog songwriting of Threshold",
+      "summary": "Isaac Eiger’s solo venture leaves jangle pop behind for a wilder sound. Often it owes a debt to Alex G, but what indie-rock song doesn’t these days?",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/music/2026/nov/20/the-weeks-best-new-tracks-and-the-act-you-need-to-know-threshold",
+      "date": "2026-11-20T12:00:19.000Z",
+      "feed": "Kültür"
+    },
+    "1503": {
+      "id": "1503",
+      "title": "Iraq university’s removal of male professors teaching women sparks weeks of protests",
+      "summary": "Al-Qadisiyah University’s move a sign of the country’s slide into a Taliban-like gender segregation, say activists The removal of male professors teaching female students at a university in southern Iraq has sparked protests and b",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/global-development/2026/nov/20/iraqi-university-ban-men-teaching-women-protests",
+      "date": "2026-11-20T05:00:23.000Z",
+      "feed": "Dünya"
+    },
+    "1713": {
+      "id": "1713",
+      "title": "Israeli tanks cross ‘yellow line’ boundary into Hamas-controlled central Gaza",
+      "summary": "First incursion across boundary since ceasefire deal comes as Eisenkot seeks to form government without Netanyahu The Israeli military crossed into Hamas-controlled central Gaza on Wednesday in its first ground operation across th",
+      "source": "The Guardian World",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/world/2026/nov/18/israeli-tanks-cross-yellow-line-boundary-into-hamas-controlled-central-gaza",
+      "date": "2026-11-19T12:40:46.000Z",
+      "feed": "Dünya"
+    },
+    "1863": {
+      "id": "1863",
+      "title": "Kelly Gough is simply astounding as Desire Under the Elms reaches the heights of Greek tragedy",
+      "summary": "Almeida theatre, London Part-Phaedra and part-Medea, Gough is mesmerising in Ebenezer Bamgboye’s stylised staging of Eugene O’Neill’s family drama You would not know that Eugene O’Neill’s play was originally set on a mid 19th-cent",
+      "source": "The Guardian Culture",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/stage/2026/nov/18/desire-under-the-elms-review-almeida-theatre-london",
+      "date": "2026-11-18T17:00:04.000Z",
+      "feed": "Kültür"
+    },
+    "1946": {
+      "id": "1946",
+      "title": "Pill that mimics Viagra can slow Alzheimer’s progression, study suggests",
+      "summary": "Experts call trial results of medication that slowed cognitive decline by almost a third ‘very promising’ A pill that mimics Viagra by relaxing blood vessels and increasing blood flow to the brain can slow cognitive decline in peo",
+      "source": "The Guardian Science",
+      "publisher": "The Guardian",
+      "url": "https://www.theguardian.com/science/2026/nov/18/pill-mimics-viagra-can-slow-alzheimers-progression-by-third-study",
+      "date": "2026-11-18T05:00:33.000Z",
+      "feed": "Bilim"
+    },
+    "1688": {
+      "id": "1688",
+      "title": "Study reveals data centers’ long-distance damage to air quality",
+      "summary": "Researchers find air pollution from data center electricity use can affect communities far from the facilities, with some of the highest impacts in the Midwest.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/study-reveals-data-centers-long-distance-damage-air-quality-1119",
+      "date": "2026-11-19T14:00:00.000Z",
+      "feed": "AI"
+    },
+    "1846": {
+      "id": "1846",
+      "title": "This featherweight, flying robot carries its own sensors and computers",
+      "summary": "The speedy microrobot flies without an attached motion-capture system, moving it closer to applications like agriculture or industrial surveillance.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/featherweight-flying-robot-carries-its-own-sensors-and-computers-1118",
+      "date": "2026-11-18T19:00:00.000Z",
+      "feed": "AI"
+    },
+    "1948": {
+      "id": "1948",
+      "title": "Helping AI text detectors keep up with changing conditions",
+      "summary": "A more flexible training method can make AI text detectors more robust when new models emerge or AI-generated text is disguised to appear human.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/helping-ai-text-detectors-keep-up-with-changing-conditions-1118",
+      "date": "2026-11-18T05:00:00.000Z",
+      "feed": "AI"
+    },
+    "2016": {
+      "id": "2016",
+      "title": "Putting a spotlight on AI, society, and humanity",
+      "summary": "Supported by the MIT Human Insight Collaborative, scholars are exploring how AI is impacting the human experience and reshaping higher education.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/putting-spotlight-ai-society-humanity-1117",
+      "date": "2026-11-17T20:40:00.000Z",
+      "feed": "AI"
+    },
+    "2101": {
+      "id": "2101",
+      "title": "Learning the language of machine learning",
+      "summary": "By studying the computational foundations of language learning, Associate Professor Jacob Andreas builds intelligent systems that can communicate effectively with humans.",
+      "source": "MIT News AI",
+      "publisher": "MIT News",
+      "url": "https://news.mit.edu/2026/learning-language-of-machine-learning-jacob-andreas-1117",
+      "date": "2026-11-17T05:00:00.000Z",
+      "feed": "AI"
+    },
+    "914": {
+      "id": "914",
+      "title": "After 8 years in space, a groundbreaking X-ray telescope finally opens its eyes",
+      "summary": "After eight years and 10 billion kilometers in space, a groundbreaking X-ray telescope heading to Mercury has captured its first cosmic observations and is performing even better than scientists expected. The instrument could soon",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261120075547.htm",
+      "date": "2026-11-21T02:11:14.000Z",
+      "feed": "Bilim"
+    },
+    "1514": {
+      "id": "1514",
+      "title": "A 3-million-year-old child just made human evolution far more complicated",
+      "summary": "A groundbreaking study of the 3-million-year-old Taung Child fossil suggests that several ancient human ancestors once thought to belong to the same species may actually represent different branches of our evolutionary family tree",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261118065531.htm",
+      "date": "2026-11-20T03:17:52.000Z",
+      "feed": "Bilim"
+    },
+    "1810": {
+      "id": "1810",
+      "title": "Is free will an illusion? New brain research reveals a surprising twist",
+      "summary": "New research reveals that the brain makes free choices and forced decisions using surprisingly similar neural processes, with activity building toward a decision before we act. The discovery challenges assumptions about free will ",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261118065524.htm",
+      "date": "2026-11-19T01:21:35.000Z",
+      "feed": "Bilim"
+    },
+    "1960": {
+      "id": "1960",
+      "title": "Autistic brains look surprisingly similar on average. Then scientists looked closer.",
+      "summary": "Scientists discovered that although people with and without autism show surprisingly similar average brain activity, individuals with autism exhibit much greater differences from one another, especially in regions involved in soci",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261116023344.htm",
+      "date": "2026-11-18T01:10:14.000Z",
+      "feed": "Bilim"
+    },
+    "2103": {
+      "id": "2103",
+      "title": "A material just one atom thick reveals a strange quantum secret",
+      "summary": "Researchers at the University of Osaka have discovered a remarkable quantum state forming at the boundary between a one-atom-thick material and a metal. They observed electrons behaving as though they were unusually heavy, includi",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261115085554.htm",
+      "date": "2026-11-17T01:25:39.000Z",
+      "feed": "Bilim"
+    },
+    "2128": {
+      "id": "2128",
+      "title": "Hidden ecosystem: Scientists discover 245 animals living inside a single deep-sea rock",
+      "summary": "Deep beneath the Pacific Ocean, scientists have discovered tiny hidden ecosystems inside metal-rich rocks that take millions of years to form. Researchers examined 244 nodules and found more than 4,100 animals living in their crac",
+      "source": "ScienceDaily",
+      "publisher": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/releases/2026/11/261114202133.htm",
+      "date": "2026-11-16T11:40:14.000Z",
+      "feed": "Bilim"
+    },
+    "890": {
+      "id": "890",
+      "title": "Startup sues Apple in India over tap-to-share contacts feature",
+      "summary": "A U.S. startup is seeking $162 million in damages and an injunction to impact iPhone and Apple Watch imports to India.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/20/startup-sues-apple-in-india-over-tap-to-share-contacts-feature/",
+      "date": "2026-11-21T04:00:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "1034": {
+      "id": "1034",
+      "title": "Daniel Ek backs AI researcher’s fusion power startup. Here’s what they’re building.",
+      "summary": "Spotify founder Daniel Ek is backing Europa Fusion, a fusion power startup founded by an AI researcher. Here's what the startup is building.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/20/daniel-ek-backs-ai-researchers-fusion-power-startup-heres-what-theyre-building/",
+      "date": "2026-11-20T19:53:41.000Z",
+      "feed": "Teknoloji"
+    },
+    "1086": {
+      "id": "1086",
+      "title": "Super-hot rock geothermal could end data center energy woes",
+      "summary": "New geothermal startups are betting that they can leapfrog today's leaders to deliver terawatts of electricity nearly anywhere.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/20/super-hot-rock-geothermal-could-end-data-center-energy-woes/",
+      "date": "2026-11-20T18:34:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "1239": {
+      "id": "1239",
+      "title": "Six AI-powered gadgets that could make your home office smarter",
+      "summary": "From notetakers to webcams, here are six AI-powered gadgets to upgrade your workspace.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/20/6-ai-powered-gadgets-that-could-make-your-home-office-smarter/",
+      "date": "2026-11-20T14:00:00.000Z",
+      "feed": "Teknoloji"
+    },
+    "1257": {
+      "id": "1257",
+      "title": "California AG subpoenas Nvidia over worries about Huang’s ties with China",
+      "summary": "\"The conduct of Nvidia and its former CEO raises bright red flags, including about the ways in which the company may have misled investors,\" California AG Rob Bonta said.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/20/california-ag-subpoenas-nvidia-over-worries-about-huangs-ties-with-china/",
+      "date": "2026-11-20T13:21:11.000Z",
+      "feed": "Teknoloji"
+    },
+    "1523": {
+      "id": "1523",
+      "title": "Apple may be developing its own AI agent that runs your Mac",
+      "summary": "The iPhone maker appears to be building agents that can compete with the likes of Meta Muse, Instinct, Claude, and OpenAI Dots.",
+      "source": "TechCrunch",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/19/apple-may-be-developing-its-own-ai-agent-that-runs-your-mac/",
+      "date": "2026-11-20T00:56:01.000Z",
+      "feed": "Teknoloji"
+    },
+    "1611": {
+      "id": "1611",
+      "title": "Anthropic’s IPO could deliver $156B to charity",
+      "summary": "At a stock price of $95, the frontier lab's Public Benefit Foundation, its employee donations, and the company's match tot up to $156 billion.",
+      "source": "TechCrunch AI",
+      "publisher": "TechCrunch",
+      "url": "https://techcrunch.com/2026/11/19/anthropics-ipo-could-deliver-156-billion-to-charity/",
+      "date": "2026-11-19T19:10:45.000Z",
+      "feed": "AI"
+    },
+    "945": {
+      "id": "945",
+      "title": "From 100 losses to ... building a World Series contender? Why Mike Trout has new hope for Angels",
+      "summary": "The sale of the Angels has the franchise's greatest player excited about the future again.",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/mlb/story/_/id/50531850/mike-trout-angels-new-owner-stan-kroenke",
+      "date": "2026-11-20T23:16:36.000Z",
+      "feed": "Spor"
+    },
+    "946": {
+      "id": "946",
+      "title": "Skubal to Mets? MLB offseason dominoes for biggest free agents",
+      "summary": "Based on what ESPN's Jeff Passan is hearing, we predict where the top names available will land -- and how they impact each other.",
+      "source": "ESPN",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/mlb/story/_/id/50512061/offseason-free-agency-signings-predictions",
+      "date": "2026-11-20T23:16:36.000Z",
+      "feed": "Spor"
+    },
+    "955": {
+      "id": "955",
+      "title": "Cristiano Ronaldo goal tracker: 986 and counting on road to 1,000 career goals",
+      "summary": "With Cristiano Ronaldo on the quest to score 1,000 goals, ESPN provides goal-by-goal analysis of the Portuguese superstar's quest.",
+      "source": "ESPN Football",
+      "publisher": "ESPN",
+      "url": "https://www.espn.com/soccer/story/_/id/46751020/cristiano-ronaldo-goal-tracker-road-1000-career-goals",
+      "date": "2026-11-20T22:38:44.000Z",
+      "feed": "Spor"
+    },
+    "706": {
+      "id": "706",
+      "title": "İran Devrim Muhafızları Ordusu: Hürmüz Boğazı'nın doğusunda bir petrol tankeri mayına çarparak alev aldı",
+      "summary": "İran Devrim Muhafızları Ordusu Deniz Kuvvetleri Komutanlığı, Hürmüz Boğazı'nın doğusunda izin verilmeyen bölgede ilerleyen bir petrol tankerinin deniz mayınına çarparak alev aldığını duyurdu.",
+      "source": "TRT Haber Dünya",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/dunya/iran-devrim-muhafizlari-ordusu-hurmuz-bogazinin-dogusunda-bir-petrol-tankeri-mayina-carparak-alev-aldi-964065.html",
+      "date": "2026-11-21T11:20:00.000Z",
+      "feed": "Dünya"
+    },
+    "840": {
+      "id": "840",
+      "title": "Milletlerarası anlaşmalar Resmi Gazete'de",
+      "summary": "Türkiye'nin imzaladığı milletlerarası anlaşmalar, Cumhurbaşkanı Recep Tayyip Erdoğan tarafından onaylanmasının ardından Resmi Gazete'de yayımlandı.",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/milletlerarasi-anlasmalar-resmi-gazetede-964035.html",
+      "date": "2026-11-21T06:52:00.000Z",
+      "feed": "Dünya"
+    },
+    "1060": {
+      "id": "1060",
+      "title": "İngiliz Parlamentosundan yapay zeka yasası çağrısı",
+      "summary": "İngiltere Parlamentosunun İnsan Hakları Ortak Komitesi, hükümeti insan hakları risklerini ortadan kaldırmak amacıyla yapay zeka yasası çıkarmaya ve bu alanda çalışan bağımsız bir düzenleme kurumu oluşturmaya çağırdı.",
+      "source": "TRT Haber Dünya",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/dunya/ingiliz-parlamentosundan-yapay-zeka-yasasi-cagrisi-964005.html",
+      "date": "2026-11-20T19:16:00.000Z",
+      "feed": "Dünya"
+    },
+    "1296": {
+      "id": "1296",
+      "title": "Soykırımcı Netanyahu, güvenlik riski iddiasıyla muhalefeti birlik hükümetine zorlamayı sürdürüyor",
+      "summary": "Geçici İsrail Başbakanı Binyamin Netanyahu, \"zorlu güvenlik riskiyle\" karşı karşıya olduklarını ileri sürerek Yashar Partisi Başkanı Gadi Eisenkot öncülüğündeki değişim blokuna birlik hükümeti çağrısını yineledi.",
+      "source": "TRT Haber Dünya",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/dunya/soykirimci-netanyahu-guvenlik-riski-iddiasiyla-muhalefeti-birlik-hukumetine-zorlamayi-surduruyor-963974.html",
+      "date": "2026-11-20T12:03:00.000Z",
+      "feed": "Dünya"
+    },
+    "1421": {
+      "id": "1421",
+      "title": "Yatırım Eğilimi İstatistikleri yayımlandı",
+      "summary": "Türkiye Cumhuriyet Merkez Bankası (TCMB) Yatırım Eğilimi İstatistikleri'ne göre, imalat geneli ve üretimde çalışan sayısı esas alınarak belirlenen büyüklük gruplarında, 2026 yılında yapılan ve yılın son döneminde yapılması planlan",
+      "source": "TRT Haber Ekonomi",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/ekonomi/yatirim-egilimi-istatistikleri-yayimlandi-963940.html",
+      "date": "2026-11-20T08:12:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "1627": {
+      "id": "1627",
+      "title": "Bakanlıktan sahte yardım mesajlarına karşı uyarı",
+      "summary": "Aile ve Sosyal Hizmetler Bakanlığı, Bakanlığın ve sosyal yardımlaşma ve dayanışma vakıflarının adı kullanılarak sosyal yardım vaadiyle gerçekleştirilen dolandırıcılık girişimlerine karşı vatandaşları uyardı.",
+      "source": "TRT Haber Gündem",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/gundem/bakanliktan-sahte-yardim-mesajlarina-karsi-uyari-963866.html",
+      "date": "2026-11-19T18:16:00.000Z",
+      "feed": "Dünya"
+    },
+    "1842": {
+      "id": "1842",
+      "title": "Bakan Kurum: Antalya'da güçlü bir mutabakat ortaya koymakta kararlıyız",
+      "summary": "COP31 Başkanı ve Çevre, Şehircilik ve İklim Değişikliği Bakanı Murat Kurum, \"Biz, süreci izleyen değil, yön veren, uzlaşıyı bekleyen değil, uzlaşının zeminini inşa eden bir başkanlık anlayışıyla hareket ettik. Son güne kadar da bö",
+      "source": "TRT Haber Ekonomi",
+      "publisher": "TRT Haber",
+      "url": "https://www.trthaber.com/haber/ekonomi/bakan-kurum-antalyada-guclu-bir-mutabakat-ortaya-koymakta-kararliyiz-963730.html",
+      "date": "2026-11-18T20:26:00.000Z",
+      "feed": "Ekonomi"
+    },
+    "827": {
+      "id": "827",
+      "title": "Man convicted of arson over deadly 2025 Palisades fire in Los Angeles",
+      "summary": "A 30-year-old man has been convicted of causing one of the most destructive wildfires in the history of Los Angeles. The verdict came after the case was retried.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/man-convicted-of-arson-over-deadly-2025-palisades-fire-in-los-angeles/a-80007933?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-21T07:10:00.000Z",
+      "feed": "Dünya"
+    },
+    "1006": {
+      "id": "1006",
+      "title": "Russian ornithologist jailed over small donations to Navalny's foundation",
+      "summary": "Sofia Rosenfeld has devoted her life to studying Arctic birds. A Russian court sentenced her to 3.5 years in a penal colony over donations to Navalny's foundation.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/russian-ornithologist-jailed-over-small-donations-to-navalny-s-foundation/a-80005505?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-20T20:45:00.000Z",
+      "feed": "Dünya"
+    },
+    "1016": {
+      "id": "1016",
+      "title": "Repression against Iranian lawyers increases",
+      "summary": "At least 135 lawyers in Iran have been subjected to repressive measures over the past year. UN experts warn that this seriously jeopardizes the right of those accused to trial in a constitutional court.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/repression-against-iranian-lawyers-increases/a-80006742?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-20T20:36:00.000Z",
+      "feed": "Dünya"
+    },
+    "1200": {
+      "id": "1200",
+      "title": "Is Pakistan backing anti-Taliban groups in Afghanistan?",
+      "summary": "The Taliban rulers in Afghanistan have accused Pakistan of aiding and sheltering armed resistance groups. The allegations come amid heightened tensions and are likely to deepen the rift between the two neighbors.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/is-pakistan-backing-anti-taliban-groups-in-afghanistan/a-80004814?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-20T15:02:00.000Z",
+      "feed": "Dünya"
+    },
+    "1219": {
+      "id": "1219",
+      "title": "EU and UK strike 'landmark deal' to strengthen ties after Brexit",
+      "summary": "The European Union and the United Kingdom have agreed on \"landmark\" deals on youth mobility and trade. Leaders on both sides praised the agreement as they seek to rebuild ties.",
+      "source": "Deutsche Welle",
+      "publisher": "Deutsche Welle",
+      "url": "https://www.dw.com/en/eu-and-uk-strike-landmark-deal-to-strengthen-ties-after-brexit/a-80001076?maca=en-rss-en-world-4025-rdf",
+      "date": "2026-11-20T14:30:00.000Z",
+      "feed": "Dünya"
+    },
+    "1564": {
+      "id": "1564",
+      "title": "For some patients, psychedelic treatment brings new troubles in its aftermath",
+      "summary": "Psychedelics could transform mental health care, but some advocates and researchers say there needs to be more focus on the minority of people with persistent troubles after using these drugs.",
+      "source": "NPR Health",
+      "publisher": "NPR",
+      "url": "https://www.npr.org/2026/11/19/nx-s1-6043791/for-some-patients-psychedelic-treatment-brings-new-troubles-in-its-aftermath",
+      "date": "2026-11-19T23:07:17.000Z",
+      "feed": "Sağlık"
+    },
+    "2084": {
+      "id": "2084",
+      "title": "More people are getting the flu. Should you get a flu shot before you travel?",
+      "summary": "Thanksgiving is just around the corner, just as millions of Americans are expected to travel for the holidays. Another thing that's upon us?",
+      "source": "NPR Science",
+      "publisher": "NPR",
+      "url": "https://www.npr.org/2026/11/17/nx-s1-6043086/thanksgiving-travel-cold-flu-vaccine-shot-booster",
+      "date": "2026-11-17T10:00:00.000Z",
+      "feed": "Bilim"
+    },
+    "1762": {
+      "id": "1762",
+      "title": "Peñoles and Atlas sign 20-year solar and storage deal in Mexico",
+      "summary": "Peñoles signs 20-year renewable energy agreement with Atlas Renewable Energy to develop solar and battery storage project in Coahuila.",
+      "source": "Energy Monitor",
+      "publisher": "Energy Monitor",
+      "url": "https://www.energymonitor.ai/news/penoles-atlas-sign-20-year-deal/",
+      "date": "2026-11-19T09:49:26.000Z",
+      "feed": "Enerji"
+    },
+    "1774": {
+      "id": "1774",
+      "title": "Searenergy Poland to support Bałtyk 2 and 3 offshore wind farm projects",
+      "summary": "Searenergy Poland has been selected to perform hook-up and commissioning activities at the Bałtyk 2 and Bałtyk 3 offshore wind farms.",
+      "source": "Energy Monitor",
+      "publisher": "Energy Monitor",
+      "url": "https://www.energymonitor.ai/news/searenergy-poland-support-baltyk-2-and-3/",
+      "date": "2026-11-19T08:01:32.000Z",
+      "feed": "Enerji"
+    },
+    "1928": {
+      "id": "1928",
+      "title": "Google signs PPA to buy 50MW geothermal power from Quaise Energy",
+      "summary": "Google has entered into a PPA to acquire 50MW of geothermal energy from Quaise Energy’s Project Obsidian in Central Oregon, US.",
+      "source": "Energy Monitor",
+      "publisher": "Energy Monitor",
+      "url": "https://www.energymonitor.ai/news/google-signs-ppa-50mw-quaise-energy/",
+      "date": "2026-11-18T09:27:59.000Z",
+      "feed": "Enerji"
+    },
+    "2086": {
+      "id": "2086",
+      "title": "New international energy storage alliance launched at COP31",
+      "summary": "A new international platform aimed at enhancing cooperation on energy storage was launched at the China Pavilion during COP31.",
+      "source": "Energy Monitor",
+      "publisher": "Energy Monitor",
+      "url": "https://www.energymonitor.ai/news/new-energy-storage-alliance-launched-cop31/",
+      "date": "2026-11-17T09:52:43.000Z",
+      "feed": "Enerji"
+    }
+  }
+}
