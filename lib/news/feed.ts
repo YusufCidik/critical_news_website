@@ -1,8 +1,13 @@
 import { createHash } from "node:crypto";
 
 import Parser from "rss-parser";
+import { readResponseBytes } from "@/lib/http/response";
 
-import { classifyNews, type NewsCategory } from "./categories";
+import { classifyNews, type Classification, type NewsCategory } from "./categories";
+import { assessImpact, type ImpactAssessment } from "./impact";
+import { EventIndex } from "./events";
+import { newsSentences } from "./text";
+import { canonicalNewsURL } from "./unique";
 import { FEEDS, type FeedDefinition } from "./sources";
 
 export interface NewsStory {
@@ -13,6 +18,10 @@ export interface NewsStory {
   impact_score: number;
   category: NewsCategory;
   categories: NewsCategory[];
+  classification: Classification;
+  impact: ImpactAssessment;
+  publisher: string;
+  evidence: { text: string; kind: "rss-excerpt" | "rss-content" };
   multi_perspective: {
     western_narrative: string;
     eastern_narrative: string;
@@ -28,35 +37,21 @@ export interface NewsStory {
   is_breaking: boolean;
 }
 
-const COUNTRY_TERMS: Record<string, string[]> = {
-  turkey: ["turkey", "türkiye", "turkish", "türk", "ankara", "istanbul", "erdogan", "erdoğan", "cumhurbaşkanı", "tbmm", "kurdish"],
-  us: ["united states", "u.s.", "us", "america", "american", "washington", "trump", "congress", "pentagon"],
-  uk: ["united kingdom", "britain", "british", "uk", "london", "starmer"],
-  china: ["china", "chinese", "beijing", "xi jinping", "taiwan", "hong kong"],
-  israel: ["israel", "israeli", "gaza", "palestine", "palestinian", "west bank", "jerusalem", "hamas"],
-  ukraine: ["ukraine", "ukrainian", "kyiv", "zelensky", "donbas"],
-  russia: ["russia", "russian", "moscow", "putin", "kremlin"],
-  iran: ["iran", "iranian", "tehran", "ayatollah"],
-  france: ["france", "french", "paris", "macron"],
-  germany: ["germany", "german", "berlin", "merz"],
-  india: ["india", "indian", "new delhi", "modi"],
-  japan: ["japan", "japanese", "tokyo"],
-};
-
 const parser = new Parser({
   timeout: 5_000,
   customFields: {
-    item: [["media:content", "media:content", { keepArray: true }], ["media:thumbnail", "media:thumbnail", { keepArray: true }], "media:group"],
+    item: [["content:encoded", "content:encoded"], ["media:content", "media:content", { keepArray: true }], ["media:thumbnail", "media:thumbnail", { keepArray: true }], "media:group"],
   },
 });
 
+const eventIndex = new EventIndex();
 let cache: FeedSnapshot | null = null;
 let inFlight: Promise<FeedSnapshot> | null = null;
 const CACHE_TTL_MS = 30 * 1000;
 const MAX_STORIES = 12000;
 const FETCH_CONCURRENCY = 20;
 interface FeedHealth { name: string; publisher: string; status: "active" | "empty" | "unavailable"; items: number }
-type FeedSnapshot = { expiresAt: number; stories: NewsStory[]; sources: string[]; sourceHealth: FeedHealth[] };
+type FeedSnapshot = { expiresAt: number; stories: NewsStory[]; sources: string[]; sourceHealth: FeedHealth[]; events: EventIndex; updatedAt: string; byId: Map<string, NewsStory> };
 
 function stripMarkup(value: unknown): string {
   if (typeof value !== "string") return "";
@@ -103,41 +98,46 @@ export function inferCategory(text: string, feedCategory: NewsCategory): NewsCat
 function getSummary(item: Record<string, unknown>, title: string): string {
   const raw = stripMarkup(item.contentSnippet || item.summary || item.description || item.content || item["content:encoded"]);
   if (!raw || raw.toLowerCase() === title.toLowerCase()) return title;
-  const sentences = raw.match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [raw];
-  const concise = sentences.slice(0, 2).join(" ").trim();
+  const concise = newsSentences(raw.slice(0, 2000), 2).join(" ");
   return concise.length > 360 ? `${concise.slice(0, 357).trimEnd()}...` : concise;
 }
 
 function normalizeItem(item: Record<string, unknown>, feed: FeedDefinition): NewsStory | null {
-  const title = stripMarkup(item.title);
-  const url = typeof item.link === "string" ? item.link : "";
+  const title = stripMarkup(item.title).slice(0, 500);
+  const url = typeof item.link === "string" ? item.link.trim() : "";
   if (!title || !url) return null;
 
   const publishedAt = item.isoDate || item.pubDate;
-  const date = typeof publishedAt === "string" && !Number.isNaN(Date.parse(publishedAt))
-    ? new Date(publishedAt)
-    : new Date();
-  const excerpt = stripMarkup([item.contentSnippet, item.summary, item.description, item.content, item["content:encoded"]].filter(value => typeof value === "string").join(" ")).slice(0, 12000);
-  const text = `${title} ${excerpt}`;
+  try {
+    const source = new URL(url);
+    if (!["https:", "http:"].includes(source.protocol) || source.username || source.password) return null;
+  } catch { return null; }
+  if (typeof publishedAt !== "string" || !Number.isFinite(Date.parse(publishedAt))) return null;
+  const date = new Date(publishedAt);
+  if (date.getTime() > Date.now() + 15 * 60_000) return null;
+  const lead = stripMarkup(item.contentSnippet || item.summary || item.description || item.content);
+  const content = stripMarkup(item["content:encoded"]);
+  const evidence = { text: (content.length > lead.length ? content : lead).slice(0, 6000), kind: (content.length > lead.length ? "rss-content" : "rss-excerpt") as NewsStory["evidence"]["kind"] };
   const topics = Array.isArray(item.categories) ? item.categories.filter((value): value is string => typeof value === "string") : [];
-  const { category, categories } = classifyNews(title, excerpt, feed.category, topics);
+  const classification = classifyNews(title, lead || evidence.text, feed.category, topics);
+  // Keep the publisher's separate lead even when content:encoded is
+  // longer and starts with boilerplate or a different framing.
+  const impactText = [...new Set([lead.slice(0, 650), evidence.text.slice(0, 1500)].filter(Boolean))].join("\n");
+  const impact = assessImpact(title, impactText.slice(0, 2000), classification.category, classification.categories);
   const id = createHash("sha1").update(url).digest("hex");
   const ageHours = Math.max(0, Date.now() - date.getTime()) / 3_600_000;
   const isBreaking = ageHours <= 24 && /(?:^|\s)(breaking(?: news)?|live updates|just in|developing|son dakika)(?:\s|:|$)/i.test(title);
-  // Heuristic importance; freshness is displayed separately.
-  const score = /\b(war|invasion|earthquake|pandemic|nuclear)\b|savaş|deprem|nükleer/i.test(text) ? 9
-    : /election|sanction|ceasefire|crisis|seçim|yaptırım|ateşkes|kriz/i.test(text) ? 8
-    : /inflation|central bank|breakthrough|enflasyon|merkez bankası/i.test(text) ? 7
-    : category === "Jeopolitik" || category === "AI" || category === "Ekonomi" ? 6 : 5;
 
   return {
     id,
     original_title: title,
     translated_title: title,
     executive_summary: getSummary(item, title),
-    impact_score: score,
-    category,
-    categories,
+    impact_score: impact.global ?? 0,
+    impact,
+    ...classification,
+    publisher: feed.publisher,
+    evidence,
     multi_perspective: { western_narrative: "", eastern_narrative: "", synthesis: "" },
     butterfly_effect: [],
     source: feed.name,
@@ -160,50 +160,75 @@ async function fetchFeed(feed: FeedDefinition): Promise<{ stories: NewsStory[]; 
       next: { revalidate: 300 },
     });
     if (!response.ok) throw new Error(`RSS source responded ${response.status}`);
-    const xml = await response.text();
+    const xml = new TextDecoder().decode(await readResponseBytes(response, 2_000_000));
     const parsed = await parser.parseString(xml);
     const stories = (parsed.items ?? []).slice(0, 200)
       .map((item) => normalizeItem(item as unknown as Record<string, unknown>, feed))
       .filter((item): item is NewsStory => item !== null && Date.parse(item.published_at) >= Date.now() - 7 * 86400000);
     return { stories, health: { name: feed.name, publisher: feed.publisher, status: stories.length ? "active" : "empty", items: stories.length } };
-  } catch (error) {
-    console.warn(`Unable to fetch RSS source ${feed.name}:`, error);
+  } catch {
     return { stories: [], health: { name: feed.name, publisher: feed.publisher, status: "unavailable", items: 0 } };
   } finally {
     clearTimeout(timeout);
   }
 }
 
-export async function getStories() {
-  if (cache && cache.expiresAt > Date.now()) return cache;
+export async function getStories(refresh = false) {
+  if (!refresh && cache && cache.expiresAt > Date.now()) return cache;
   if (inFlight) return inFlight;
 
   inFlight = (async () => {
     const queue = [...FEEDS];
-    const results: Awaited<ReturnType<typeof fetchFeed>>[] = [];
+    const results: Awaited<ReturnType<typeof fetchFeed>>[] = Array(FEEDS.length);
+    const positions = new Map(FEEDS.map((feed, index) => [feed, index]));
     await Promise.all(Array.from({ length: FETCH_CONCURRENCY }, async () => {
       let definition: FeedDefinition | undefined;
-      while ((definition = queue.shift())) results.push(await fetchFeed(definition));
+      while ((definition = queue.shift())) results[positions.get(definition)!] = await fetchFeed(definition);
     }));
-    const unique = new Map<string, NewsStory>((cache?.stories || []).filter((story) => Date.parse(story.published_at) >= Date.now() - 7 * 86400000).map((story) => [story.id, story]));
+    const recent = Date.now() - 7 * 86400000;
+    const refreshedAt = new Date().toISOString();
+    const unique = new Map<string, NewsStory>();
+    const aliases = new Map<string, string>();
     for (const story of results.flatMap(result => result.stories)) {
-      const existing = unique.get(story.id);
-      if (existing) {
-        story.categories = [...new Set([...existing.categories, ...story.categories])];
-        if (story.categories.includes("AI")) story.category = "AI";
+      if (Date.parse(story.published_at) < recent) continue;
+      const identity = canonicalNewsURL(story.source_url);
+      aliases.set(story.id, identity);
+      const existing = unique.get(identity);
+      if (!existing || story.classification.confidence_score > existing.classification.confidence_score
+        || (story.classification.confidence_score === existing.classification.confidence_score && story.evidence.text.length > existing.evidence.text.length)) {
+        unique.set(identity, story);
       }
-      unique.set(story.id, story);
+    }
+    for (const previous of cache?.stories ?? []) {
+      if (Date.parse(previous.published_at) < recent) continue;
+      const identity = canonicalNewsURL(previous.source_url);
+      const fresh = unique.get(identity);
+      if (!fresh) unique.set(identity, previous);
+      else if (fresh.id !== previous.id) unique.set(identity, { ...fresh, id: previous.id });
     }
 
     const stories = [...unique.values()]
       .sort((a, b) => Number(b.is_breaking) - Number(a.is_breaking) || Date.parse(b.published_at) - Date.parse(a.published_at))
       .slice(0, MAX_STORIES);
-    if (!stories.length && cache?.stories.length) {
-      cache = { ...cache, expiresAt: Date.now() + 60_000 };
-      return cache;
+    const byId = new Map(stories.map((story) => [story.id, story]));
+    for (const [alias, identity] of aliases) {
+      const target = unique.get(identity)!;
+      if (byId.has(target.id)) byId.set(alias, target);
     }
+    // Preserve link aliases while the target remains in the rolling window.
+    for (const [alias, previous] of cache?.byId ?? []) {
+      const target = unique.get(canonicalNewsURL(previous.source_url));
+      if (target && byId.has(target.id)) byId.set(alias, target);
+    }
+    eventIndex.update(stories);
     const sources = [...new Set(stories.map((story) => story.source))];
-    cache = { expiresAt: Date.now() + CACHE_TTL_MS, stories, sources, sourceHealth: results.map(result => result.health) };
+    const sourceHealth = results.map(({ health }) => health);
+    const unavailable = sourceHealth.filter(({ status }) => status === "unavailable");
+    const servedStale = unavailable.length === FEEDS.length && !!cache?.stories.length;
+    if (unavailable.length) console.warn(JSON.stringify({
+      event: "rss_refresh_degraded", unavailable: unavailable.map(({ name }) => name), retainedStories: stories.length, servedStale,
+    }));
+    cache = { expiresAt: Date.now() + (servedStale ? 60_000 : CACHE_TTL_MS), stories, sources, sourceHealth, events: eventIndex, updatedAt: servedStale ? cache!.updatedAt : refreshedAt, byId };
     return cache;
   })();
 
@@ -214,15 +239,15 @@ export async function getStories() {
   }
 }
 
-export function matchesCountry(story: NewsStory, country: string): boolean {
-  const terms = COUNTRY_TERMS[country];
-  if (!terms) return true;
-  const text = `${story.original_title} ${story.executive_summary}`.toLowerCase();
-  return terms.some((term) => {
-    if (term === "us" || term === "uk") return new RegExp(`\\b${term}\\b`).test(text);
-    return text.includes(term);
-  });
+export async function getStory(id: string) { return (await getStories()).byId.get(id) ?? null; }
+
+export async function getStoryCoverage(id: string) {
+  const snapshot = await getStories();
+  const story = snapshot.byId.get(id) ?? null;
+  return { story, event: story ? snapshot.events.coverage(story.id) : undefined };
 }
 
-
-export async function getStory(id: string) { return (await getStories()).stories.find((story) => story.id === id) ?? null; }
+export function publicStory({ evidence, ...story }: NewsStory) {
+  void evidence; // Full RSS passages remain on the server.
+  return story;
+}

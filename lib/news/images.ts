@@ -1,3 +1,4 @@
+import { readResponseBytes } from "@/lib/http/response";
 import { FEEDS } from "./sources";
 const PUBLISHERS = [...new Set([
   ...FEEDS.map(feed => new URL(feed.url).hostname.replace(/^www\./, "")),
@@ -14,9 +15,10 @@ export function allowedURL(value: string, images = false) {
   try { const u = new URL(value); return u.protocol === "https:" && !u.username && !u.password && (!u.port || u.port === "443") && (images ? IMAGE_HOSTS : PUBLISHERS).some((host) => u.hostname === host || u.hostname.endsWith("." + host)); } catch { return false; }
 }
 export async function publisherFetch(url: string, images = false): Promise<Response> {
+  const signal = AbortSignal.timeout(7000);
   for (let i = 0; i < 4; i++) {
     if (!allowedURL(url, images)) throw new Error("Untrusted publisher URL");
-    const response = await fetch(url, { redirect: "manual", signal: AbortSignal.timeout(7000), headers: { "User-Agent": "Mozilla/5.0 (compatible; IntelMatrixNewsReader/1.0)", Accept: images ? "image/avif,image/webp,image/*" : "text/html" } });
+    const response = await fetch(url, { redirect: "manual", signal, headers: { "User-Agent": "Mozilla/5.0 (compatible; IntelMatrixNewsReader/1.0)", Accept: images ? "image/avif,image/webp,image/*" : "text/html" } });
     if (response.status >= 300 && response.status < 400 && response.headers.get("location")) { url = new URL(response.headers.get("location")!, url).href; continue; }
     if (!response.ok) throw new Error("Publisher unavailable");
     return response;
@@ -37,7 +39,7 @@ export async function articleImages(id: string, source: string) {
   const hit = metadata.get(id);
   if (hit && hit.expires > Date.now()) return hit.urls;
   const response = await publisherFetch(source);
-  const html = (await response.text()).slice(0, 1500000);
+  const html = new TextDecoder().decode(await readResponseBytes(response, 1_500_000));
   const urls = extractPageImages(html, source);
   if (metadata.size > 1000) metadata.delete(metadata.keys().next().value!);
   metadata.set(id, { expires: Date.now() + (urls.length ? 3600000 : 60000), urls });

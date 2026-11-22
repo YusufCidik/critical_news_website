@@ -1,5 +1,7 @@
 import { memo } from "react";
 import { ImportanceBadge } from "@/components/ImportanceBadge";
+import { intelligenceLabels } from "@/lib/i18n/intelligence-labels";
+import type { NewsCategory } from "@/lib/news/categories";
 import { ui } from "@/lib/i18n/interface-labels";
 import Link from "next/link";
 import { NewsImage } from "@/components/NewsImage";
@@ -11,6 +13,7 @@ interface NewsArticleCardProps {
   story: NewsItem;
   layout?: "compact" | "feature";
   language?: SupportedLanguage;
+  category?: string;
 }
 
 function formatPublishedAt(value: string | undefined, language: SupportedLanguage): string {
@@ -28,8 +31,11 @@ function formatPublishedAt(value: string | undefined, language: SupportedLanguag
   return new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(date);
 }
 
-export const NewsArticleCard = memo(function NewsArticleCard({ story, layout = "compact", language = "tr" }: NewsArticleCardProps) {
+export const NewsArticleCard = memo(function NewsArticleCard({ story, layout = "compact", language = "tr", category = "all" }: NewsArticleCardProps) {
   const feature = layout === "feature";
+  const t = intelligenceLabels(language);
+  const scope = category === "all" ? "global" : "category";
+  const score = scope === "global" ? story.impact?.global : story.impact?.byCategory?.[category as NewsCategory];
 
   return (
     <article data-news-id={story.id} className={`news-feed-card group min-w-0 overflow-hidden border-b border-slate-200 bg-white ${feature ? "" : "pb-5"}`}>
@@ -49,7 +55,7 @@ export const NewsArticleCard = memo(function NewsArticleCard({ story, layout = "
         <div className={feature ? "pt-4" : "pt-3"}>
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-red-700">
             <span>{getNewsLabel(language, story.category === "Dünya" ? "world" : story.category)}</span>
-            <ImportanceBadge score={story.impact_score} language={language} />
+            <ImportanceBadge score={score} language={language} scope={scope} provisional={scope === "global" && story.impact?.status === "provisional"} />
           </div>
           <h2 className={`font-serif font-bold leading-[1.12] text-slate-950 group-hover:text-sky-800 ${feature ? "text-3xl md:text-[38px]" : "text-[21px]"}`}>
             {story.translated_title}
@@ -65,10 +71,11 @@ export const NewsArticleCard = memo(function NewsArticleCard({ story, layout = "
         <time dateTime={story.published_at}>{formatPublishedAt(story.published_at, language)}</time>
         <span aria-hidden="true">·</span>
         <span>{Math.max(1, Math.ceil(story.executive_summary.split(/\s+/).length / 200))} {ui(language, "minutes")}</span>
+        {story.event && <span className="font-semibold">{story.event.publishers} {t.publisherCount.toLocaleLowerCase(language)} · {story.event.reports} {t.reportCount.toLocaleLowerCase(language)}</span>}
         <Link prefetch={false} className="font-semibold text-sky-800 hover:underline" href={`/news/${story.id}`}>
           {ui(language, "read")}
         </Link>
       </div>
     </article>
   );
-}, (previous, next) => previous.language === next.language && previous.layout === next.layout && (previous.story === next.story || (["id", "translated_title", "executive_summary", "image_url", "impact_score", "is_breaking", "category", "source", "published_at"] as const).every((key) => previous.story[key] === next.story[key])));
+}, (previous, next) => previous.language === next.language && previous.layout === next.layout && previous.category === next.category && (previous.story === next.story || (["id", "translated_title", "executive_summary", "image_url", "impact", "event", "is_breaking", "category", "source", "published_at"] as const).every((key) => previous.story[key] === next.story[key])));

@@ -19,10 +19,14 @@ export interface NewsItem {
   executive_summary: string;
   categories?: import("@/lib/news/categories").NewsCategory[];
   impact_score: number;
+  impact?: import("@/lib/news/impact").ImpactAssessment;
+  classification?: import("@/lib/news/categories").Classification;
   category: "AI" | "Teknoloji" | "Jeopolitik" | "Ekonomi" | "Bilim" | "Spor" | "Kültür" | "Sağlık" | "İklim" | "Savunma" | "Enerji" | "Seyahat" | "Dünya" | "Tech" | "Geopolitics";
   multi_perspective: MultiPerspective;
   butterfly_effect: ButterflyEffectItem[];
   source?: string;
+  publisher?: string;
+  event?: import("@/lib/news/events").EventBadge;
   source_url?: string;
   image_url?: string | null;
   is_breaking?: boolean;
@@ -31,15 +35,17 @@ export interface NewsItem {
   updated_at?: string;
 }
 
+export type NewsLoadError = "cachedFeed" | "feedUnavailable" | "pageUnavailable";
+
 interface NewsState {
   items: NewsItem[];
   activeItem: NewsItem | null;
   loading: boolean;
-  error: string | null;
+  error: NewsLoadError | null;
   setItems: (items: NewsItem[]) => void;
   setActiveItem: (item: NewsItem | null) => void;
   setLoading: (value: boolean) => void;
-  setError: (value: string | null) => void;
+  setError: (value: NewsLoadError | null) => void;
 }
 
 export const useNewsStore = create<NewsState>((set) => ({

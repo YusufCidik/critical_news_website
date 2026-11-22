@@ -22,10 +22,14 @@ export interface NewsItemRecord {
   executive_summary: string;
   categories?: import("@/lib/news/categories").NewsCategory[];
   impact_score: number;
+  impact?: import("@/lib/news/impact").ImpactAssessment;
+  classification?: import("@/lib/news/categories").Classification;
   category: NewsCategory;
   multi_perspective: MultiPerspective;
   butterfly_effect: ButterflyEffectItem[];
   source?: string;
+  publisher?: string;
+  event?: import("@/lib/news/events").EventBadge;
   source_url?: string;
   image_url?: string | null;
   is_breaking?: boolean;

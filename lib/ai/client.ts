@@ -10,7 +10,6 @@ export function resolveFreeTierModel(value: string | undefined, fallback: string
 export const TRANSLATION_MODEL = resolveFreeTierModel(process.env.GEMINI_TRANSLATION_MODEL, "gemini-3.5-flash-lite");
 export const SELECTION_MODEL = resolveFreeTierModel(process.env.GEMINI_SELECTION_MODEL, TRANSLATION_MODEL);
 export const ASSISTANT_MODEL = resolveFreeTierModel(process.env.GEMINI_ASSISTANT_MODEL, "gemini-3.8-flash");
-export const AI_MODEL = resolveFreeTierModel(process.env.GEMINI_MODEL, TRANSLATION_MODEL);
 export function assistantThinking(model = ASSISTANT_MODEL) {
   return /^gemini-3/.test(model) ? { thinkingConfig: { thinkingLevel: ThinkingLevel.LOW } } : {};
 }

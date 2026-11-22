@@ -1,4 +1,4 @@
-const CACHE_NAME = "intelmatrix-v2";
+const CACHE_NAME = "intelmatrix-v3";
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.add("/")).then(() => self.skipWaiting()));
 });
@@ -33,7 +33,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(cacheAsset(request));
     return;
   }
-  if (request.mode === "navigate" || url.pathname === "/api/news") {
+  if (request.mode === "navigate" || (url.pathname === "/api/news" && !url.searchParams.has("q"))) {
     event.respondWith(networkFirst(request));
   }
 });
