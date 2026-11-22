@@ -118,6 +118,18 @@ try {
     } finally { snapshot.stories.splice(0, snapshot.stories.length, ...original); }
   });
 
+  await test("AI filtering requires AI as the primary category across live and legacy records", () => {
+    const tech = classifyNews("Signal restricts mobile screenshots as it confronts AI surveillance", "Signal is limiting screenshots in its app.", "Teknoloji");
+    assert.equal(tech.category, "Teknoloji");
+    assert.ok(tech.categories.includes("AI"));
+    const story = { ...tech, original_title: "Signal restricts mobile screenshots as it confronts AI surveillance", executive_summary: "Signal is limiting screenshots in its app." };
+    assert.equal(matchesNewsCategory(story, "AI"), false);
+    assert.equal(matchesNewsCategory(story, "Teknoloji"), true);
+    assert.equal(matchesNewsCategory({ ...story, classification: undefined }, "AI"), false);
+    const ai = classifyNews("DeepSeek releases a new reasoning model", "The company released its new model for testing.", "Teknoloji");
+    assert.equal(matchesNewsCategory({ ...ai, original_title: "DeepSeek releases a new reasoning model", executive_summary: "The company released its new model for testing." }, "AI"), true);
+  });
+
   await test("large assistant feeds retain relevant AI entities within a bounded semantic request", async () => {
     const previousKey = process.env.GEMINI_API_KEY;
     const previousAI = globalThis.__intelmatrixAI;

@@ -112,7 +112,8 @@ export function classifyNews(title: string, summary = "", feedCategory: NewsCate
 
 export function matchesNewsCategory(story: { category: string; categories?: string[]; classification?: Classification; original_title: string; executive_summary: string }, selected: string) {
   if (selected === "all") return true;
-  if (story.classification) return story.category === selected || !!story.categories?.includes(selected as NewsCategory);
+  if (story.classification) return selected === "AI" ? story.category === "AI" : story.category === selected || !!story.categories?.includes(selected as NewsCategory);
   const legacyHint = story.category === "Tech" ? "Teknoloji" : story.category === "Geopolitics" ? "Jeopolitik" : story.category as NewsCategory;
-  return classifyNews(story.original_title, story.executive_summary, legacyHint).categories.includes(selected as NewsCategory);
+  const classified = classifyNews(story.original_title, story.executive_summary, legacyHint);
+  return selected === "AI" ? classified.category === "AI" : classified.categories.includes(selected as NewsCategory);
 }
